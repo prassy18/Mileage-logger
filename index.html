@@ -2,1001 +2,1286 @@
 
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trip & Fuel Logger</title>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip & Fuel Logger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
 ```
-body {
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-min-height: 100vh;
-color: #333;
-}
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+    }
 
-.container {
-max-width: 414px;
-margin: 0 auto;
-background: white;
-min-height: 100vh;
-position: relative;
-}
+    .container {
+        max-width: 414px;
+        margin: 0 auto;
+        background: white;
+        min-height: 100vh;
+        position: relative;
+    }
 
-.header {
-background: linear-gradient(135deg, #4CAF50, #45a049);
-color: white;
-padding: 20px;
-text-align: center;
-box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+    .header {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
 
-.header h1 {
-font-size: 24px;
-margin-bottom: 5px;
-}
+    .header h1 {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
 
-.header p {
-opacity: 0.9;
-font-size: 14px;
-}
+    .header p {
+        opacity: 0.9;
+        font-size: 14px;
+    }
 
-.tabs {
-display: flex;
-background: #f8f9fa;
-border-bottom: 1px solid #dee2e6;
-}
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
 
-.tab {
-flex: 1;
-padding: 15px;
-text-align: center;
-background: none;
-border: none;
-cursor: pointer;
-font-size: 14px;
-font-weight: 500;
-color: #666;
-transition: all 0.3s ease;
-}
+    .tab {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        transition: all 0.3s ease;
+    }
 
-.tab.active {
-background: white;
-color: #4CAF50;
-border-bottom: 2px solid #4CAF50;
-}
+    .tab.active {
+        background: white;
+        color: #4CAF50;
+        border-bottom: 2px solid #4CAF50;
+    }
 
-.tab-content {
-display: none;
-padding: 20px;
-min-height: 500px;
-}
+    .tab-content {
+        display: none;
+        padding: 20px;
+        min-height: 500px;
+    }
 
-.tab-content.active {
-display: block;
-}
+    .tab-content.active {
+        display: block;
+    }
 
-.form-group {
-margin-bottom: 20px;
-}
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-.form-group label {
-display: block;
-margin-bottom: 8px;
-font-weight: 500;
-color: #333;
-}
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
 
-.form-group input, .form-group textarea, .form-group select {
-width: 100%;
-padding: 12px;
-border: 2px solid #e1e5e9;
-border-radius: 8px;
-font-size: 16px;
-transition: border-color 0.3s ease;
-}
+    .form-group input, .form-group textarea, .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
 
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-outline: none;
-border-color: #4CAF50;
-}
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        outline: none;
+        border-color: #4CAF50;
+    }
 
-.form-group textarea {
-resize: vertical;
-min-height: 80px;
-}
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
 
-.btn {
-background: linear-gradient(135deg, #4CAF50, #45a049);
-color: white;
-border: none;
-padding: 15px 30px;
-border-radius: 25px;
-font-size: 16px;
-font-weight: 500;
-cursor: pointer;
-width: 100%;
-margin-bottom: 10px;
-transition: transform 0.2s ease;
-}
+    .btn {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 10px;
+        transition: transform 0.2s ease;
+    }
 
-.btn:hover {
-transform: translateY(-2px);
-}
+    .btn:hover {
+        transform: translateY(-2px);
+    }
 
-.btn:active {
-transform: translateY(0);
-}
+    .btn:active {
+        transform: translateY(0);
+    }
 
-.btn-secondary {
-background: linear-gradient(135deg, #6c757d, #5a6268);
-}
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+    }
 
-.btn-danger {
-background: linear-gradient(135deg, #dc3545, #c82333);
-}
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
 
-.record {
-background: white;
-border: 1px solid #e1e5e9;
-border-radius: 12px;
-padding: 15px;
-margin-bottom: 15px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+    .record {
+        background: white;
+        border: 1px solid #e1e5e9;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-.record-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 10px;
-}
+    .record-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
 
-.record-date {
-font-weight: 600;
-color: #4CAF50;
-}
+    .record-date {
+        font-weight: 600;
+        color: #4CAF50;
+    }
 
-.record-delete {
-background: #dc3545;
-color: white;
-border: none;
-padding: 5px 10px;
-border-radius: 15px;
-font-size: 12px;
-cursor: pointer;
-}
+    .record-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        cursor: pointer;
+    }
 
-.record-details {
-font-size: 14px;
-line-height: 1.6;
-}
+    .record-details {
+        font-size: 14px;
+        line-height: 1.6;
+    }
 
-.record-details strong {
-color: #333;
-}
+    .record-details strong {
+        color: #333;
+    }
 
-.stats {
-background: linear-gradient(135deg, #17a2b8, #138496);
-color: white;
-padding: 20px;
-border-radius: 12px;
-margin-bottom: 20px;
-}
+    .stats {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
 
-.stats h3 {
-margin-bottom: 15px;
-text-align: center;
-}
+    .stats h3 {
+        margin-bottom: 15px;
+        text-align: center;
+    }
 
-.stat-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 15px;
-}
+    .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
 
-.stat-item {
-text-align: center;
-}
+    .stat-item {
+        text-align: center;
+    }
 
-.stat-value {
-display: block;
-font-size: 24px;
-font-weight: bold;
-margin-bottom: 5px;
-}
+    .stat-value {
+        display: block;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
-.stat-label {
-font-size: 12px;
-opacity: 0.9;
-}
+    .stat-label {
+        font-size: 12px;
+        opacity: 0.9;
+    }
 
-.export-section {
-margin-top: 30px;
-padding: 20px;
-background: #f8f9fa;
-border-radius: 12px;
-}
+    .export-section {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
 
-.backup-reminder {
-background: linear-gradient(135deg, #ff9500, #ff7b00);
-color: white;
-padding: 15px;
-border-radius: 12px;
-margin-bottom: 20px;
-text-align: center;
-animation: pulse 2s infinite;
-}
+    .backup-reminder {
+        background: linear-gradient(135deg, #ff9500, #ff7b00);
+        color: white;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+        animation: pulse 2s infinite;
+    }
 
-@keyframes pulse {
-0% { transform: scale(1); }
-50% { transform: scale(1.02); }
-100% { transform: scale(1); }
-}
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
 
-.backup-status {
-background: #e8f5e8;
-color: #2d5016;
-padding: 15px;
-border-radius: 12px;
-margin-bottom: 20px;
-text-align: center;
-}
+    .backup-status {
+        background: #e8f5e8;
+        color: #2d5016;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-.import-section {
-background: #f0f8ff;
-padding: 20px;
-border-radius: 12px;
-margin-bottom: 20px;
-border: 2px dashed #4CAF50;
-}
+    .import-section {
+        background: #f0f8ff;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: 2px dashed #4CAF50;
+    }
 
-.file-input {
-display: none;
-}
+    .file-input {
+        display: none;
+    }
 
-.file-input-label {
-display: inline-block;
-padding: 12px 24px;
-background: linear-gradient(135deg, #4CAF50, #45a049);
-color: white;
-border-radius: 8px;
-cursor: pointer;
-font-weight: 500;
-transition: transform 0.2s ease;
-}
+    .file-input-label {
+        display: inline-block;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: transform 0.2s ease;
+    }
 
-.file-input-label:hover {
-transform: translateY(-2px);
-}
+    .file-input-label:hover {
+        transform: translateY(-2px);
+    }
 
-.modal {
-display: none;
-position: fixed;
-z-index: 1000;
-left: 0;
-top: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0,0,0,0.5);
-}
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
 
-.modal-content {
-background-color: white;
-margin: 15% auto;
-padding: 20px;
-border-radius: 12px;
-width: 90%;
-max-width: 400px;
-text-align: center;
-}
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+    }
 
-.modal-buttons {
-margin-top: 20px;
-display: flex;
-gap: 10px;
-justify-content: center;
-}
+    .modal-buttons {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
 
-.btn-small {
-padding: 10px 20px;
-font-size: 14px;
-border-radius: 20px;
-}
+    .btn-small {
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 20px;
+    }
 
-.empty-state {
-text-align: center;
-padding: 40px 20px;
-color: #666;
-}
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
 
-.empty-state img {
-width: 80px;
-height: 80px;
-margin-bottom: 20px;
-opacity: 0.5;
-}
+    .empty-state img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
 
-.search-box {
-margin-bottom: 20px;
-}
+    .search-box {
+        margin-bottom: 20px;
+    }
 
-.search-box input {
-padding: 12px;
-border: 2px solid #e1e5e9;
-border-radius: 25px;
-width: 100%;
-font-size: 16px;
-}
+    .search-box input {
+        padding: 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 25px;
+        width: 100%;
+        font-size: 16px;
+    }
 
-@media (max-width: 480px) {
-.container {
-max-width: 100%;
-}
+    .font-size-toggle {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(76, 175, 80, 0.9);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
 
-.stat-grid {
-grid-template-columns: 1fr;
-gap: 10px;
-}
-}
+    .large-font {
+        font-size: 18px;
+    }
+
+    .large-font input, .large-font textarea, .large-font select {
+        font-size: 18px;
+        padding: 15px;
+    }
+
+    .large-font .btn {
+        font-size: 18px;
+        padding: 18px 35px;
+    }
+
+    .large-font .form-group label {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .monthly-summary {
+        background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .summary-item {
+        text-align: center;
+        background: rgba(255,255,255,0.1);
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .summary-value {
+        display: block;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .summary-label {
+        font-size: 12px;
+        opacity: 0.9;
+    }
 </style>
 ```
 
 </head>
 <body>
-<div class="container">
-<div class="header">
-<h1>🚗 Trip Logger</h1>
-<p>Track your journeys and fuel expenses</p>
-</div>
+    <div class="container">
+        <button class="font-size-toggle" onclick="toggleFontSize()" id="fontToggle">A+</button>
 
 ```
-<div class="tabs">
-<button class="tab active" onclick="showTab('trips')">Trip Logs</button>
-<button class="tab" onclick="showTab('fuel')">Fuel Logs</button>
-<button class="tab" onclick="showTab('stats')">Statistics</button>
-</div>
+    <div class="header">
+        <h1>🚗 Trip Logger</h1>
+        <p>Track your journeys and fuel expenses</p>
+    </div>
 
-<!-- Trip Logs Tab -->
-<div id="trips" class="tab-content active">
-<form id="tripForm">
-<div class="form-group">
-<label for="tripDate">Date</label>
-<input type="date" id="tripDate" required>
-</div>
-<div class="form-group">
-<label for="startOdometer">Start Odometer (km)</label>
-<input type="number" id="startOdometer" placeholder="e.g., 45000" required>
-</div>
-<div class="form-group">
-<label for="endOdometer">End Odometer (km)</label>
-<input type="number" id="endOdometer" placeholder="e.g., 45150" required>
-</div>
-<div class="form-group">
-<label for="remainingRange">Remaining Range (km)</label>
-<input type="number" id="remainingRange" placeholder="e.g., 450">
-</div>
-<div class="form-group">
-<label for="tripNotes">Trip Notes</label>
-<textarea id="tripNotes" placeholder="Any additional notes about the trip..."></textarea>
-</div>
-<button type="submit" class="btn">Add Trip Log</button>
-</form>
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('trips')">Trip Logs</button>
+        <button class="tab" onclick="showTab('fuel')">Fuel Logs</button>
+        <button class="tab" onclick="showTab('stats')">Statistics</button>
+    </div>
 
-<div class="search-box">
-<input type="text" id="tripSearch" placeholder="🔍 Search trip logs..." onkeyup="searchTrips()">
-</div>
+    <!-- Trip Logs Tab -->
+    <div id="trips" class="tab-content active">
+        <form id="tripForm">
+            <div class="form-group">
+                <label for="tripDate">Date</label>
+                <input type="date" id="tripDate" required>
+            </div>
+            <div class="form-group">
+                <label for="startingLocation">Starting Location</label>
+                <select id="startingLocation" onchange="handleLocationChange()">
+                    <option value="">Select starting location...</option>
+                    <option value="Home">🏠 Home</option>
+                    <option value="Son's House">👨‍👩‍👧‍👦 Son's House</option>
+                    <option value="Daughter's House">👨‍👩‍👧‍👦 Daughter's House</option>
+                    <option value="Doctor's Office">🏥 Doctor's Office</option>
+                    <option value="Market">🛒 Market</option>
+                    <option value="Temple">🕉️ Temple</option>
+                    <option value="Bank">🏦 Bank</option>
+                    <option value="Friend's Place">👥 Friend's Place</option>
+                    <option value="Other">✏️ Other (specify below)</option>
+                </select>
+            </div>
+            <div class="form-group" id="customLocationGroup" style="display: none;">
+                <label for="customLocation">Custom Starting Location</label>
+                <input type="text" id="customLocation" placeholder="Enter custom location...">
+            </div>
+            <div class="form-group">
+                <label for="tripPurpose">Trip Purpose</label>
+                <select id="tripPurpose">
+                    <option value="">Select purpose...</option>
+                    <option value="Medical">🏥 Medical / Doctor Visit</option>
+                    <option value="Shopping">🛒 Shopping / Market</option>
+                    <option value="Family Visit">👨‍👩‍👧‍👦 Family Visit</option>
+                    <option value="Religious">🕉️ Religious / Temple</option>
+                    <option value="Banking">🏦 Banking / Official Work</option>
+                    <option value="Social">👥 Social / Friends</option>
+                    <option value="Leisure">🎯 Leisure / Entertainment</option>
+                    <option value="Maintenance">🔧 Car Service / Maintenance</option>
+                    <option value="Other">📝 Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startOdometer">Start Odometer (km)</label>
+                <input type="number" id="startOdometer" placeholder="e.g., 45000" required>
+            </div>
+            <div class="form-group">
+                <label for="endOdometer">End Odometer (km)</label>
+                <input type="number" id="endOdometer" placeholder="e.g., 45150" required>
+            </div>
+            <div class="form-group">
+                <label for="remainingRange">Remaining Range (km)</label>
+                <input type="number" id="remainingRange" placeholder="e.g., 450">
+            </div>
+            <div class="form-group">
+                <label for="tripNotes">Trip Notes</label>
+                <textarea id="tripNotes" placeholder="Any additional notes about the trip..."></textarea>
+            </div>
+            <button type="submit" class="btn">Add Trip Log</button>
+        </form>
 
-<div id="tripsList"></div>
-</div>
+        <div class="search-box">
+            <input type="text" id="tripSearch" placeholder="🔍 Search trip logs..." onkeyup="searchTrips()">
+        </div>
 
-<!-- Fuel Logs Tab -->
-<div id="fuel" class="tab-content">
-<form id="fuelForm">
-<div class="form-group">
-<label for="fuelDate">Date</label>
-<input type="date" id="fuelDate" required>
-</div>
-<div class="form-group">
-<label for="fuelOdometer">Odometer Reading (km)</label>
-<input type="number" id="fuelOdometer" placeholder="e.g., 45075" required>
-</div>
-<div class="form-group">
-<label for="rangeBefore">Range Before Fuel (km)</label>
-<input type="number" id="rangeBefore" placeholder="e.g., 50">
-</div>
-<div class="form-group">
-<label for="fuelAmount">Fuel Amount (Litres)</label>
-<input type="number" step="0.01" id="fuelAmount" placeholder="e.g., 45.5" required>
-</div>
-<div class="form-group">
-<label for="fuelCost">Cost (₹)</label>
-<input type="number" step="0.01" id="fuelCost" placeholder="e.g., 4095.50" required>
-</div>
-<div class="form-group">
-<label for="rangeAfter">Range After Fuel (km)</label>
-<input type="number" id="rangeAfter" placeholder="e.g., 650">
-</div>
-<div class="form-group">
-<label for="fuelStation">Fuel Station Info</label>
-<input type="text" id="fuelStation" placeholder="e.g., Shell Petrol Pump, MG Road">
-</div>
-<button type="submit" class="btn">Add Fuel Log</button>
-</form>
+        <div id="tripsList"></div>
+    </div>
 
-<div class="search-box">
-<input type="text" id="fuelSearch" placeholder="🔍 Search fuel logs..." onkeyup="searchFuel()">
-</div>
+    <!-- Fuel Logs Tab -->
+    <div id="fuel" class="tab-content">
+        <form id="fuelForm">
+            <div class="form-group">
+                <label for="fuelDate">Date</label>
+                <input type="date" id="fuelDate" required>
+            </div>
+            <div class="form-group">
+                <label for="fuelOdometer">Odometer Reading (km)</label>
+                <input type="number" id="fuelOdometer" placeholder="e.g., 45075" required>
+            </div>
+            <div class="form-group">
+                <label for="rangeBefore">Range Before Fuel (km)</label>
+                <input type="number" id="rangeBefore" placeholder="e.g., 50">
+            </div>
+            <div class="form-group">
+                <label for="fuelAmount">Fuel Amount (Litres)</label>
+                <input type="number" step="0.01" id="fuelAmount" placeholder="e.g., 45.5" required>
+            </div>
+            <div class="form-group">
+                <label for="fuelCost">Cost (₹)</label>
+                <input type="number" step="0.01" id="fuelCost" placeholder="e.g., 4095.50" required>
+            </div>
+            <div class="form-group">
+                <label for="rangeAfter">Range After Fuel (km)</label>
+                <input type="number" id="rangeAfter" placeholder="e.g., 650">
+            </div>
+            <div class="form-group">
+                <label for="fuelStation">Fuel Station Info</label>
+                <input type="text" id="fuelStation" placeholder="e.g., Shell Petrol Pump, MG Road">
+            </div>
+            <button type="submit" class="btn">Add Fuel Log</button>
+        </form>
 
-<div id="fuelList"></div>
-</div>
+        <div class="search-box">
+            <input type="text" id="fuelSearch" placeholder="🔍 Search fuel logs..." onkeyup="searchFuel()">
+        </div>
 
-<!-- Statistics Tab -->
-<div id="stats" class="tab-content">
-<div id="backupReminder" class="backup-reminder" style="display: none;">
-<h3>⚠️ Backup Reminder</h3>
-<p>It's been a while since your last backup. Don't lose your data!</p>
-<button class="btn btn-small" onclick="autoBackup()" style="background: white; color: #ff9500; margin: 5px;">Backup Now</button>
-<button class="btn btn-small" onclick="dismissBackupReminder()" style="background: rgba(255,255,255,0.2); margin: 5px;">Remind Later</button>
-</div>
+        <div id="fuelList"></div>
+    </div>
 
-<div id="backupStatus" class="backup-status" style="display: none;">
-<strong>✅ Last backup:</strong> <span id="lastBackupDate">Never</span>
-</div>
+    <!-- Statistics Tab -->
+    <div id="stats" class="tab-content">
+        <div id="backupReminder" class="backup-reminder" style="display: none;">
+            <h3>⚠️ Backup Reminder</h3>
+            <p>It's been a while since your last backup. Don't lose your data!</p>
+            <button class="btn btn-small" onclick="autoBackup()" style="background: white; color: #ff9500; margin: 5px;">Backup Now</button>
+            <button class="btn btn-small" onclick="dismissBackupReminder()" style="background: rgba(255,255,255,0.2); margin: 5px;">Remind Later</button>
+        </div>
 
-<div class="import-section">
-<h3>📥 Restore from Backup</h3>
-<p>Select a backup file to restore your data</p>
-<input type="file" id="importFile" class="file-input" accept=".json" onchange="importData()">
-<label for="importFile" class="file-input-label">Choose Backup File</label>
-<p style="font-size: 12px; margin-top: 10px; color: #666;">Supports .json backup files only</p>
-</div>
+        <div id="backupStatus" class="backup-status" style="display: none;">
+            <strong>✅ Last backup:</strong> <span id="lastBackupDate">Never</span>
+        </div>
 
-<div id="statsContainer"></div>
+        <div id="monthlySummary" class="monthly-summary">
+            <h3>📅 This Month Summary</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span class="summary-value" id="monthTrips">0</span>
+                    <span class="summary-label">Trips</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="monthDistance">0</span>
+                    <span class="summary-label">Total KM</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="monthFuelCost">₹0</span>
+                    <span class="summary-label">Fuel Cost</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="monthAvgTrip">0</span>
+                    <span class="summary-label">Avg KM/Trip</span>
+                </div>
+            </div>
+        </div>
 
-<div class="export-section">
-<h3>📤 Backup & Export Data</h3>
-<button class="btn" onclick="autoBackup()">🔄 Create Full Backup</button>
-<button class="btn btn-secondary" onclick="exportData('trips')">Export Trip Logs (CSV)</button>
-<button class="btn btn-secondary" onclick="exportData('fuel')">Export Fuel Logs (CSV)</button>
-<button class="btn btn-secondary" onclick="scheduleReminders()">⏰ Set Backup Reminders</button>
-</div>
-</div>
+        <div class="import-section">
+            <h3>📥 Restore from Backup</h3>
+            <p>Select a backup file to restore your data</p>
+            <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData()">
+            <label for="importFile" class="file-input-label">Choose Backup File</label>
+            <p style="font-size: 12px; margin-top: 10px; color: #666;">Supports .json backup files only</p>
+        </div>
 
-<!-- Backup Reminder Modal -->
-<div id="backupModal" class="modal">
-<div class="modal-content">
-<h3>💾 Regular Backup Recommended</h3>
-<p>To keep your data safe, we recommend backing up every week. Would you like to:</p>
-<div class="modal-buttons">
-<button class="btn btn-small" onclick="autoBackup(); closeModal()">Backup Now</button>
-<button class="btn btn-small btn-secondary" onclick="snoozeBackup(); closeModal()">Remind in 3 Days</button>
-<button class="btn btn-small btn-secondary" onclick="closeModal()">Later</button>
-</div>
-</div>
-</div>
+        <div id="statsContainer"></div>
+        
+        <div class="export-section">
+            <h3>📤 Backup & Export Data</h3>
+            <button class="btn" onclick="autoBackup()">🔄 Create Full Backup</button>
+            <button class="btn btn-secondary" onclick="exportData('trips')">Export Trip Logs (CSV)</button>
+            <button class="btn btn-secondary" onclick="exportData('fuel')">Export Fuel Logs (CSV)</button>
+            <button class="btn btn-secondary" onclick="scheduleReminders()">⏰ Set Backup Reminders</button>
+        </div>
+    </div>
+
+    <!-- Backup Reminder Modal -->
+    <div id="backupModal" class="modal">
+        <div class="modal-content">
+            <h3>💾 Regular Backup Recommended</h3>
+            <p>To keep your data safe, we recommend backing up every week. Would you like to:</p>
+            <div class="modal-buttons">
+                <button class="btn btn-small" onclick="autoBackup(); closeModal()">Backup Now</button>
+                <button class="btn btn-small btn-secondary" onclick="snoozeBackup(); closeModal()">Remind in 3 Days</button>
+                <button class="btn btn-small btn-secondary" onclick="closeModal()">Later</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-// Data storage
-let trips = JSON.parse(window.localStorage?.getItem('tripLogs') || '[]');
-let fuelLogs = JSON.parse(window.localStorage?.getItem('fuelLogs') || '[]');
-let appSettings = JSON.parse(window.localStorage?.getItem('appSettings') || '{}');
-
-// Initialize app
-document.addEventListener('DOMContentLoaded', function() {
-// Set today's date as default
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('tripDate').value = today;
-document.getElementById('fuelDate').value = today;
-
-displayTrips();
-displayFuelLogs();
-updateStats();
-checkBackupReminder();
-updateBackupStatus();
-});
-
-// Tab switching
-function showTab(tabName) {
-const tabs = document.querySelectorAll('.tab');
-const contents = document.querySelectorAll('.tab-content');
-
-tabs.forEach(tab => tab.classList.remove('active'));
-contents.forEach(content => content.classList.remove('active'));
-
-document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-document.getElementById(tabName).classList.add('active');
-
-if (tabName === 'stats') {
-updateStats();
-}
-}
-
-// Trip form submission
-document.getElementById('tripForm').addEventListener('submit', function(e) {
-e.preventDefault();
-
-const trip = {
-id: Date.now(),
-date: document.getElementById('tripDate').value,
-startOdometer: parseInt(document.getElementById('startOdometer').value),
-endOdometer: parseInt(document.getElementById('endOdometer').value),
-remainingRange: parseInt(document.getElementById('remainingRange').value) || 0,
-notes: document.getElementById('tripNotes').value
-};
-
-if (trip.endOdometer <= trip.startOdometer) {
-alert('End odometer must be greater than start odometer');
-return;
-}
-
-trips.unshift(trip);
-saveData();
-displayTrips();
-this.reset();
-document.getElementById('tripDate').value = new Date().toISOString().split('T')[0];
-
-alert('Trip log added successfully!');
-});
-
-// Fuel form submission
-document.getElementById('fuelForm').addEventListener('submit', function(e) {
-e.preventDefault();
-
-const fuel = {
-id: Date.now(),
-date: document.getElementById('fuelDate').value,
-odometer: parseInt(document.getElementById('fuelOdometer').value),
-rangeBefore: parseInt(document.getElementById('rangeBefore').value) || 0,
-amount: parseFloat(document.getElementById('fuelAmount').value),
-cost: parseFloat(document.getElementById('fuelCost').value),
-rangeAfter: parseInt(document.getElementById('rangeAfter').value) || 0,
-station: document.getElementById('fuelStation').value
-};
-
-fuelLogs.unshift(fuel);
-saveData();
-displayFuelLogs();
-this.reset();
-document.getElementById('fuelDate').value = new Date().toISOString().split('T')[0];
-
-alert('Fuel log added successfully!');
-});
-
-// Save data to localStorage
-function saveData() {
-try {
-window.localStorage?.setItem('tripLogs', JSON.stringify(trips));
-window.localStorage?.setItem('fuelLogs', JSON.stringify(fuelLogs));
-window.localStorage?.setItem('appSettings', JSON.stringify(appSettings));
-} catch (e) {
-console.warn('Could not save to localStorage:', e);
-}
-}
-
-// Auto backup and reminder system
-function checkBackupReminder() {
-const now = new Date().getTime();
-const lastBackup = appSettings.lastBackupDate || 0;
-const backupInterval = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-const reminderInterval = 3 * 24 * 60 * 60 * 1000; // 3 days for snooze
-
-// Check if we should show backup reminder
-if (now - lastBackup > backupInterval) {
-const lastReminder = appSettings.lastReminderDate || 0;
-if (now - lastReminder > reminderInterval) {
-showBackupReminder();
-}
-}
-}
-
-function showBackupReminder() {
-const totalEntries = trips.length + fuelLogs.length;
-if (totalEntries >= 5) { // Only show reminder if user has significant data
-document.getElementById('backupReminder').style.display = 'block';
-document.getElementById('backupModal').style.display = 'block';
-}
-}
-
-function dismissBackupReminder() {
-document.getElementById('backupReminder').style.display = 'none';
-appSettings.lastReminderDate = new Date().getTime();
-saveData();
-}
-
-function snoozeBackup() {
-appSettings.lastReminderDate = new Date().getTime();
-saveData();
-}
-
-function closeModal() {
-document.getElementById('backupModal').style.display = 'none';
-}
-
-function updateBackupStatus() {
-const lastBackup = appSettings.lastBackupDate;
-const statusElement = document.getElementById('backupStatus');
-const dateElement = document.getElementById('lastBackupDate');
-
-if (lastBackup) {
-const backupDate = new Date(lastBackup);
-dateElement.textContent = backupDate.toLocaleDateString('en-IN', {
-day: 'numeric',
-month: 'short',
-year: 'numeric',
-hour: '2-digit',
-minute: '2-digit'
-});
-statusElement.style.display = 'block';
-}
-}
-
-function autoBackup() {
-const backupData = {
-version: '1.0',
-exportDate: new Date().toISOString(),
-totalTrips: trips.length,
-totalFuelLogs: fuelLogs.length,
-trips: trips,
-fuelLogs: fuelLogs
-};
-
-const dataStr = JSON.stringify(backupData, null, 2);
-const blob = new Blob([dataStr], { type: 'application/json' });
-
-const now = new Date();
-const filename = `trip_fuel_backup_${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}.json`;
-
-const url = window.URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = filename;
-a.click();
-window.URL.revokeObjectURL(url);
-
-// Update backup timestamp
-appSettings.lastBackupDate = now.getTime();
-saveData();
-updateBackupStatus();
-
-// Hide reminder
-document.getElementById('backupReminder').style.display = 'none';
-
-alert(`✅ Backup created successfully!\nFile: ${filename}\n\nSave this file to iCloud or email it to yourself for safekeeping.`);
-}
-
-function importData() {
-const fileInput = document.getElementById('importFile');
-const file = fileInput.files[0];
-
-if (!file) {
-alert('Please select a backup file first.');
-return;
-}
-
-if (!file.name.endsWith('.json')) {
-alert('Please select a valid JSON backup file.');
-return;
-}
-
-const reader = new FileReader();
-reader.onload = function(e) {
-try {
-const backupData = JSON.parse(e.target.result);
-
-// Validate backup data structure
-if (!backupData.trips || !backupData.fuelLogs) {
-throw new Error('Invalid backup file format');
-}
-
-// Ask for confirmation
-const confirmMessage = `This will restore:\n• ${backupData.trips.length} trip logs\n• ${backupData.fuelLogs.length} fuel logs\n\nThis will REPLACE your current data. Continue?`;
-
-if (confirm(confirmMessage)) {
-trips = backupData.trips;
-fuelLogs = backupData.fuelLogs;
-
-saveData();
-displayTrips();
-displayFuelLogs();
-updateStats();
-
-alert(`✅ Data restored successfully!\n• ${trips.length} trip logs restored\n• ${fuelLogs.length} fuel logs restored`);
-}
-} catch (error) {
-alert('❌ Error reading backup file. Please make sure it\'s a valid backup file.');
-console.error('Import error:', error);
-}
-};
-
-reader.readAsText(file);
-fileInput.value = ''; // Reset file input
-}
-
-function scheduleReminders() {
-const choice = confirm('Would you like backup reminders?\n\nOK = Weekly reminders\nCancel = Turn off reminders');
-
-if (choice) {
-appSettings.backupReminders = true;
-appSettings.reminderFrequency = 7; // days
-alert('✅ Weekly backup reminders enabled!\n\nYou\'ll be reminded to backup your data every week.');
-} else {
-appSettings.backupReminders = false;
-alert('⏸️ Backup reminders disabled.\n\nYou can still create manual backups anytime.');
-}
-
-saveData();
-}
-
-// Display trips
-function displayTrips() {
-const container = document.getElementById('tripsList');
-
-if (trips.length === 0) {
-container.innerHTML = `
-<div class="empty-state">
-<div style="font-size: 48px;">📝</div>
-<h3>No trip logs yet</h3>
-<p>Add your first trip log above to get started!</p>
-</div>
-`;
-return;
-}
-
-container.innerHTML = trips.map(trip => {
-const distance = trip.endOdometer - trip.startOdometer;
-return `
-<div class="record">
-<div class="record-header">
-<span class="record-date">${formatDate(trip.date)}</span>
-<button class="record-delete" onclick="deleteTrip(${trip.id})">Delete</button>
-</div>
-<div class="record-details">
-<strong>Distance:</strong> ${distance} km (${trip.startOdometer} → ${trip.endOdometer})<br>
-<strong>Remaining Range:</strong> ${trip.remainingRange} km<br>
-${trip.notes ? `<strong>Notes:</strong> ${trip.notes}` : ''}
-</div>
-</div>
-`;
-}).join('');
-}
-
-// Display fuel logs
-function displayFuelLogs() {
-const container = document.getElementById('fuelList');
-
-if (fuelLogs.length === 0) {
-container.innerHTML = `
-<div class="empty-state">
-<div style="font-size: 48px;">⛽</div>
-<h3>No fuel logs yet</h3>
-<p>Add your first fuel log above to get started!</p>
-</div>
-`;
-return;
-}
-
-container.innerHTML = fuelLogs.map(fuel => {
-const pricePerLitre = (fuel.cost / fuel.amount).toFixed(2);
-return `
-<div class="record">
-<div class="record-header">
-<span class="record-date">${formatDate(fuel.date)}</span>
-<button class="record-delete" onclick="deleteFuel(${fuel.id})">Delete</button>
-</div>
-<div class="record-details">
-<strong>Odometer:</strong> ${fuel.odometer} km<br>
-<strong>Fuel:</strong> ${fuel.amount} L @ ₹${pricePerLitre}/L<br>
-<strong>Total Cost:</strong> ₹${fuel.cost}<br>
-<strong>Range:</strong> ${fuel.rangeBefore} km → ${fuel.rangeAfter} km<br>
-${fuel.station ? `<strong>Station:</strong> ${fuel.station}` : ''}
-</div>
-</div>
-`;
-}).join('');
-}
-
-// Update statistics
-function updateStats() {
-const container = document.getElementById('statsContainer');
-
-if (trips.length === 0 && fuelLogs.length === 0) {
-container.innerHTML = `
-<div class="empty-state">
-<div style="font-size: 48px;">📊</div>
-<h3>No data for statistics</h3>
-<p>Add some trip and fuel logs to see your driving statistics!</p>
-</div>
-`;
-return;
-}
-
-// Calculate trip statistics
-const totalDistance = trips.reduce((sum, trip) => sum + (trip.endOdometer - trip.startOdometer), 0);
-const totalTrips = trips.length;
-
-// Calculate fuel statistics
-const totalFuelCost = fuelLogs.reduce((sum, fuel) => sum + fuel.cost, 0);
-const totalFuelAmount = fuelLogs.reduce((sum, fuel) => sum + fuel.amount, 0);
-const avgFuelPrice = totalFuelAmount > 0 ? (totalFuelCost / totalFuelAmount) : 0;
-
-// Calculate fuel efficiency
-let fuelEfficiency = 0;
-if (fuelLogs.length >= 2) {
-const sortedFuels = [...fuelLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
-let totalDistanceBetweenFuels = 0;
-let totalFuelUsed = 0;
-
-for (let i = 1; i < sortedFuels.length; i++) {
-const distanceBetween = sortedFuels[i].odometer - sortedFuels[i-1].odometer;
-if (distanceBetween > 0) {
-totalDistanceBetweenFuels += distanceBetween;
-totalFuelUsed += sortedFuels[i-1].amount;
-}
-}
-
-if (totalFuelUsed > 0) {
-fuelEfficiency = totalDistanceBetweenFuels / totalFuelUsed;
-}
-}
-
-container.innerHTML = `
-<div class="stats">
-<h3>📊 Your Driving Statistics</h3>
-<div class="stat-grid">
-<div class="stat-item">
-<span class="stat-value">${totalTrips}</span>
-<span class="stat-label">Total Trips</span>
-</div>
-<div class="stat-item">
-<span class="stat-value">${totalDistance}</span>
-<span class="stat-label">Total Distance (km)</span>
-</div>
-<div class="stat-item">
-<span class="stat-value">₹${totalFuelCost.toFixed(0)}</span>
-<span class="stat-label">Total Fuel Cost</span>
-</div>
-<div class="stat-item">
-<span class="stat-value">${totalFuelAmount.toFixed(1)}</span>
-<span class="stat-label">Total Fuel (L)</span>
-</div>
-<div class="stat-item">
-<span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span>
-<span class="stat-label">Avg. Price/Litre</span>
-</div>
-<div class="stat-item">
-<span class="stat-value">${fuelEfficiency > 0 ? fuelEfficiency.toFixed(1) : '--'}</span>
-<span class="stat-label">Fuel Efficiency (km/L)</span>
-</div>
-</div>
-</div>
-`;
-}
-
-// Search functions
-function searchTrips() {
-const query = document.getElementById('tripSearch').value.toLowerCase();
-const filteredTrips = trips.filter(trip =>
-trip.date.includes(query) ||
-trip.notes.toLowerCase().includes(query) ||
-trip.startOdometer.toString().includes(query) ||
-trip.endOdometer.toString().includes(query)
-);
-
-const container = document.getElementById('tripsList');
-container.innerHTML = filteredTrips.map(trip => {
-const distance = trip.endOdometer - trip.startOdometer;
-return `
-<div class="record">
-<div class="record-header">
-<span class="record-date">${formatDate(trip.date)}</span>
-<button class="record-delete" onclick="deleteTrip(${trip.id})">Delete</button>
-</div>
-<div class="record-details">
-<strong>Distance:</strong> ${distance} km (${trip.startOdometer} → ${trip.endOdometer})<br>
-<strong>Remaining Range:</strong> ${trip.remainingRange} km<br>
-${trip.notes ? `<strong>Notes:</strong> ${trip.notes}` : ''}
-</div>
-</div>
-`;
-}).join('');
-}
-
-function searchFuel() {
-const query = document.getElementById('fuelSearch').value.toLowerCase();
-const filteredFuel = fuelLogs.filter(fuel =>
-fuel.date.includes(query) ||
-fuel.station.toLowerCase().includes(query) ||
-fuel.odometer.toString().includes(query)
-);
-
-const container = document.getElementById('fuelList');
-container.innerHTML = filteredFuel.map(fuel => {
-const pricePerLitre = (fuel.cost / fuel.amount).toFixed(2);
-return `
-<div class="record">
-<div class="record-header">
-<span class="record-date">${formatDate(fuel.date)}</span>
-<button class="record-delete" onclick="deleteFuel(${fuel.id})">Delete</button>
-</div>
-<div class="record-details">
-<strong>Odometer:</strong> ${fuel.odometer} km<br>
-<strong>Fuel:</strong> ${fuel.amount} L @ ₹${pricePerLitre}/L<br>
-<strong>Total Cost:</strong> ₹${fuel.cost}<br>
-<strong>Range:</strong> ${fuel.rangeBefore} km → ${fuel.rangeAfter} km<br>
-${fuel.station ? `<strong>Station:</strong> ${fuel.station}` : ''}
-</div>
-</div>
-`;
-}).join('');
-}
-
-// Delete functions
-function deleteTrip(id) {
-if (confirm('Are you sure you want to delete this trip log?')) {
-trips = trips.filter(trip => trip.id !== id);
-saveData();
-displayTrips();
-updateStats();
-}
-}
-
-function deleteFuel(id) {
-if (confirm('Are you sure you want to delete this fuel log?')) {
-fuelLogs = fuelLogs.filter(fuel => fuel.id !== id);
-saveData();
-displayFuelLogs();
-updateStats();
-}
-}
-
-// Export data
-function exportData(type) {
-let data = '';
-let filename = '';
-
-if (type === 'trips') {
-data = 'Date,Start Odometer,End Odometer,Distance,Remaining Range,Notes\n';
-data += trips.map(trip => {
-const distance = trip.endOdometer - trip.startOdometer;
-return `${trip.date},${trip.startOdometer},${trip.endOdometer},${distance},${trip.remainingRange},"${trip.notes}"`;
-}).join('\n');
-filename = `trip_logs_${new Date().toISOString().split('T')[0]}.csv`;
-} else if (type === 'fuel') {
-data = 'Date,Odometer,Range Before,Fuel Amount,Cost,Range After,Price per Litre,Station\n';
-data += fuelLogs.map(fuel => {
-const pricePerLitre = (fuel.cost / fuel.amount).toFixed(2);
-return `${fuel.date},${fuel.odometer},${fuel.rangeBefore},${fuel.amount},${fuel.cost},${fuel.rangeAfter},${pricePerLitre},"${fuel.station}"`;
-}).join('\n');
-filename = `fuel_logs_${new Date().toISOString().split('T')[0]}.csv`;
-}
-
-const blob = new Blob([data], { type: 'text/csv' });
-const url = window.URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = filename;
-a.click();
-window.URL.revokeObjectURL(url);
-
-alert(`✅ ${type === 'trips' ? 'Trip' : 'Fuel'} logs exported successfully!\nFile: ${filename}`);
-}
-
-// Utility functions
-function formatDate(dateString) {
-const date = new Date(dateString);
-return date.toLocaleDateString('en-IN', {
-day: 'numeric',
-month: 'short',
-year: 'numeric'
-});
-}
+    // Data storage
+    let trips = JSON.parse(window.localStorage?.getItem('tripLogs') || '[]');
+    let fuelLogs = JSON.parse(window.localStorage?.getItem('fuelLogs') || '[]');
+    let appSettings = JSON.parse(window.localStorage?.getItem('appSettings') || '{}');
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tripDate').value = today;
+        document.getElementById('fuelDate').value = today;
+        
+        displayTrips();
+        displayFuelLogs();
+        updateStats();
+        checkBackupReminder();
+        updateBackupStatus();
+        
+        // Auto-populate odometer fields on load
+        setTimeout(() => {
+            autoPopulateStartOdometer();
+            autoPopulateFuelOdometer();
+        }, 200);
+    });
+
+    // Tab switching
+    function showTab(tabName) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        
+        document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+        
+        // Auto-populate fields when switching tabs
+        if (tabName === 'trips') {
+            setTimeout(autoPopulateStartOdometer, 100);
+        } else if (tabName === 'fuel') {
+            setTimeout(autoPopulateFuelOdometer, 100);
+        } else if (tabName === 'stats') {
+            updateStats();
+        }
+    }
+
+    // Auto-populate start odometer with last trip's end odometer
+    function autoPopulateStartOdometer() {
+        if (trips.length > 0) {
+            const lastTrip = trips[0]; // Most recent trip
+            document.getElementById('startOdometer').value = lastTrip.endOdometer;
+            document.getElementById('startOdometer').style.backgroundColor = '#e8f5e8';
+            
+            // Show helpful hint
+            const startInput = document.getElementById('startOdometer');
+            startInput.title = `Auto-filled from last trip (${lastTrip.endOdometer} km)`;
+        }
+    }
+
+    // Auto-populate fuel odometer with last known odometer
+    function autoPopulateFuelOdometer() {
+        let lastOdometer = 0;
+        
+        // Check last trip first
+        if (trips.length > 0) {
+            lastOdometer = Math.max(lastOdometer, trips[0].endOdometer);
+        }
+        
+        // Check last fuel entry
+        if (fuelLogs.length > 0) {
+            lastOdometer = Math.max(lastOdometer, fuelLogs[0].odometer);
+        }
+        
+        if (lastOdometer > 0) {
+            document.getElementById('fuelOdometer').value = lastOdometer;
+            document.getElementById('fuelOdometer').style.backgroundColor = '#e8f5e8';
+            document.getElementById('fuelOdometer').title = `Auto-filled from last entry (${lastOdometer} km)`;
+        }
+    }
+
+    // Trip form submission
+    document.getElementById('tripForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get starting location
+        const locationSelect = document.getElementById('startingLocation').value;
+        const customLocation = document.getElementById('customLocation').value;
+        const startingLocation = locationSelect === 'Other' ? customLocation : locationSelect;
+        
+        const trip = {
+            id: Date.now(),
+            date: document.getElementById('tripDate').value,
+            startingLocation: startingLocation,
+            purpose: document.getElementById('tripPurpose').value,
+            startOdometer: parseInt(document.getElementById('startOdometer').value),
+            endOdometer: parseInt(document.getElementById('endOdometer').value),
+            remainingRange: parseInt(document.getElementById('remainingRange').value) || 0,
+            notes: document.getElementById('tripNotes').value
+        };
+        
+        if (trip.endOdometer <= trip.startOdometer) {
+            alert('End odometer must be greater than start odometer');
+            return;
+        }
+        
+        if (!trip.startingLocation) {
+            alert('Please select a starting location');
+            return;
+        }
+        
+        trips.unshift(trip);
+        saveData();
+        displayTrips();
+        this.reset();
+        document.getElementById('tripDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('customLocationGroup').style.display = 'none';
+        
+        // Auto-populate for next trip
+        setTimeout(autoPopulateStartOdometer, 100);
+        
+        alert('Trip log added successfully!');
+    });
+
+    // Fuel form submission
+    document.getElementById('fuelForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const fuel = {
+            id: Date.now(),
+            date: document.getElementById('fuelDate').value,
+            odometer: parseInt(document.getElementById('fuelOdometer').value),
+            rangeBefore: parseInt(document.getElementById('rangeBefore').value) || 0,
+            amount: parseFloat(document.getElementById('fuelAmount').value),
+            cost: parseFloat(document.getElementById('fuelCost').value),
+            rangeAfter: parseInt(document.getElementById('rangeAfter').value) || 0,
+            station: document.getElementById('fuelStation').value
+        };
+        
+        fuelLogs.unshift(fuel);
+        saveData();
+        displayFuelLogs();
+        this.reset();
+        document.getElementById('fuelDate').value = new Date().toISOString().split('T')[0];
+        
+        // Auto-populate for next entry
+        setTimeout(() => {
+            autoPopulateFuelOdometer();
+            autoPopulateStartOdometer(); // Also update trip form
+        }, 100);
+        
+        alert('Fuel log added successfully!');
+    });
+
+    // Save data to localStorage
+    function saveData() {
+        try {
+            window.localStorage?.setItem('tripLogs', JSON.stringify(trips));
+            window.localStorage?.setItem('fuelLogs', JSON.stringify(fuelLogs));
+            window.localStorage?.setItem('appSettings', JSON.stringify(appSettings));
+        } catch (e) {
+            console.warn('Could not save to localStorage:', e);
+        }
+    }
+
+    // Font size toggle
+    function toggleFontSize() {
+        const container = document.querySelector('.container');
+        const toggle = document.getElementById('fontToggle');
+        
+        if (container.classList.contains('large-font')) {
+            container.classList.remove('large-font');
+            toggle.textContent = 'A+';
+            appSettings.largeFont = false;
+        } else {
+            container.classList.add('large-font');
+            toggle.textContent = 'A-';
+            appSettings.largeFont = true;
+        }
+        saveData();
+    }
+
+    // Handle location dropdown change
+    function handleLocationChange() {
+        const location = document.getElementById('startingLocation').value;
+        const customGroup = document.getElementById('customLocationGroup');
+        
+        if (location === 'Other') {
+            customGroup.style.display = 'block';
+        } else {
+            customGroup.style.display = 'none';
+            document.getElementById('customLocation').value = '';
+        }
+    }
+
+    // Update monthly summary
+    function updateMonthlySummary() {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        
+        // Filter trips for current month
+        const thisMonthTrips = trips.filter(trip => {
+            const tripDate = new Date(trip.date);
+            return tripDate.getMonth() === currentMonth && tripDate.getFullYear() === currentYear;
+        });
+        
+        // Filter fuel logs for current month
+        const thisMonthFuel = fuelLogs.filter(fuel => {
+            const fuelDate = new Date(fuel.date);
+            return fuelDate.getMonth() === currentMonth && fuelDate.getFullYear() === currentYear;
+        });
+        
+        // Calculate monthly stats
+        const monthTrips = thisMonthTrips.length;
+        const monthDistance = thisMonthTrips.reduce((sum, trip) => sum + (trip.endOdometer - trip.startOdometer), 0);
+        const monthFuelCost = thisMonthFuel.reduce((sum, fuel) => sum + fuel.cost, 0);
+        const avgTripDistance = monthTrips > 0 ? Math.round(monthDistance / monthTrips) : 0;
+        
+        // Update display
+        document.getElementById('monthTrips').textContent = monthTrips;
+        document.getElementById('monthDistance').textContent = monthDistance;
+        document.getElementById('monthFuelCost').textContent = `₹${monthFuelCost.toFixed(0)}`;
+        document.getElementById('monthAvgTrip').textContent = avgTripDistance;
+    }
+    function checkBackupReminder() {
+        const now = new Date().getTime();
+        const lastBackup = appSettings.lastBackupDate || 0;
+        const backupInterval = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+        const reminderInterval = 3 * 24 * 60 * 60 * 1000; // 3 days for snooze
+        
+        // Check if we should show backup reminder
+        if (now - lastBackup > backupInterval) {
+            const lastReminder = appSettings.lastReminderDate || 0;
+            if (now - lastReminder > reminderInterval) {
+                showBackupReminder();
+            }
+        }
+    }
+
+    function showBackupReminder() {
+        const totalEntries = trips.length + fuelLogs.length;
+        if (totalEntries >= 5) { // Only show reminder if user has significant data
+            document.getElementById('backupReminder').style.display = 'block';
+            document.getElementById('backupModal').style.display = 'block';
+        }
+    }
+
+    function dismissBackupReminder() {
+        document.getElementById('backupReminder').style.display = 'none';
+        appSettings.lastReminderDate = new Date().getTime();
+        saveData();
+    }
+
+    function snoozeBackup() {
+        appSettings.lastReminderDate = new Date().getTime();
+        saveData();
+    }
+
+    function closeModal() {
+        document.getElementById('backupModal').style.display = 'none';
+    }
+
+    function updateBackupStatus() {
+        const lastBackup = appSettings.lastBackupDate;
+        const statusElement = document.getElementById('backupStatus');
+        const dateElement = document.getElementById('lastBackupDate');
+        
+        if (lastBackup) {
+            const backupDate = new Date(lastBackup);
+            dateElement.textContent = backupDate.toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            statusElement.style.display = 'block';
+        }
+    }
+
+    function autoBackup() {
+        const backupData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            totalTrips: trips.length,
+            totalFuelLogs: fuelLogs.length,
+            trips: trips,
+            fuelLogs: fuelLogs
+        };
+        
+        const dataStr = JSON.stringify(backupData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        
+        const now = new Date();
+        const filename = `trip_fuel_backup_${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}.json`;
+        
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Update backup timestamp
+        appSettings.lastBackupDate = now.getTime();
+        saveData();
+        updateBackupStatus();
+        
+        // Hide reminder
+        document.getElementById('backupReminder').style.display = 'none';
+        
+        alert(`✅ Backup created successfully!\nFile: ${filename}\n\nSave this file to iCloud or email it to yourself for safekeeping.`);
+    }
+
+    function importData() {
+        const fileInput = document.getElementById('importFile');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert('Please select a backup file first.');
+            return;
+        }
+        
+        if (!file.name.endsWith('.json')) {
+            alert('Please select a valid JSON backup file.');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const backupData = JSON.parse(e.target.result);
+                
+                // Validate backup data structure
+                if (!backupData.trips || !backupData.fuelLogs) {
+                    throw new Error('Invalid backup file format');
+                }
+                
+                // Ask for confirmation
+                const confirmMessage = `This will restore:\n• ${backupData.trips.length} trip logs\n• ${backupData.fuelLogs.length} fuel logs\n\nThis will REPLACE your current data. Continue?`;
+                
+                if (confirm(confirmMessage)) {
+                    trips = backupData.trips;
+                    fuelLogs = backupData.fuelLogs;
+                    
+                    saveData();
+                    displayTrips();
+                    displayFuelLogs();
+                    updateStats();
+                    
+                    alert(`✅ Data restored successfully!\n• ${trips.length} trip logs restored\n• ${fuelLogs.length} fuel logs restored`);
+                }
+            } catch (error) {
+                alert('❌ Error reading backup file. Please make sure it\'s a valid backup file.');
+                console.error('Import error:', error);
+            }
+        };
+        
+        reader.readAsText(file);
+        fileInput.value = ''; // Reset file input
+    }
+
+    function scheduleReminders() {
+        const choice = confirm('Would you like backup reminders?\n\nOK = Weekly reminders\nCancel = Turn off reminders');
+        
+        if (choice) {
+            appSettings.backupReminders = true;
+            appSettings.reminderFrequency = 7; // days
+            alert('✅ Weekly backup reminders enabled!\n\nYou\'ll be reminded to backup your data every week.');
+        } else {
+            appSettings.backupReminders = false;
+            alert('⏸️ Backup reminders disabled.\n\nYou can still create manual backups anytime.');
+        }
+        
+        saveData();
+    }
+
+    // Display trips
+    function displayTrips() {
+        const container = document.getElementById('tripsList');
+        
+        if (trips.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size: 48px;">📝</div>
+                    <h3>No trip logs yet</h3>
+                    <p>Add your first trip log above to get started!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = trips.map(trip => {
+            const distance = trip.endOdometer - trip.startOdometer;
+            const purposeIcon = getPurposeIcon(trip.purpose);
+            return `
+                <div class="record">
+                    <div class="record-header">
+                        <span class="record-date">${formatDate(trip.date)}</span>
+                        <button class="record-delete" onclick="deleteTrip(${trip.id})">Delete</button>
+                    </div>
+                    <div class="record-details">
+                        ${trip.startingLocation ? `<strong>From:</strong> ${trip.startingLocation}<br>` : ''}
+                        ${trip.purpose ? `<strong>Purpose:</strong> ${purposeIcon} ${trip.purpose}<br>` : ''}
+                        <strong>Distance:</strong> ${distance} km (${trip.startOdometer} → ${trip.endOdometer})<br>
+                        <strong>Remaining Range:</strong> ${trip.remainingRange} km<br>
+                        ${trip.notes ? `<strong>Notes:</strong> ${trip.notes}` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Get purpose icon
+    function getPurposeIcon(purpose) {
+        const icons = {
+            'Medical': '🏥',
+            'Shopping': '🛒',
+            'Family Visit': '👨‍👩‍👧‍👦',
+            'Religious': '🕉️',
+            'Banking': '🏦',
+            'Social': '👥',
+            'Leisure': '🎯',
+            'Maintenance': '🔧',
+            'Other': '📝'
+        };
+        return icons[purpose] || '📝';
+    }
+
+    // Display fuel logs
+    function displayFuelLogs() {
+        const container = document.getElementById('fuelList');
+        
+        if (fuelLogs.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size: 48px;">⛽</div>
+                    <h3>No fuel logs yet</h3>
+                    <p>Add your first fuel log above to get started!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = fuelLogs.map(fuel => {
+            const pricePerLitre = (fuel.cost / fuel.amount).toFixed(2);
+            return `
+                <div class="record">
+                    <div class="record-header">
+                        <span class="record-date">${formatDate(fuel.date)}</span>
+                        <button class="record-delete" onclick="deleteFuel(${fuel.id})">Delete</button>
+                    </div>
+                    <div class="record-details">
+                        <strong>Odometer:</strong> ${fuel.odometer} km<br>
+                        <strong>Fuel:</strong> ${fuel.amount} L @ ₹${pricePerLitre}/L<br>
+                        <strong>Total Cost:</strong> ₹${fuel.cost}<br>
+                        <strong>Range:</strong> ${fuel.rangeBefore} km → ${fuel.rangeAfter} km<br>
+                        ${fuel.station ? `<strong>Station:</strong> ${fuel.station}` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Update statistics
+    function updateStats() {
+        updateMonthlySummary();
+        
+        const container = document.getElementById('statsContainer');
+        
+        if (trips.length === 0 && fuelLogs.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size: 48px;">📊</div>
+                    <h3>No data for statistics</h3>
+                    <p>Add some trip and fuel logs to see your driving statistics!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Calculate trip statistics
+        const totalDistance = trips.reduce((sum, trip) => sum + (trip.endOdometer - trip.startOdometer), 0);
+        const totalTrips = trips.length;
+        
+        // Calculate fuel statistics
+        const totalFuelCost = fuelLogs.reduce((sum, fuel) => sum + fuel.cost, 0);
+        const totalFuelAmount = fuelLogs.reduce((sum, fuel) => sum + fuel.amount, 0);
+        const avgFuelPrice = totalFuelAmount > 0 ? (totalFuelCost / totalFuelAmount) : 0;
+        
+        // Calculate fuel efficiency
+        let fuelEfficiency = 0;
+        if (fuelLogs.length >= 2) {
+            const sortedFuels = [...fuelLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
+            let totalDistanceBetweenFuels = 0;
+            let totalFuelUsed = 0;
+            
+            for (let i = 1; i < sortedFuels.length; i++) {
+                const distanceBetween = sortedFuels[i].odometer - sortedFuels[i-1].odometer;
+                if (distanceBetween > 0) {
+                    totalDistanceBetweenFuels += distanceBetween;
+                    totalFuelUsed += sortedFuels[i-1].amount;
+                }
+            }
+            
+            if (totalFuelUsed > 0) {
+                fuelEfficiency = totalDistanceBetweenFuels / totalFuelUsed;
+            }
+        }
+        
+        container.innerHTML = `
+            <div class="stats">
+                <h3>📊 Overall Statistics</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <span class="stat-value">${totalTrips}</span>
+                        <span class="stat-label">Total Trips</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${totalDistance}</span>
+                        <span class="stat-label">Total Distance (km)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">₹${totalFuelCost.toFixed(0)}</span>
+                        <span class="stat-label">Total Fuel Cost</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${totalFuelAmount.toFixed(1)}</span>
+                        <span class="stat-label">Total Fuel (L)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span>
+                        <span class="stat-label">Avg. Price/Litre</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${fuelEfficiency > 0 ? fuelEfficiency.toFixed(1) : '--'}</span>
+                        <span class="stat-label">Fuel Efficiency (km/L)</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }        <div class="stat-item">
+                        <span class="stat-value">${totalDistance}</span>
+                        <span class="stat-label">Total Distance (km)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">₹${totalFuelCost.toFixed(0)}</span>
+                        <span class="stat-label">Total Fuel Cost</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${totalFuelAmount.toFixed(1)}</span>
+                        <span class="stat-label">Total Fuel (L)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span>
+                        <span class="stat-label">Avg. Price/Litre</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${fuelEfficiency > 0 ? fuelEfficiency.toFixed(1) : '--'}</span>
+                        <span class="stat-label">Fuel Efficiency (km/L)</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Search functions
+    function searchTrips() {
+        const query = document.getElementById('tripSearch').value.toLowerCase();
+        const filteredTrips = trips.filter(trip => 
+            trip.date.includes(query) || 
+            trip.notes.toLowerCase().includes(query) ||
+            trip.startOdometer.toString().includes(query) ||
+            trip.endOdometer.toString().includes(query)
+        );
+        
+        const container = document.getElementById('tripsList');
+        container.innerHTML = filteredTrips.map(trip => {
+            const distance = trip.endOdometer - trip.startOdometer;
+            return `
+                <div class="record">
+                    <div class="record-header">
+                        <span class="record-date">${formatDate(trip.date)}</span>
+                        <button class="record-delete" onclick="deleteTrip(${trip.id})">Delete</button>
+                    </div>
+                    <div class="record-details">
+                        <strong>Distance:</strong> ${distance} km (${trip.startOdometer} → ${trip.endOdometer})<br>
+                        <strong>Remaining Range:</strong> ${trip.remainingRange} km<br>
+                        ${trip.notes ? `<strong>Notes:</strong> ${trip.notes}` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function searchFuel() {
+        const query = document.getElementById('fuelSearch').value.toLowerCase();
+        const filteredFuel = fuelLogs.filter(fuel => 
+            fuel.date.includes(query) || 
+            fuel.station.toLowerCase().includes(query) ||
+            fuel.odometer.toString().includes(query)
+        );
+        
+        const container = document.getElementById('fuelList');
+        container.innerHTML = filteredFuel.map(fuel => {
+            const pricePerLitre = (fuel.cost / fuel.amount).toFixed(2);
+            return `
+                <div class="record">
+                    <div class="record-header">
+                        <span class="record-date">${formatDate(fuel.date)}</span>
+                        <button class="record-delete" onclick="deleteFuel(${fuel.id})">Delete</button>
+                    </div>
+                    <div class="record-details">
+                        <strong>Odometer:</strong> ${fuel.odometer} km<br>
+                        <strong>Fuel:</strong> ${fuel.amount} L @ ₹${pricePerLitre}/L<br>
+                        <strong>Total Cost:</strong> ₹${fuel.cost}<br>
+                        <strong>Range:</strong> ${fuel.rangeBefore} km → ${fuel.rangeAfter} km<br>
+                        ${fuel.station ? `<strong>Station:</strong> ${fuel.station}` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Delete functions
+    function deleteTrip(id) {
+        if (confirm('Are you sure you want to delete this trip log?')) {
+            trips = trips.filter(trip => trip.id !== id);
+            saveData();
+            displayTrips();
+            updateStats();
+        }
+    }
+
+    function deleteFuel(id) {
+        if (confirm('Are you sure you want to delete this fuel log?')) {
+            fuelLogs = fuelLogs.filter(fuel => fuel.id !== id);
+            saveData();
+            displayFuelLogs();
+            updateStats();
+        }
+    }
+
+    // Export data
+    function exportData(type) {
+        let data = '';
+        let filename = '';
+        
+        if (type === 'trips') {
+            data = 'Date,Start Odometer,End Odometer,Distance,Remaining Range,Notes\n';
+            data += trips.map(trip => {
+                const distance = trip.endOdometer - trip.startOdometer;
+                return `${trip.date},${trip.startOdometer},${trip.endOdometer},${distance},${trip.remainingRange},"${trip.notes}"`;
+            }).join('\n');
+            filename = `trip_logs_${new Date().toISOString().split('T')[0]}.csv`;
+        } else if (type === 'fuel') {
+            data = 'Date,Odometer,Range Before,Fuel Amount,Cost,Range After,Price per Litre,Station\n';
+            data += fuelLogs.map(fuel => {
+                const pricePerLitre = (fuel.cost / fuel.amount).toFixed(2);
+                return `${fuel.date},${fuel.odometer},${fuel.rangeBefore},${fuel.amount},${fuel.cost},${fuel.rangeAfter},${pricePerLitre},"${fuel.station}"`;
+            }).join('\n');
+            filename = `fuel_logs_${new Date().toISOString().split('T')[0]}.csv`;
+        }
+        
+        const blob = new Blob([data], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        alert(`✅ ${type === 'trips' ? 'Trip' : 'Fuel'} logs exported successfully!\nFile: ${filename}`);
+    }
+
+    // Utility functions
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-IN', { 
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
 </script>
 ```
 
