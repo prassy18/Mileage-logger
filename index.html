@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trip & Fuel Logger</title>
+    <title>Trip Logger</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%234CAF50'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>🚗</text></svg>">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Trip Logger">
     <style>
         * {
             margin: 0;
@@ -347,25 +352,147 @@
         cursor: pointer;
         z-index: 100;
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        min-width: 45px;
     }
 
-    .large-font {
+    .font-size-small {
+        font-size: 14px;
+    }
+
+    .font-size-medium {
+        font-size: 16px;
+    }
+
+    .font-size-large {
         font-size: 18px;
     }
 
-    .large-font input, .large-font textarea, .large-font select {
+    .font-size-xlarge {
+        font-size: 20px;
+    }
+
+    .font-size-small input, .font-size-small textarea, .font-size-small select {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .font-size-medium input, .font-size-medium textarea, .font-size-medium select {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .font-size-large input, .font-size-large textarea, .font-size-large select {
         font-size: 18px;
         padding: 15px;
     }
 
-    .large-font .btn {
+    .font-size-xlarge input, .font-size-xlarge textarea, .font-size-xlarge select {
+        font-size: 20px;
+        padding: 18px;
+    }
+
+    .font-size-small .btn {
+        font-size: 14px;
+        padding: 12px 25px;
+    }
+
+    .font-size-medium .btn {
+        font-size: 16px;
+        padding: 15px 30px;
+    }
+
+    .font-size-large .btn {
         font-size: 18px;
         padding: 18px 35px;
     }
 
-    .large-font .form-group label {
-        font-size: 16px;
+    .font-size-xlarge .btn {
+        font-size: 20px;
+        padding: 20px 40px;
+    }
+
+    .font-size-small .form-group label {
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .font-size-medium .form-group label {
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .font-size-large .form-group label {
+        font-size: 17px;
         font-weight: 600;
+    }
+
+    .font-size-xlarge .form-group label {
+        font-size: 19px;
+        font-weight: 600;
+    }
+
+    .font-size-small .tab {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .font-size-medium .tab {
+        font-size: 15px;
+        padding: 15px;
+    }
+
+    .font-size-large .tab {
+        font-size: 17px;
+        padding: 18px;
+    }
+
+    .font-size-xlarge .tab {
+        font-size: 19px;
+        padding: 20px;
+    }
+
+    .font-size-small .record-details {
+        font-size: 13px;
+    }
+
+    .font-size-medium .record-details {
+        font-size: 15px;
+    }
+
+    .font-size-large .record-details {
+        font-size: 17px;
+    }
+
+    .font-size-xlarge .record-details {
+        font-size: 19px;
+    }
+
+    .font-size-small .header h1 {
+        font-size: 20px;
+    }
+
+    .font-size-medium .header h1 {
+        font-size: 24px;
+    }
+
+    .font-size-large .header h1 {
+        font-size: 28px;
+    }
+
+    .font-size-xlarge .header h1 {
+        font-size: 32px;
+    }
+
+    /* Responsive adjustments for larger fonts */
+    .font-size-xlarge .summary-grid,
+    .font-size-xlarge .stat-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .font-size-xlarge .history-summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
 
     .monthly-summary {
@@ -432,14 +559,9 @@
                 <label for="startingLocation">Starting Location</label>
                 <select id="startingLocation" onchange="handleLocationChange()">
                     <option value="">Select starting location...</option>
-                    <option value="Home">🏠 Home</option>
-                    <option value="Son's House">👨‍👩‍👧‍👦 Son's House</option>
-                    <option value="Daughter's House">👨‍👩‍👧‍👦 Daughter's House</option>
-                    <option value="Doctor's Office">🏥 Doctor's Office</option>
-                    <option value="Market">🛒 Market</option>
-                    <option value="Temple">🕉️ Temple</option>
-                    <option value="Bank">🏦 Bank</option>
-                    <option value="Friend's Place">👥 Friend's Place</option>
+                    <option value="Koyambedu Home">🏠 Koyambedu Home</option>
+                    <option value="Kumbalonam Srivatsam">🏡 Kumbalonam Srivatsam</option>
+                    <option value="Bangalore Amigo">🏢 Bangalore Amigo</option>
                     <option value="Other">✏️ Other (specify below)</option>
                 </select>
             </div>
@@ -762,20 +884,45 @@
         }
     }
 
-    // Font size toggle
+    // Font size toggle with multiple levels
     function toggleFontSize() {
         const container = document.querySelector('.container');
         const toggle = document.getElementById('fontToggle');
         
-        if (container.classList.contains('large-font')) {
-            container.classList.remove('large-font');
-            toggle.textContent = 'A+';
-            appSettings.largeFont = false;
-        } else {
-            container.classList.add('large-font');
-            toggle.textContent = 'A-';
-            appSettings.largeFont = true;
+        // Remove all font size classes
+        container.classList.remove('font-size-small', 'font-size-medium', 'font-size-large', 'font-size-xlarge');
+        
+        // Get current font size level
+        const currentLevel = appSettings.fontSize || 'medium';
+        let newLevel;
+        let buttonText;
+        
+        switch(currentLevel) {
+            case 'small':
+                newLevel = 'medium';
+                buttonText = 'A+';
+                break;
+            case 'medium':
+                newLevel = 'large';
+                buttonText = 'A++';
+                break;
+            case 'large':
+                newLevel = 'xlarge';
+                buttonText = 'A-';
+                break;
+            case 'xlarge':
+                newLevel = 'small';
+                buttonText = 'A';
+                break;
+            default:
+                newLevel = 'large';
+                buttonText = 'A++';
         }
+        
+        // Apply new font size
+        container.classList.add(`font-size-${newLevel}`);
+        toggle.textContent = buttonText;
+        appSettings.fontSize = newLevel;
         saveData();
     }
 
@@ -1064,8 +1211,6 @@
 
     // Update statistics
     function updateStats() {
-        updateMonthlySummary();
-        
         const container = document.getElementById('statsContainer');
         
         if (trips.length === 0 && fuelLogs.length === 0) {
@@ -1110,36 +1255,13 @@
         
         container.innerHTML = `
             <div class="stats">
-                <h3>📊 Overall Statistics</h3>
+                <h3>📊 Your Driving Statistics</h3>
                 <div class="stat-grid">
                     <div class="stat-item">
                         <span class="stat-value">${totalTrips}</span>
                         <span class="stat-label">Total Trips</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-value">${totalDistance}</span>
-                        <span class="stat-label">Total Distance (km)</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">₹${totalFuelCost.toFixed(0)}</span>
-                        <span class="stat-label">Total Fuel Cost</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">${totalFuelAmount.toFixed(1)}</span>
-                        <span class="stat-label">Total Fuel (L)</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span>
-                        <span class="stat-label">Avg. Price/Litre</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">${fuelEfficiency > 0 ? fuelEfficiency.toFixed(1) : '--'}</span>
-                        <span class="stat-label">Fuel Efficiency (km/L)</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }        <div class="stat-item">
                         <span class="stat-value">${totalDistance}</span>
                         <span class="stat-label">Total Distance (km)</span>
                     </div>
