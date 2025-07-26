@@ -919,26 +919,19 @@
             const latestFuel = fuelLogs[0];
             const fuelPricePerLiter = latestFuel.cost / latestFuel.amount;
             
-            // Calculate fuel efficiency from recent fuel logs
+            // Calculate fuel efficiency from the most recent fuel log only
             let fuelEfficiency = 15; // Default efficiency if we can't calculate
             
             if (fuelLogs.length >= 2) {
                 const sortedFuels = [...fuelLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
-                let totalDistance = 0;
-                let totalFuelUsed = 0;
-                let validCalculations = 0;
                 
-                for (let i = 1; i < Math.min(sortedFuels.length, 6); i++) { // Use last 5 fuel-ups
-                    const distanceBetween = sortedFuels[i].odometer - sortedFuels[i-1].odometer;
-                    if (distanceBetween > 0 && distanceBetween < 1000) { // Reasonable distance
-                        totalDistance += distanceBetween;
-                        totalFuelUsed += sortedFuels[i-1].amount;
-                        validCalculations++;
-                    }
-                }
+                // Find the most recent fuel-up and calculate efficiency from that single transaction
+                const mostRecentFuel = sortedFuels[sortedFuels.length - 1];
+                const previousFuel = sortedFuels[sortedFuels.length - 2];
                 
-                if (validCalculations > 0 && totalFuelUsed > 0) {
-                    fuelEfficiency = totalDistance / totalFuelUsed;
+                const distanceBetween = mostRecentFuel.odometer - previousFuel.odometer;
+                if (distanceBetween > 0 && distanceBetween < 1000) { // Reasonable distance
+                    fuelEfficiency = distanceBetween / previousFuel.amount;
                 }
             }
             
@@ -948,7 +941,7 @@
             
             return tripCost;
         }
-
+        
         function updateMonthlySummary() {
             const now = new Date();
             const currentMonth = now.getMonth();
