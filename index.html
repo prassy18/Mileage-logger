@@ -506,6 +506,32 @@
         margin-bottom: 20px;
     }
 
+    .monthly-history {
+        background: linear-gradient(135deg, #e83e8c, #d91a72);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .history-month {
+        background: rgba(255,255,255,0.1);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .history-month:last-child {
+        margin-bottom: 0;
+    }
+
+    .month-header {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
     .summary-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -530,6 +556,31 @@
     .summary-label {
         font-size: 12px;
         opacity: 0.9;
+    }
+
+    .history-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .history-summary-item {
+        text-align: center;
+        background: rgba(255,255,255,0.05);
+        padding: 8px;
+        border-radius: 6px;
+    }
+
+    .history-summary-value {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+
+    .history-summary-label {
+        font-size: 10px;
+        opacity: 0.8;
     }
 </style>
 ```
@@ -576,7 +627,6 @@
                 <label for="tripPurpose">Trip Purpose</label>
                 <select id="tripPurpose">
                     <option value="">Select purpose...</option>
-                    <option value="Medical">🏥 Medical / Doctor Visit</option>
                     <option value="Shopping">🛒 Shopping / Market</option>
                     <option value="Family Visit">👨‍👩‍👧‍👦 Family Visit</option>
                     <option value="Religious">🕉️ Religious / Temple</option>
@@ -584,6 +634,7 @@
                     <option value="Social">👥 Social / Friends</option>
                     <option value="Leisure">🎯 Leisure / Entertainment</option>
                     <option value="Maintenance">🔧 Car Service / Maintenance</option>
+                    <option value="Medical">🏥 Medical / Doctor Visit</option>
                     <option value="Other">📝 Other</option>
                 </select>
             </div>
@@ -689,7 +740,10 @@
             </div>
         </div>
 
-        <div class="import-section">
+        <div id="monthlyHistory" class="monthly-history">
+            <h3>📈 Monthly History</h3>
+            <div id="historyContainer"></div>
+        </div>
             <h3>📥 Restore from Backup</h3>
             <p>Select a backup file to restore your data</p>
             <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData()">
@@ -942,35 +996,124 @@
         }
     }
 
-    // Update monthly summary
+    // Update monthly summary and history
     function updateMonthlySummary() {
         const now = new Date();
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
         
-        // Filter trips for current month
-        const thisMonthTrips = trips.filter(trip => {
+        // Update current month summary
+        updateMonthData(currentMonth, currentYear, 'current');
+        
+        // Update monthly history
+        updateMonthlyHistory();
+    }
+
+    function updateMonthData(month, year, type) {
+        // Filter trips for specific month
+        const monthTrips = trips.filter(trip => {
             const tripDate = new Date(trip.date);
-            return tripDate.getMonth() === currentMonth && tripDate.getFullYear() === currentYear;
+            return tripDate.getMonth() === month && tripDate.getFullYear() === year;
         });
         
-        // Filter fuel logs for current month
-        const thisMonthFuel = fuelLogs.filter(fuel => {
+        // Filter fuel logs for specific month
+        const monthFuel = fuelLogs.filter(fuel => {
             const fuelDate = new Date(fuel.date);
-            return fuelDate.getMonth() === currentMonth && fuelDate.getFullYear() === currentYear;
+            return fuelDate.getMonth() === month && fuelDate.getFullYear() === year;
         });
         
         // Calculate monthly stats
-        const monthTrips = thisMonthTrips.length;
-        const monthDistance = thisMonthTrips.reduce((sum, trip) => sum + (trip.endOdometer - trip.startOdometer), 0);
-        const monthFuelCost = thisMonthFuel.reduce((sum, fuel) => sum + fuel.cost, 0);
-        const avgTripDistance = monthTrips > 0 ? Math.round(monthDistance / monthTrips) : 0;
+        const monthTripCount = monthTrips.length;
+        const monthDistance = monthTrips.reduce((sum, trip) => sum + (trip.endOdometer - trip.startOdometer), 0);
+        const monthFuelCost = monthFuel.reduce((sum, fuel) => sum + fuel.cost, 0);
+        const avgTripDistance = monthTripCount > 0 ? Math.round(monthDistance / monthTripCount) : 0;
         
-        // Update display
-        document.getElementById('monthTrips').textContent = monthTrips;
-        document.getElementById('monthDistance').textContent = monthDistance;
-        document.getElementById('monthFuelCost').textContent = `₹${monthFuelCost.toFixed(0)}`;
-        document.getElementById('monthAvgTrip').textContent = avgTripDistance;
+        if (type === 'current') {
+            // Update current month display
+            document.getElementById('monthTrips').textContent = monthTripCount;
+            document.getElementById('monthDistance').textContent = monthDistance;
+            document.getElementById('monthFuelCost').textContent = `₹${monthFuelCost.toFixed(0)}`;
+            document.getElementById('monthAvgTrip').textContent = avgTripDistance;
+        }
+        
+        return {
+            trips: monthTripCount,
+            distance: monthDistance,
+            fuelCost: monthFuelCost,
+            avgTrip: avgTripDistance
+        };
+    }
+
+    function updateMonthlyHistory() {
+        const historyContainer = document.getElementById('historyContainer');
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        
+        // Get unique months from all data
+        const allMonths = new Set();
+        
+        trips.forEach(trip => {
+            const date = new Date(trip.date);
+            const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+            allMonths.add(monthKey);
+        });
+        
+        fuelLogs.forEach(fuel => {
+            const date = new Date(fuel.date);
+            const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+            allMonths.add(monthKey);
+        });
+        
+        // Sort months in descending order (newest first) and exclude current month
+        const sortedMonths = Array.from(allMonths)
+            .map(monthKey => {
+                const [year, month] = monthKey.split('-').map(Number);
+                return { year, month };
+            })
+            .filter(m => !(m.month === currentMonth && m.year === currentYear))
+            .sort((a, b) => {
+                if (a.year !== b.year) return b.year - a.year;
+                return b.month - a.month;
+            })
+            .slice(0, 6); // Show last 6 months
+        
+        if (sortedMonths.length === 0) {
+            historyContainer.innerHTML = '<p style="text-align: center; opacity: 0.8;">No historical data yet</p>';
+            return;
+        }
+        
+        historyContainer.innerHTML = sortedMonths.map(({ month, year }) => {
+            const monthData = updateMonthData(month, year, 'history');
+            const monthName = new Date(year, month, 1).toLocaleDateString('en-IN', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            return `
+                <div class="history-month">
+                    <div class="month-header">${monthName}</div>
+                    <div class="history-summary-grid">
+                        <div class="history-summary-item">
+                            <span class="history-summary-value">${monthData.trips}</span>
+                            <span class="history-summary-label">Trips</span>
+                        </div>
+                        <div class="history-summary-item">
+                            <span class="history-summary-value">${monthData.distance}</span>
+                            <span class="history-summary-label">KM</span>
+                        </div>
+                        <div class="history-summary-item">
+                            <span class="history-summary-value">₹${monthData.fuelCost.toFixed(0)}</span>
+                            <span class="history-summary-label">Fuel</span>
+                        </div>
+                        <div class="history-summary-item">
+                            <span class="history-summary-value">${monthData.avgTrip}</span>
+                            <span class="history-summary-label">Avg/Trip</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
     function checkBackupReminder() {
         const now = new Date().getTime();
@@ -1214,6 +1357,8 @@
 
     // Update statistics
     function updateStats() {
+        updateMonthlySummary();
+        
         const container = document.getElementById('statsContainer');
         
         if (trips.length === 0 && fuelLogs.length === 0) {
@@ -1258,13 +1403,36 @@
         
         container.innerHTML = `
             <div class="stats">
-                <h3>📊 Your Driving Statistics</h3>
+                <h3>📊 Overall Statistics</h3>
                 <div class="stat-grid">
                     <div class="stat-item">
                         <span class="stat-value">${totalTrips}</span>
                         <span class="stat-label">Total Trips</span>
                     </div>
                     <div class="stat-item">
+                        <span class="stat-value">${totalDistance}</span>
+                        <span class="stat-label">Total Distance (km)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">₹${totalFuelCost.toFixed(0)}</span>
+                        <span class="stat-label">Total Fuel Cost</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${totalFuelAmount.toFixed(1)}</span>
+                        <span class="stat-label">Total Fuel (L)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span>
+                        <span class="stat-label">Avg. Price/Litre</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${fuelEfficiency > 0 ? fuelEfficiency.toFixed(1) : '--'}</span>
+                        <span class="stat-label">Fuel Efficiency (km/L)</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }        <div class="stat-item">
                         <span class="stat-value">${totalDistance}</span>
                         <span class="stat-label">Total Distance (km)</span>
                     </div>
