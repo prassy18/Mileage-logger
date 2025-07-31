@@ -854,7 +854,31 @@
             document.getElementById('vehicleForm').addEventListener('submit', handleSaveVehicle);
             document.getElementById('insuranceForm').addEventListener('submit', handleAddInsurance);
             window.addEventListener('scroll', handleScroll);
+
+            window.addEventListener('click', function(event) {
+                const modals = ['editModal', 'helpModal', 'backupModal'];
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (event.target === modal) {
+                                 closeModal(modalId);
+                            }
+                        });
+                }
+            );
+
+                // Escape key handler for modals
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const modals = ['editModal', 'helpModal', 'backupModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal.style.display === 'block') {
+                    closeModal(modalId);
+                }
+            });
         }
+        });
+    }
         
         function showTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -905,6 +929,8 @@
             form.reset();
             document.getElementById('tripDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('customLocationGroup').style.display = 'none';
+            // This line repopulates the dropdown with the new location after saving.
+            populateLocationDropdown(document.getElementById('startingLocation'));
             autoPopulateOdometerFields();
             alert(`✅ Trip log added successfully!`);
         }
@@ -1066,7 +1092,7 @@
                     </div>`;
             }).join('');
         }
-        
+
         function saveCustomLocation(locationName) {
             if (locationName && !customLocations.includes(locationName)) {
                 customLocations.push(locationName);
