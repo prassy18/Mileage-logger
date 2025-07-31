@@ -767,7 +767,7 @@
         <button onclick="scrollToTop()" id="backToTopBtn" title="Go to top">↑</button>
     </div>
 
-   <script>
+ <script>
         // Data Arrays
         let trips = [];
         let fuelLogs = [];
@@ -795,8 +795,9 @@
          */
         function saveData() {
             try {
-                // Ensure all logs are sorted by date (descending) before saving
-                trips.sort((a,b) => new Date(b.date) - new Date(a.date));
+                // Sort trips by date, then by ending odometer for same-day trips
+                trips.sort((a,b) => new Date(b.date) - new Date(a.date) || b.endOdometer - a.endOdometer);
+                
                 fuelLogs.sort((a,b) => new Date(b.date) - new Date(a.date));
                 serviceLogs.sort((a,b) => new Date(b.date) - new Date(a.date));
                 insuranceLogs.sort((a,b) => new Date(b.validity) - new Date(a.validity));
@@ -923,7 +924,7 @@
             };
             fuelLogs.push(fuel);
             saveData();
-            renderAll(); // Rerender everything as fuel prices affect trips
+            renderAll();
             form.reset();
             document.getElementById('fuelDate').value = new Date().toISOString().split('T')[0];
             autoPopulateOdometerFields();
@@ -1066,6 +1067,13 @@
             }).join('');
         }
         
+        function saveCustomLocation(locationName) {
+            if (locationName && !customLocations.includes(locationName)) {
+                customLocations.push(locationName);
+                saveData();
+            }
+        }
+
         function displayServiceLogs() {
             const container = document.getElementById('serviceLogList');
             if (serviceLogs.length === 0) {
@@ -1147,7 +1155,7 @@
             if (fuelLogs.length === 0) return 0;
             const relevantFuelLogs = fuelLogs.filter(log => new Date(log.date) <= new Date(tripDate));
             if (relevantFuelLogs.length === 0) return 0;
-            const lastFuelLogForTrip = relevantFuelLogs[0]; // Already sorted descending
+            const lastFuelLogForTrip = relevantFuelLogs[0];
             const fuelPricePerLiter = lastFuelLogForTrip.amount > 0 ? lastFuelLogForTrip.cost / lastFuelLogForTrip.amount : 0;
             if (fuelPricePerLiter === 0) return 0;
             const fuelEfficiency = getAverageFuelEfficiency();
@@ -1156,13 +1164,13 @@
         }
 
         function getAverageFuelEfficiency() {
-            let fuelEfficiency = 15; // Default efficiency
+            let fuelEfficiency = 15;
             if (fuelLogs.length < 2) return fuelEfficiency;
-            const sorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date)); // Sort ascending for calculation
+            const sorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date));
             let totalDistance = 0, totalFuel = 0;
             for (let i = 1; i < sorted.length; i++) {
                 const dist = sorted[i].odometer - sorted[i-1].odometer;
-                if (dist > 0 && dist < 1500) { // Sanity check distance
+                if (dist > 0 && dist < 1500) {
                     totalDistance += dist;
                     totalFuel += sorted[i-1].amount;
                 }
@@ -1213,14 +1221,8 @@
         }
 
         function updateMonthData(month, year) {
-            const monthTrips = trips.filter(trip => {
-                const d = new Date(trip.date);
-                return d.getMonth() === month && d.getFullYear() === year;
-            });
-            const monthFuel = fuelLogs.filter(fuel => {
-                const d = new Date(fuel.date);
-                return d.getMonth() === month && d.getFullYear() === year;
-            });
+            const monthTrips = trips.filter(trip => new Date(trip.date).getMonth() === month && new Date(trip.date).getFullYear() === year);
+            const monthFuel = fuelLogs.filter(fuel => new Date(fuel.date).getMonth() === month && new Date(fuel.date).getFullYear() === year);
             const distance = monthTrips.reduce((s, t) => s + t.distance, 0);
             const fuelCost = monthFuel.reduce((s, f) => s + f.cost, 0);
             return {
@@ -1535,7 +1537,7 @@
         }
         
         function getPurposeIcon(purpose) {
-            const icons = { 'Medical': '🏥', 'Shopping': '🛒', 'Family Visit': '👨‍👩‍👧‍👦', 'Religious': '🕉️', 'Banking': '🏦', 'Social': '👥', 'Leisure': '🎯', 'Maintenance': '🔧', 'Other': '📝' };
+            const icons = { 'Shopping': '🛒', 'Family Visit': '👨‍👩‍👧‍👦', 'Religious': '🕉️', 'Banking': '🏦', 'Social': '👥', 'Leisure': '🎯', 'Maintenance': '🔧', 'Medical': '🏥', 'Other': '📝' };
             return icons[purpose] || '📝';
         }
 
@@ -1562,7 +1564,9 @@
                  ['startOdometer', 'fuelOdometer', 'serviceOdometer'].forEach(id => {
                     const el = document.getElementById(id);
                     if(el) {
-                        el.placeholder = `e.g., ${lastOdometer}`;
+                        el.value = lastOdometer;
+                        el.style.backgroundColor = '#f0fff0';
+                        el.title = `Auto-filled from last known odometer reading (${lastOdometer} km)`;
                     }
                 });
             }
@@ -1619,8 +1623,11 @@
         function handleLocationChange(selectElement) {
             const form = selectElement.closest('form');
             const customGroup = form.querySelector('#customLocationGroup');
+            const customInput = form.querySelector('#customLocation');
             if (customGroup) {
-                customGroup.style.display = (selectElement.value === 'Other') ? 'block' : 'none';
+                const isOther = selectElement.value === 'Other';
+                customGroup.style.display = isOther ? 'block' : 'none';
+                customInput.required = isOther;
             }
         }
         
@@ -1693,7 +1700,7 @@
             if (fuelLogs.length < 2) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Need at least 2 fuel logs.</p>'; return; }
 
             const allLogsSorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date));
-            const recentLogs = allLogsSorted.slice(-20); // Show last 20 logs
+            const recentLogs = allLogsSorted.slice(-20);
 
             const prices = recentLogs.map(log => log.amount > 0 ? log.cost / log.amount : 0).filter(p => p > 0);
             if (prices.length < 2) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Need at least 2 valid fuel logs.</p>'; return; }
@@ -1708,6 +1715,7 @@
 
             recentLogs.forEach((log, i) => {
                 const price = log.amount > 0 ? log.cost / log.amount : 0;
+                if (price === 0) return;
                 const x = (i / (recentLogs.length - 1)) * chartWidth + 10;
                 const y = 140 - (range > 0 ? ((price - minPrice) / range * chartHeight) : chartHeight / 2);
                 points += `${x},${y} `;
