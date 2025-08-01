@@ -3,24 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Trip Logger</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%234CAF50'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>🚗</text></svg>">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Trip Logger">
+    <title>Family Tree App</title>
     <style>
-    * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
         }
 
         body {
@@ -31,60 +19,50 @@
         }
 
         .container {
-            max-width: 414px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             min-height: 100vh;
-            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
         .header {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: #2c3e50;
             color: white;
-            padding: 20px;
+            padding: 1rem;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
         }
 
         .tabs {
             display: flex;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+            background: #34495e;
+            overflow-x: auto;
         }
 
         .tab {
             flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: none;
+            min-width: 120px;
+            padding: 1rem;
+            background: #34495e;
+            color: white;
             border: none;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s ease;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: #3d566e;
         }
 
         .tab.active {
-            background: white;
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
+            background: #2980b9;
         }
 
         .tab-content {
             display: none;
-            padding: 20px;
-            min-height: 500px;
+            padding: 2rem;
+            min-height: calc(100vh - 120px);
         }
 
         .tab-content.active {
@@ -92,1734 +70,1747 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            font-size: 1rem;
+            transition: border-color 0.3s;
         }
 
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #3498db;
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
-        }
-        
-        .section-divider {
-            border-top: 1px solid #dee2e6;
-            margin: 30px 0;
+            min-height: 100px;
         }
 
         .btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: #3498db;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
             cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
-            transition: transform 0.2s ease;
+            font-size: 1rem;
+            transition: background 0.3s;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
+            background: #2980b9;
         }
 
         .btn-secondary {
-            background: linear-gradient(135deg, #6c757d, #5a6268);
+            background: #95a5a6;
         }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            cursor: pointer;
-            color: #212529;
-            border: none;
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            cursor: pointer;
-            color: white;
-            border: none;
+            background: #e74c3c;
         }
 
-        .record {
-            background: white;
-            border: 1px solid #e1e5e9;
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .tree-container {
+            background: #f8f9fa;
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 2rem;
+            overflow: auto;
+            min-height: 600px;
         }
 
-        .record-header {
+        .tree-canvas {
+            position: relative;
+            min-width: 100%;
+            min-height: 500px;
+        }
+
+        .tree-node {
+            position: absolute;
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tree-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .tree-node.focused {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+
+        .tree-node.root-ancestor {
+            border-color: #f39c12;
+            background: #fef9e7;
+        }
+
+        .tree-node h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-node p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin: 0.25rem 0;
+        }
+
+        .tree-connection {
+            position: absolute;
+            background: #3498db;
+            z-index: 1;
+        }
+
+        .spouse-connection {
+            background: #e74c3c;
+        }
+
+        .parent-child-connection {
+            background: #2ecc71;
+        }
+
+        .relationships-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .relationship-section {
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .relationship-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+
+        .person-card {
+            background: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .person-card h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .tree-list {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .tree-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .record-actions {
-            display: flex;
-            gap: 8px;
         }
 
-        .record-date {
-            font-weight: 600;
-            color: #4CAF50;
-        }
-
-        .record-details {
-            font-size: 14px;
-            line-height: 1.6;
-            word-wrap: break-word;
-        }
-
-        .record-details strong {
-            color: #333;
-        }
-
-        .stats {
-            background: linear-gradient(135deg, #17a2b8, #138496);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stats h3 {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .info-icon {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            color: white;
-            text-align: center;
-            font-weight: bold;
-            font-style: italic;
-            cursor: pointer;
-            font-family: serif;
-            margin-left: 8px;
-            line-height: 20px;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 15px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            display: block;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .font-size-toggle {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(76, 175, 80, 0.9);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            min-width: 45px;
-        }
-        
-        .monthly-summary {
-            background: linear-gradient(135deg, #6f42c1, #5a32a3);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .monthly-history {
-            background: linear-gradient(135deg, #e83e8c, #d91a72);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .history-year-group h4 {
-            text-align: center;
-            background: rgba(255,255,255,0.2);
-            padding: 8px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-        }
-
-        .history-month {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .history-month:last-child {
-            margin-bottom: 0;
-        }
-
-        .month-header {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .history-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 10px;
-        }
-        
-        .history-summary-item { text-align: center; }
-        .history-summary-value { display: block; font-size: 14px; font-weight: bold; }
-        .history-summary-label { font-size: 10px; opacity: 0.8; }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 15px;
-        }
-        .summary-item { text-align: center; }
-        .summary-value { display: block; font-size: 20px; font-weight: bold; }
-        .summary-label { font-size: 12px; opacity: 0.9; }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
+        .tree-item.active {
+            border-left: 4px solid #3498db;
         }
 
         .modal {
             display: none;
             position: fixed;
-            z-index: 1001;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            overflow-y: auto;
-            padding-top: 5vh;
-            padding-bottom: 5vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
         }
 
         .modal-content {
-            background-color: white;
-            margin: 0 auto;
-            padding: 20px;
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
             border-radius: 12px;
-            width: 95%;
-            max-width: 400px;
-            text-align: left;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        
-        .modal-content h3 { margin-bottom: 15px; color: #333; }
-        .modal-content p { line-height: 1.6; color: #555; }
-        .modal-content strong { color: #222; }
 
         .modal-header {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .modal-buttons {
-            margin-top: 20px;
             display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        
-        .btn-small {
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 20px;
-        }
-        
-        .export-section {
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .import-section {
-            background: #f0f8ff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 2px dashed #4CAF50;
-        }
-        .file-input { display: none; }
-        .file-input-label {
-            display: inline-block;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
-        .backup-reminder {
-            background: linear-gradient(135deg, #ff9500, #ff7b00);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        
-        .backup-status {
-            background: #e8f5e8;
-            color: #2d5016;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        #backToTopBtn {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999;
+        .close {
+            background: none;
             border: none;
-            outline: none;
-            background-color: #4CAF50;
-            color: white;
+            font-size: 1.5rem;
             cursor: pointer;
-            padding: 0;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            line-height: 50px;
-            text-align: center;
+            color: #999;
         }
 
-        .charts-container {
-            margin-top: 20px;
-            display: grid;
-            gap: 20px;
-        }
-
-        .chart-box {
+        .spouse-group {
             background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            padding: 15px;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
         }
-        .chart-box h4 { text-align: center; margin-bottom: 15px; color: #333; }
-        .chart-box svg { width: 100%; height: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        .pie-chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 15px; }
-        .legend-item { display: flex; align-items: center; font-size: 12px; }
-        .legend-color { width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; }
 
-        
-        .font-size-small { font-size: 14px; }
-        .font-size-medium { font-size: 16px; }
-        .font-size-large { font-size: 18px; }
-        .font-size-xlarge { font-size: 20px; } 
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                font-size: 0.9rem;
+            }
+            
+            .tab {
+                min-width: 100px;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .tab-content {
+                padding: 1rem;
+            }
+            
+            .tree-container {
+                padding: 1rem;
+            }
+            
+            .tree-node {
+                min-width: 160px;
+                padding: 0.75rem;
+            }
+            
+            .modal-content {
+                margin: 10% 1rem;
+                padding: 1.5rem;
+            }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="font-size-toggle" onclick="toggleFontSize()" id="fontToggle">A+</button>
-        
         <div class="header">
-            <h1>🚗 Trip Logger</h1>
-            <p>Track your journeys and expenses</p>
+            <h1>Family Tree Manager</h1>
         </div>
-
+        
         <div class="tabs">
-            <button class="tab active" onclick="showTab('trips')">Trip Logs</button>
-            <button class="tab" onclick="showTab('fuel')">Fuel Logs</button>
-            <button class="tab" onclick="showTab('service')">Service</button>
-            <button class="tab" onclick="showTab('stats')">Statistics</button>
-            <button class="tab" onclick="showTab('vehicle')">Vehicle</button>
+            <button class="tab active" onclick="showTab('tree-view')">Tree View</button>
+            <button class="tab" onclick="showTab('add-person')">Add Person</button>
+            <button class="tab" onclick="showTab('find-relations')">Find Relations</button>
+            <button class="tab" onclick="showTab('manage-trees')">Manage Trees</button>
+            <button class="tab" onclick="showTab('save-load')">Save/Load</button>
         </div>
 
-        <div id="trips" class="tab-content active">
-            <form id="tripForm">
-                 <div class="form-group">
-                    <label for="tripDate">Date</label>
-                    <input type="date" id="tripDate" required>
-                </div>
+        <!-- Tree View Tab -->
+        <div id="tree-view" class="tab-content active">
+            <div class="tree-search">
                 <div class="form-group">
-                    <label for="startingLocation">Starting Location *</label>
-                    <select id="startingLocation" onchange="handleLocationChange(this)" required>
+                    <label for="tree-search-input">Search Person (to focus on them):</label>
+                    <input type="text" id="tree-search-input" placeholder="Enter person's name..." style="max-width: 300px;">
+                    <button class="btn" onclick="focusOnPerson()">Focus</button>
+                    <button class="btn btn-secondary" onclick="showFullTree()">Show Full Tree</button>
+                </div>
+            </div>
+            <div class="tree-container" id="tree-display">
+                <div class="tree-canvas" id="tree-canvas">
+                    <p>No family tree data available. Add some family members first!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Person Tab -->
+        <div id="add-person" class="tab-content">
+            <h2>Add New Family Member</h2>
+            <div id="add-person-message"></div>
+            
+            <div class="form-group">
+                <label for="person-name">Name *</label>
+                <input type="text" id="person-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="birth-year">Year of Birth</label>
+                <input type="text" id="birth-year" placeholder="e.g., 1980, early 1800s, unknown">
+            </div>
+            
+            <div class="form-group">
+                <label for="death-year">Year of Death</label>
+                <input type="text" id="death-year" placeholder="e.g., 2020, early 1900s, unknown">
+            </div>
+            
+            <div class="form-group">
+                <label for="gothram">Gothram</label>
+                <input type="text" id="gothram">
+            </div>
+            
+            <div class="form-group">
+                <label for="sex">Sex</label>
+                <select id="sex">
+                    <option value="">Select...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="birthplace">Birthplace</label>
+                <input type="text" id="birthplace">
+            </div>
+            
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+                <input type="text" id="occupation">
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea id="notes" placeholder="Additional information about this person..."></textarea>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="is-alive">
+                <label for="is-alive">This person is still alive</label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="is-root-ancestor">
+                <label for="is-root-ancestor">Mark as oldest known ancestor (tree root)</label>
+            </div>
+
+            <!-- Parents Selection -->
+            <h3>Parents</h3>
+            <div class="form-group">
+                <label for="father">Father</label>
+                <select id="father">
+                    <option value="">Select father or leave blank if unknown</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="mother">Mother</label>
+                <select id="mother">
+                    <option value="">Select mother or leave blank if unknown</option>
+                </select>
+            </div>
+
+            <!-- Spouses Section -->
+            <h3>Spouse(s)</h3>
+            <div id="spouses-container">
+                <div class="spouse-group">
+                    <div class="form-group">
+                        <label>Spouse</label>
+                        <select class="spouse-select">
+                            <option value="">Select spouse or leave blank</option>
                         </select>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="unknown-spouse">
+                        <label>Unknown spouse (name not known)</label>
+                    </div>
                 </div>
-                <div class="form-group" id="customLocationGroup" style="display: none;">
-                    <label for="customLocation">Custom Starting Location</label>
-                    <input type="text" id="customLocation" placeholder="Enter custom location...">
-                </div>
-                <div class="form-group">
-                    <label for="tripPurpose">Trip Purpose *</label>
-                    <select id="tripPurpose" required>
-                        <option value="">Select purpose...</option>
-                        <option value="Shopping">Shopping</option>
-                        <option value="Family Visit">Family Visit</option>
-                        <option value="Religious">Religious</option>
-                        <option value="Banking">Banking</option>
-                        <option value="Social">Social</option>
-                        <option value="Leisure">Leisure</option>
-                        <option value="Maintenance">Maintenance</option>
-                        <option value="Medical">Medical</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="startOdometer">Start Odometer (km) *</label>
-                    <input type="number" id="startOdometer" placeholder="e.g., 45000" required>
-                </div>
-                <div class="form-group">
-                    <label for="endOdometer">End Odometer (km) *</label>
-                    <input type="number" id="endOdometer" placeholder="e.g., 45150" required>
-                </div>
-                <div class="form-group">
-                    <label for="remainingRange">Remaining Range (km)</label>
-                    <input type="number" id="remainingRange" placeholder="e.g., 450">
-                </div>
-                <div class="form-group">
-                    <label for="tripNotes">Trip Notes</label>
-                    <textarea id="tripNotes" placeholder="Any additional notes about the trip..."></textarea>
-                </div>
-                <button type="submit" class="btn">Add Trip Log</button>
-            </form>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addSpouseField()">Add Another Spouse</button>
 
-            <div class="section-divider"></div>
-            <div id="tripsList"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="addPerson()">Add Person</button>
+                <button class="btn btn-secondary" onclick="clearPersonForm()">Clear Form</button>
+            </div>
         </div>
 
-        <div id="fuel" class="tab-content">
-            <form id="fuelForm">
-                <div class="form-group">
-                    <label for="fuelDate">Date</label>
-                    <input type="date" id="fuelDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="fuelOdometer">Odometer Reading (km)</label>
-                    <input type="number" id="fuelOdometer" placeholder="e.g., 45075" required>
-                </div>
-                <div class="form-group">
-                    <label for="rangeBefore">Range Before Fuel (km)</label>
-                    <input type="number" id="rangeBefore" placeholder="e.g., 50">
-                </div>
-                <div class="form-group">
-                    <label for="fuelAmount">Fuel Amount (Litres)</label>
-                    <input type="number" step="0.01" id="fuelAmount" placeholder="e.g., 45.5" required>
-                </div>
-                <div class="form-group">
-                    <label for="fuelCost">Cost (₹)</label>
-                    <input type="number" step="0.01" id="fuelCost" placeholder="e.g., 4095.50" required>
-                </div>
-                <div class="form-group">
-                    <label for="rangeAfter">Range After Fuel (km)</label>
-                    <input type="number" id="rangeAfter" placeholder="e.g., 650">
-                </div>
-                <div class="form-group">
-                    <label for="fuelStation">Fuel Station Info</label>
-                    <input type="text" id="fuelStation" placeholder="e.g., Shell Petrol Pump, MG Road">
-                </div>
-                <button type="submit" class="btn">Add Fuel Log</button>
-            </form>
+        <!-- Find Relations Tab -->
+        <div id="find-relations" class="tab-content">
+            <h2>Find Family Relations</h2>
             
-            <div class="section-divider"></div>
-            <div id="fuelList"></div>
-        </div>
-        
-        <div id="service" class="tab-content">
-            <form id="serviceForm">
-                 <div class="form-group">
-                    <label for="serviceDate">Service Date</label>
-                    <input type="date" id="serviceDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="serviceOdometer">Odometer Reading (km)</label>
-                    <input type="number" id="serviceOdometer" placeholder="e.g., 40000" required>
-                </div>
-                <div class="form-group">
-                    <label for="serviceCenter">Service Center</label>
-                    <input type="text" id="serviceCenter" placeholder="e.g., Trident Hyundai" required>
-                </div>
-                <div class="form-group">
-                    <label for="serviceType">Type of Service</label>
-                    <select id="serviceType">
-                        <option value="Periodic Maintenance">Periodic Maintenance</option>
-                        <option value="Running Repair">Running Repair</option>
-                        <option value="Body Work">Body Work</option>
-                        <option value="Inspection">Inspection</option>
-                        <option value="Wheel Alignment">Wheel Alignment & Balancing</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                 <div class="form-group">
-                    <label for="workDescription">Description of Work Done</label>
-                    <textarea id="workDescription" placeholder="e.g., 40,000 km service, AC gas top-up"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="partsReplaced">Parts Replaced / Used</label>
-                    <textarea id="partsReplaced" placeholder="e.g., Engine oil, oil filter, air filter"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="serviceCost">Total Cost (₹)</label>
-                    <input type="number" step="0.01" id="serviceCost" placeholder="e.g., 5500.00" required>
-                </div>
-                <div class="form-group">
-                    <label for="invoiceNumber">Invoice/Bill Number</label>
-                    <input type="text" id="invoiceNumber" placeholder="Enter invoice number (optional)">
-                </div>
-                <button type="submit" class="btn">Add Service Log</button>
-            </form>
-
-            <div class="section-divider"></div>
-            <h3>🛠️ Service History</h3>
-            <div id="serviceLogList"></div>
-        </div>
-
-        <div id="stats" class="tab-content">
-             <div id="backupReminder" class="backup-reminder" style="display: none;">
-                <h3>⚠️ Backup Reminder</h3>
-                <p>It's been a while since your last backup!</p>
-                <button class="btn btn-small" onclick="autoBackup()" style="background: white; color: #ff9500; margin: 5px;">Backup Now</button>
-                <button class="btn btn-small" onclick="dismissBackupReminder()" style="background: rgba(255,255,255,0.2); margin: 5px;">Remind Later</button>
-            </div>
-             <div id="backupStatus" class="backup-status" style="display: none;">
-                <strong>✅ Last backup:</strong> <span id="lastBackupDate">Never</span>
-            </div>
-
-            <div id="monthlySummary" class="monthly-summary">
-                <h3>📅 This Month's Summary</h3>
-                <div class="summary-grid" id="currentMonthStats"></div>
-            </div>
-
-            <div id="monthlyHistory" class="monthly-history">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3>📈 Monthly History</h3>
-                    <select id="historyYearFilter" onchange="updateMonthlyHistory()" style="padding: 8px; border-radius: 8px; border: 1px solid white; background: rgba(255,255,255,0.2); color: white;"></select>
-                </div>
-                <div id="historyContainer"></div>
+            <div class="form-group">
+                <label for="relation-search">Select Person:</label>
+                <select id="relation-search">
+                    <option value="">Choose a person...</option>
+                </select>
+                <button class="btn" onclick="showRelations()">Show Relations</button>
             </div>
             
-            <div class="section-divider"></div>
-
-            <div id="statsContainer"></div>
-            
-            <div class="charts-container">
-                <div class="chart-box">
-                    <h4>Distance Per Month (Last 12 Months)</h4>
-                    <div id="monthlyDistanceChart"></div>
-                </div>
-                 <div class="chart-box">
-                    <h4>Trip Purpose Distribution</h4>
-                    <div id="purposePieChart"></div>
-                </div>
-                <div class="chart-box">
-                    <h4>Fuel Price Trend (₹ per Litre)</h4>
-                    <div id="fuelPriceChart"></div>
-                </div>
-            </div>
-
-            <div class="export-section">
-                <h3>📤 Backup, Restore & Export</h3>
-                <div class="import-section">
-                    <h4>📥 Restore from Backup</h4>
-                    <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData()">
-                    <label for="importFile" class="file-input-label">Choose Backup File</label>
-                </div>
-                <button class="btn" onclick="autoBackup()" style="margin-top: 20px;">🔄 Create Full Backup (JSON)</button>
-                <button class="btn btn-secondary" onclick="exportData('trips')">Export Trip Logs (CSV)</button>
-                <button class="btn btn-secondary" onclick="exportData('fuel')">Export Fuel Logs (CSV)</button>
+            <div class="relationships-container" id="relations-display">
+                <p>Select a person to see their family relationships.</p>
             </div>
         </div>
 
-        <div id="vehicle" class="tab-content">
-            <div id="vehicleInfo" class="vehicle-info-card"></div>
+        <!-- Manage Trees Tab -->
+        <div id="manage-trees" class="tab-content">
+            <h2>Manage Family Trees</h2>
+            <div id="manage-trees-message"></div>
             
-            <form id="vehicleForm">
-                <h3>✏️ Edit Vehicle Details</h3>
-                <div class="form-group">
-                    <label for="vehicleMake">Vehicle Make</label>
-                    <input type="text" id="vehicleMake" placeholder="e.g., Maruti Suzuki">
-                </div>
-                <div class="form-group">
-                    <label for="vehicleModel">Vehicle Model</label>
-                    <input type="text" id="vehicleModel" placeholder="e.g., Swift">
-                </div>
-                <div class="form-group">
-                    <label for="vehicleYear">Model Year</label>
-                    <input type="number" id="vehicleYear" placeholder="e.g., 2023">
-                </div>
-                <div class="form-group">
-                    <label for="licensePlate">License Plate</label>
-                    <input type="text" id="licensePlate" placeholder="e.g., TN 01 AB 1234">
-                </div>
-                <div class="form-group">
-                    <label for="engineNumber">Engine Number</label>
-                    <input type="text" id="engineNumber" placeholder="Enter engine number">
-                </div>
-                <div class="form-group">
-                    <label for="chassisNumber">Chassis Number</label>
-                    <input type="text" id="chassisNumber" placeholder="Enter chassis number">
-                </div>
-                <button type="submit" class="btn">Save Vehicle Info</button>
-            </form>
-            
-            <div class="section-divider"></div>
-
-            <h3>🛡️ Insurance History</h3>
-            <form id="insuranceForm">
-                 <div class="form-group">
-                    <label for="insuranceProvider">Provider Name</label>
-                    <input type="text" id="insuranceProvider" placeholder="e.g., Acko General Insurance" required>
-                </div>
-                <div class="form-group">
-                    <label for="policyNumber">Policy Number</label>
-                    <input type="text" id="policyNumber" placeholder="Enter policy number" required>
-                </div>
-                 <div class="form-group">
-                    <label for="policyValidity">Validity (Expiry Date)</label>
-                    <input type="date" id="policyValidity" required>
-                </div>
-                <div class="form-group">
-                    <label for="coverageInfo">Coverage Information</label>
-                    <textarea id="coverageInfo" placeholder="e.g., Comprehensive, Zero Depreciation..."></textarea>
-                </div>
-                <button type="submit" class="btn">Add Insurance Log</button>
-            </form>
-
-            <div id="insuranceLogList" style="margin-top: 20px;"></div>
-        </div>
-
-        <div id="editModal" class="modal"><div class="modal-content"><div id="modalHeader" class="modal-header"></div><div id="modalBody"></div></div></div>
-        <div id="helpModal" class="modal"><div class="modal-content"><div id="modalHeader" class="modal-header">Calculation Logic</div><div id="helpModalBody"></div><div class="modal-buttons"><button class="btn" onclick="closeModal('helpModal')">Close</button></div></div></div>
-        <div id="backupModal" class="modal">
-            <div class="modal-content" style="text-align: center;">
-                <h3>💾 Regular Backup Recommended</h3>
-                <p>To keep your data safe, we recommend backing up every week.</p>
-                <div class="modal-buttons" style="justify-content: center;">
-                    <button class="btn btn-small" onclick="autoBackup(); closeModal('backupModal');">Backup Now</button>
-                    <button class="btn btn-small btn-secondary" onclick="snoozeBackup()">Remind Later</button>
-                    <button class="btn btn-small btn-secondary" onclick="closeModal('backupModal')">Maybe Later</button>
-                </div>
+            <div class="form-group">
+                <label for="new-tree-name">Create New Tree:</label>
+                <input type="text" id="new-tree-name" placeholder="Enter tree name...">
+                <button class="btn" onclick="createNewTree()">Create Tree</button>
             </div>
+
+            <h3>Existing Trees</h3>
+            <div class="tree-list" id="trees-list">
+                <p>No trees created yet.</p>
+            </div>
+
+            <h3>Link Trees</h3>
+            <div class="form-group">
+                <label for="link-person-name">Search for person across all trees:</label>
+                <input type="text" id="link-person-name" placeholder="Enter person's name...">
+                <button class="btn" onclick="searchAcrossTrees()">Search</button>
+            </div>
+            <div id="link-results"></div>
         </div>
-        
-        <button onclick="scrollToTop()" id="backToTopBtn" title="Go to top">↑</button>
+
+        <!-- Save/Load Tab -->
+        <div id="save-load" class="tab-content">
+            <h2>Save & Load Data</h2>
+            <div id="save-load-message"></div>
+            
+            <h3>Export Data</h3>
+            <p>Save your family tree data to a file on your device.</p>
+            <button class="btn" onclick="exportData()">Export Current Tree</button>
+            <button class="btn" onclick="exportAllData()">Export All Trees</button>
+
+            <h3>Import Data</h3>
+            <p>Load previously saved family tree data.</p>
+            <div class="form-group">
+                <label for="import-file">Choose file:</label>
+                <input type="file" id="import-file" accept=".json">
+                <button class="btn" onclick="importData()">Import Data</button>
+            </div>
+
+            <h3>Clear Data</h3>
+            <p>⚠️ This will permanently delete all your family tree data.</p>
+            <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        </div>
     </div>
 
- <script>
-        // Data Arrays
-        let trips = [];
-        let fuelLogs = [];
-        let serviceLogs = [];
-        let appSettings = {};
-        let customLocations = [];
-        let vehicleDetails = {};
-        let insuranceLogs = [];
+    <!-- Person Details Modal -->
+    <div id="person-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Person Details</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="person-details">
+                <!-- Person details will be populated here -->
+            </div>
+        </div>
+    </div>
 
-        /**
-         * Loads all data from localStorage into the script's variables.
-         */
-        function loadData() {
-            trips = JSON.parse(window.localStorage?.getItem('tripLogs') || '[]');
-            fuelLogs = JSON.parse(window.localStorage?.getItem('fuelLogs') || '[]');
-            serviceLogs = JSON.parse(window.localStorage?.getItem('serviceLogs') || '[]');
-            appSettings = JSON.parse(window.localStorage?.getItem('appSettings') || '{}');
-            customLocations = JSON.parse(window.localStorage?.getItem('customLocations') || '[]');
-            vehicleDetails = JSON.parse(window.localStorage?.getItem('vehicleDetails') || '{}');
-            insuranceLogs = JSON.parse(window.localStorage?.getItem('insuranceLogs') || '[]');
-        }
+    <script>
+        // Global variables
+        let familyTrees = {};
+        let currentTreeId = null;
+        let focusedPersonId = null;
 
-        /**
-         * Saves all data from the script's variables to localStorage, ensuring logs are sorted.
-         */
-        function saveData() {
-            try {
-                // Sort trips by date, then by ending odometer for same-day trips
-                trips.sort((a,b) => new Date(b.date) - new Date(a.date) || b.endOdometer - a.endOdometer);
-                
-                fuelLogs.sort((a,b) => new Date(b.date) - new Date(a.date));
-                serviceLogs.sort((a,b) => new Date(b.date) - new Date(a.date));
-                insuranceLogs.sort((a,b) => new Date(b.validity) - new Date(a.validity));
-
-                window.localStorage?.setItem('tripLogs', JSON.stringify(trips));
-                window.localStorage?.setItem('fuelLogs', JSON.stringify(fuelLogs));
-                window.localStorage?.setItem('serviceLogs', JSON.stringify(serviceLogs));
-                window.localStorage?.setItem('appSettings', JSON.stringify(appSettings));
-                window.localStorage?.setItem('customLocations', JSON.stringify(customLocations));
-                window.localStorage?.setItem('vehicleDetails', JSON.stringify(vehicleDetails));
-                window.localStorage?.setItem('insuranceLogs', JSON.stringify(insuranceLogs));
-            } catch (e) {
-                console.error('Could not save to localStorage:', e);
-            }
-        }
-        
+        // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tripDate').value = today;
-            document.getElementById('fuelDate').value = today;
-            document.getElementById('serviceDate').value = today;
-            document.getElementById('policyValidity').value = today;
-            
-            applyFontSize();
-            renderAll();
-            setupEventListeners();
-            autoPopulateOdometerFields();
-            checkBackupReminder();
-        });
-        
-        /**
-         * Central function to render all dynamic content on the page.
-         */
-        function renderAll() {
-            displayTrips();
-            displayFuelLogs();
-            displayServiceLogs();
-            displayVehicleInfo();
-            displayInsuranceLogs();
-            updateStats();
-            populateLocationDropdown(document.getElementById('startingLocation'));
-            updateBackupStatus();
-        }
-
-        /**
-         * Sets up all the event listeners for the application.
-         */
-        function setupEventListeners() {
-            document.getElementById('tripForm').addEventListener('submit', handleAddTrip);
-            document.getElementById('fuelForm').addEventListener('submit', handleAddFuel);
-            document.getElementById('serviceForm').addEventListener('submit', handleAddService);
-            document.getElementById('vehicleForm').addEventListener('submit', handleSaveVehicle);
-            document.getElementById('insuranceForm').addEventListener('submit', handleAddInsurance);
-            window.addEventListener('scroll', handleScroll);
-
-            window.addEventListener('click', function(event) {
-                const modals = ['editModal', 'helpModal', 'backupModal'];
-                modals.forEach(modalId => {
-                    const modal = document.getElementById(modalId);
-                    if (event.target === modal) {
-                                 closeModal(modalId);
-                            }
-                        });
-                }
-            );
-
-                // Escape key handler for modals
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            const modals = ['editModal', 'helpModal', 'backupModal'];
-            modals.forEach(modalId => {
-                const modal = document.getElementById(modalId);
-                if (modal.style.display === 'block') {
-                    closeModal(modalId);
-                }
-            });
-        }
-        });
-    }
-        
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-            document.getElementById(tabName).classList.add('active');
-            
-            if (tabName === 'stats') {
-                updateStats(); // Always refresh stats on view
-            }
-        }
-
-        // --- Data Handling (Add, Edit, Delete) ---
-
-        function handleAddTrip(e) {
-            e.preventDefault();
-            const form = e.target;
-            const startOdometer = parseInt(form.querySelector('#startOdometer').value);
-            const endOdometer = parseInt(form.querySelector('#endOdometer').value);
-
-            if (endOdometer <= startOdometer) {
-                alert('❌ End odometer must be greater than start odometer.');
-                return;
-            }
-
-            const locationSelect = form.querySelector('#startingLocation').value;
-            const customLocation = form.querySelector('#customLocation').value;
-            const trip = {
-                id: Date.now(),
-                date: form.querySelector('#tripDate').value,
-                startingLocation: locationSelect === 'Other' ? customLocation : locationSelect,
-                purpose: form.querySelector('#tripPurpose').value,
-                startOdometer: startOdometer,
-                endOdometer: endOdometer,
-                distance: endOdometer - startOdometer,
-                remainingRange: form.querySelector('#remainingRange').value,
-                notes: form.querySelector('#tripNotes').value
-            };
-            
-            if (locationSelect === 'Other' && customLocation) {
-                saveCustomLocation(customLocation);
-            }
-            
-            trips.push(trip);
-            saveData();
-            displayTrips();
-            form.reset();
-            document.getElementById('tripDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('customLocationGroup').style.display = 'none';
-            // This line repopulates the dropdown with the new location after saving.
-            populateLocationDropdown(document.getElementById('startingLocation'));
-            autoPopulateOdometerFields();
-            alert(`✅ Trip log added successfully!`);
-        }
-        
-        function handleAddFuel(e) {
-            e.preventDefault();
-            const form = e.target;
-            const fuel = {
-                id: Date.now(),
-                date: form.querySelector('#fuelDate').value,
-                odometer: parseInt(form.querySelector('#fuelOdometer').value),
-                rangeBefore: form.querySelector('#rangeBefore').value,
-                amount: parseFloat(form.querySelector('#fuelAmount').value),
-                cost: parseFloat(form.querySelector('#fuelCost').value),
-                rangeAfter: form.querySelector('#rangeAfter').value,
-                station: form.querySelector('#fuelStation').value
-            };
-            fuelLogs.push(fuel);
-            saveData();
-            renderAll();
-            form.reset();
-            document.getElementById('fuelDate').value = new Date().toISOString().split('T')[0];
-            autoPopulateOdometerFields();
-            alert('✅ Fuel log added successfully!');
-        }
-
-        function handleAddService(e) {
-            e.preventDefault();
-            const form = e.target;
-            const service = {
-                id: Date.now(),
-                date: form.querySelector('#serviceDate').value,
-                odometer: parseInt(form.querySelector('#serviceOdometer').value),
-                center: form.querySelector('#serviceCenter').value,
-                type: form.querySelector('#serviceType').value,
-                description: form.querySelector('#workDescription').value,
-                parts: form.querySelector('#partsReplaced').value,
-                cost: parseFloat(form.querySelector('#serviceCost').value),
-                invoice: form.querySelector('#invoiceNumber').value
-            };
-            serviceLogs.push(service);
-            saveData();
-            displayServiceLogs();
-            form.reset();
-            document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
-            autoPopulateOdometerFields();
-            alert('✅ Service log added successfully!');
-        }
-        
-        function handleSaveVehicle(e) {
-            e.preventDefault();
-            const form = e.target;
-            vehicleDetails.make = form.querySelector('#vehicleMake').value;
-            vehicleDetails.model = form.querySelector('#vehicleModel').value;
-            vehicleDetails.year = form.querySelector('#vehicleYear').value;
-            vehicleDetails.licensePlate = form.querySelector('#licensePlate').value;
-            vehicleDetails.engineNumber = form.querySelector('#engineNumber').value;
-            vehicleDetails.chassisNumber = form.querySelector('#chassisNumber').value;
-            saveData();
-            displayVehicleInfo();
-            alert('✅ Vehicle information saved!');
-        }
-
-        function handleAddInsurance(e) {
-            e.preventDefault();
-            const form = e.target;
-            const insurance = {
-                id: Date.now(),
-                provider: form.querySelector('#insuranceProvider').value,
-                policyNumber: form.querySelector('#policyNumber').value,
-                validity: form.querySelector('#policyValidity').value,
-                coverage: form.querySelector('#coverageInfo').value
-            };
-            insuranceLogs.push(insurance);
-            saveData();
-            displayInsuranceLogs();
-            form.reset();
-            document.getElementById('policyValidity').value = new Date().toISOString().split('T')[0];
-            alert('✅ Insurance log added!');
-        }
-
-        function handleDelete(type, id) {
-            if (!confirm(`Are you sure you want to delete this ${type} log?`)) return;
-
-            let arr;
-            switch(type) {
-                case 'trip': arr = trips; break;
-                case 'fuel': arr = fuelLogs; break;
-                case 'service': arr = serviceLogs; break;
-                case 'insurance': arr = insuranceLogs; break;
-            }
-            
-            const index = arr.findIndex(item => item.id === id);
-            if (index > -1) {
-                arr.splice(index, 1);
-            }
-
-            saveData();
-            renderAll();
-        }
-
-        // --- Display Functions ---
-        
-        function displayTrips() {
-            const container = document.getElementById('tripsList');
-            if (trips.length === 0) {
-                container.innerHTML = `<div class="empty-state">📝<h3>No trip logs yet</h3></div>`;
-                return;
-            }
-            container.innerHTML = trips.map(trip => {
-                const purposeIcon = getPurposeIcon(trip.purpose);
-                const cost = calculateTripCost(trip.distance, trip.date);
-                const costDisplay = cost > 0 ? `<strong>Est. Cost:</strong> ₹${cost.toFixed(2)}<br>` : '';
-                return `
-                    <div class="record">
-                        <div class="record-header">
-                            <span class="record-date">${formatDate(trip.date)}</span>
-                            <div class="record-actions">
-                                <button class="btn-warning" onclick="openEditModal('trip', ${trip.id})">Edit</button>
-                                <button class="btn-danger" onclick="handleDelete('trip', ${trip.id})">Delete</button>
-                            </div>
-                        </div>
-                        <div class="record-details">
-                            ${trip.startingLocation ? `<strong>From:</strong> ${trip.startingLocation}<br>` : ''}
-                            ${trip.purpose ? `<strong>Purpose:</strong> ${purposeIcon} ${trip.purpose}<br>` : ''}
-                            <strong>Distance:</strong> ${trip.distance} km (${trip.startOdometer} → ${trip.endOdometer})<br>
-                            ${costDisplay}
-                            <strong>Range:</strong> ${trip.remainingRange || 'N/A'} km<br>
-                            ${trip.notes ? `<strong>Notes:</strong> ${trip.notes}` : ''}
-                        </div>
-                    </div>`;
-            }).join('');
-        }
-
-        function displayFuelLogs() {
-            const container = document.getElementById('fuelList');
-            if (fuelLogs.length === 0) {
-                container.innerHTML = `<div class="empty-state">⛽<h3>No fuel logs yet</h3></div>`;
-                return;
-            }
-            container.innerHTML = fuelLogs.map(fuel => {
-                const pricePerLitre = fuel.amount > 0 ? (fuel.cost / fuel.amount).toFixed(2) : '0.00';
-                return `
-                    <div class="record">
-                        <div class="record-header">
-                            <span class="record-date">${formatDate(fuel.date)}</span>
-                             <div class="record-actions">
-                                <button class="btn-warning" onclick="openEditModal('fuel', ${fuel.id})">Edit</button>
-                                <button class="btn-danger" onclick="handleDelete('fuel', ${fuel.id})">Delete</button>
-                            </div>
-                        </div>
-                        <div class="record-details">
-                            <strong>Odometer:</strong> ${fuel.odometer} km<br>
-                            <strong>Fuel:</strong> ${fuel.amount} L @ ₹${pricePerLitre}/L<br>
-                            <strong>Total Cost:</strong> ₹${fuel.cost.toFixed(2)}<br>
-                            <strong>Range:</strong> ${fuel.rangeBefore || 'N/A'} km → ${fuel.rangeAfter || 'N/A'} km<br>
-                            ${fuel.station ? `<strong>Station:</strong> ${fuel.station}` : ''}
-                        </div>
-                    </div>`;
-            }).join('');
-        }
-
-        function saveCustomLocation(locationName) {
-            if (locationName && !customLocations.includes(locationName)) {
-                customLocations.push(locationName);
-                saveData();
-            }
-        }
-
-        function displayServiceLogs() {
-            const container = document.getElementById('serviceLogList');
-            if (serviceLogs.length === 0) {
-                container.innerHTML = `<div class="empty-state">🛠️<h3>No service logs yet</h3></div>`;
-                return;
-            }
-            container.innerHTML = serviceLogs.map(log => `
-                <div class="record">
-                    <div class="record-header">
-                        <span class="record-date">${formatDate(log.date)}</span>
-                        <div class="record-actions">
-                            <button class="btn-warning" onclick="openEditModal('service', ${log.id})">Edit</button>
-                            <button class="btn-danger" onclick="handleDelete('service', ${log.id})">Delete</button>
-                        </div>
-                    </div>
-                    <div class="record-details">
-                        <strong>Center:</strong> ${log.center}<br>
-                        <strong>Odometer:</strong> ${log.odometer} km<br>
-                        <strong>Cost:</strong> ₹${log.cost.toFixed(2)}<br>
-                        <strong>Type:</strong> ${log.type}<br>
-                        ${log.description ? `<strong>Work:</strong> ${log.description}<br>` : ''}
-                        ${log.parts ? `<strong>Parts:</strong> ${log.parts}<br>` : ''}
-                        ${log.invoice ? `<strong>Invoice:</strong> ${log.invoice}` : ''}
-                    </div>
-                </div>`).join('');
-        }
-        
-        function displayInsuranceLogs() {
-            const container = document.getElementById('insuranceLogList');
-            if (insuranceLogs.length === 0) {
-                container.innerHTML = `<div class="empty-state">🛡️<h3>No insurance logs</h3></div>`;
-                return;
-            }
-            container.innerHTML = insuranceLogs.map(log => `
-                <div class="record">
-                    <div class="record-header">
-                        <span class="record-date">Expires: ${formatDate(log.validity)}</span>
-                        <div class="record-actions">
-                            <button class="btn-warning" onclick="openEditModal('insurance', ${log.id})">Edit</button>
-                            <button class="btn-danger" onclick="handleDelete('insurance', ${log.id})">Delete</button>
-                        </div>
-                    </div>
-                    <div class="record-details">
-                        <strong>Provider:</strong> ${log.provider}<br>
-                        <strong>Policy No:</strong> ${log.policyNumber}<br>
-                        ${log.coverage ? `<strong>Coverage:</strong> ${log.coverage}` : ''}
-                    </div>
-                </div>`).join('');
-        }
-
-        function displayVehicleInfo() {
-            const { make, model, year, licensePlate, engineNumber, chassisNumber } = vehicleDetails;
-            const container = document.getElementById('vehicleInfo');
-            const hasDetails = make || model || year || licensePlate || engineNumber || chassisNumber;
-            if (!hasDetails) {
-                container.innerHTML = `<div class="empty-state">🚗<h3>No Vehicle Information</h3><p>Add vehicle details below.</p></div>`;
+            loadFromLocalStorage();
+            if (Object.keys(familyTrees).length === 0) {
+                createNewTree('My Family Tree');
             } else {
-                 container.innerHTML = `<h3>My Vehicle</h3>
-                    <div class="vehicle-info-grid">
-                        <div class="vehicle-info-item"><span class="vehicle-info-label">Make</span><span class="vehicle-info-value">${make || 'N/A'}</span></div>
-                        <div class="vehicle-info-item"><span class="vehicle-info-label">Model</span><span class="vehicle-info-value">${model || 'N/A'}</span></div>
-                        <div class="vehicle-info-item"><span class="vehicle-info-label">Year</span><span class="vehicle-info-value">${year || 'N/A'}</span></div>
-                        <div class="vehicle-info-item"><span class="vehicle-info-label">License Plate</span><span class="vehicle-info-value">${licensePlate || 'N/A'}</span></div>
-                        <div class="vehicle-info-item"><span class="vehicle-info-label">Engine No.</span><span class="vehicle-info-value">${engineNumber || 'N/A'}</span></div>
-                        <div class="vehicle-info-item"><span class="vehicle-info-label">Chassis No.</span><span class="vehicle-info-value">${chassisNumber || 'N/A'}</span></div>
-                    </div>`;
+                currentTreeId = Object.keys(familyTrees)[0];
             }
-            document.getElementById('vehicleMake').value = make || '';
-            document.getElementById('vehicleModel').value = model || '';
-            document.getElementById('vehicleYear').value = year || '';
-            document.getElementById('licensePlate').value = licensePlate || '';
-            document.getElementById('engineNumber').value = engineNumber || '';
-            document.getElementById('chassisNumber').value = chassisNumber || '';
+            updateUI();
+        });
+
+        // Tab management
+        function showTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Update content based on tab
+            if (tabId === 'tree-view') {
+                renderTree();
+            } else if (tabId === 'add-person') {
+                updatePersonFormDropdowns();
+            } else if (tabId === 'find-relations') {
+                updateRelationDropdown();
+            } else if (tabId === 'manage-trees') {
+                updateTreesList();
+            }
         }
 
-        // --- Statistics & Calculations ---
-
-        function calculateTripCost(distance, tripDate) {
-            if (fuelLogs.length === 0) return 0;
-            const relevantFuelLogs = fuelLogs.filter(log => new Date(log.date) <= new Date(tripDate));
-            if (relevantFuelLogs.length === 0) return 0;
-            const lastFuelLogForTrip = relevantFuelLogs[0];
-            const fuelPricePerLiter = lastFuelLogForTrip.amount > 0 ? lastFuelLogForTrip.cost / lastFuelLogForTrip.amount : 0;
-            if (fuelPricePerLiter === 0) return 0;
-            const fuelEfficiency = getAverageFuelEfficiency();
-            const fuelNeeded = distance / fuelEfficiency;
-            return fuelNeeded * fuelPricePerLiter;
-        }
-
-        function getAverageFuelEfficiency() {
-            let fuelEfficiency = 15;
-            if (fuelLogs.length < 2) return fuelEfficiency;
-            const sorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date));
-            let totalDistance = 0, totalFuel = 0;
-            for (let i = 1; i < sorted.length; i++) {
-                const dist = sorted[i].odometer - sorted[i-1].odometer;
-                if (dist > 0 && dist < 1500) {
-                    totalDistance += dist;
-                    totalFuel += sorted[i-1].amount;
+        // Tree management
+        function createNewTree(name = '') {
+            if (!name) {
+                name = document.getElementById('new-tree-name').value.trim();
+                if (!name) {
+                    showMessage('manage-trees-message', 'Please enter a tree name.', 'error');
+                    return;
                 }
             }
-            return totalFuel > 0 ? totalDistance / totalFuel : fuelEfficiency;
+            
+            const treeId = 'tree_' + Date.now();
+            familyTrees[treeId] = {
+                id: treeId,
+                name: name,
+                people: {},
+                relationships: {},
+                rootAncestorId: null
+            };
+            
+            currentTreeId = treeId;
+            document.getElementById('new-tree-name').value = '';
+            showMessage('manage-trees-message', `Tree "${name}" created successfully!`, 'success');
+            updateTreesList();
+            saveToLocalStorage();
         }
 
-        function updateStats() {
-            const now = new Date();
-            const currentMonthData = updateMonthData(now.getMonth(), now.getFullYear());
-            document.getElementById('currentMonthStats').innerHTML = `
-                <div class="summary-item"><span class="summary-value">${currentMonthData.trips}</span><span class="summary-label">Trips</span></div>
-                <div class="summary-item"><span class="summary-value">${currentMonthData.distance}</span><span class="summary-label">Total KM</span></div>
-                <div class="summary-item"><span class="summary-value">₹${currentMonthData.fuelCost.toFixed(0)}</span><span class="summary-label">Fuel Cost</span></div>
-                <div class="summary-item"><span class="summary-value">${currentMonthData.avgTrip.toFixed(1)}</span><span class="summary-label">Avg KM/Trip</span></div>`;
+        function switchTree(treeId) {
+            currentTreeId = treeId;
+            focusedPersonId = null;
+            updateUI();
+            showMessage('manage-trees-message', `Switched to "${familyTrees[treeId].name}"`, 'success');
+        }
 
-            updateMonthlyHistory();
+        function deleteTree(treeId) {
+            if (confirm(`Are you sure you want to delete "${familyTrees[treeId].name}"?`)) {
+                delete familyTrees[treeId];
+                
+                if (currentTreeId === treeId) {
+                    const remainingTrees = Object.keys(familyTrees);
+                    currentTreeId = remainingTrees.length > 0 ? remainingTrees[0] : null;
+                    
+                    if (!currentTreeId) {
+                        createNewTree('My Family Tree');
+                    }
+                }
+                
+                updateUI();
+                saveToLocalStorage();
+                showMessage('manage-trees-message', 'Tree deleted successfully.', 'success');
+            }
+        }
 
-            const statsContainer = document.getElementById('statsContainer');
-            if (trips.length === 0 && fuelLogs.length === 0) {
-                statsContainer.innerHTML = `<div class="empty-state">📊<h3>No data for statistics</h3></div>`;
+        // Person management
+        function addPerson() {
+            const name = document.getElementById('person-name').value.trim();
+            if (!name) {
+                showMessage('add-person-message', 'Name is required.', 'error');
                 return;
             }
-            const totalDistance = trips.reduce((sum, trip) => sum + trip.distance, 0);
-            const totalFuelCost = fuelLogs.reduce((sum, fuel) => sum + fuel.cost, 0);
-            const totalServiceCost = serviceLogs.reduce((sum, log) => sum + log.cost, 0);
-            const totalFuelAmount = fuelLogs.reduce((sum, fuel) => sum + fuel.amount, 0);
-            const avgFuelPrice = totalFuelAmount > 0 ? (totalFuelCost / totalFuelAmount) : 0;
-            const fuelEfficiency = getAverageFuelEfficiency();
-            const costPerKm = totalDistance > 0 ? (totalFuelCost + totalServiceCost) / totalDistance : 0;
 
-            statsContainer.innerHTML = `
-                <div class="stats">
-                    <h3>Overall Statistics <span class="info-icon" onclick="openHelpModal()">i</span></h3>
-                    <div class="stat-grid">
-                        <div class="stat-item"><span class="stat-value">${trips.length}</span><span class="stat-label">Total Trips</span></div>
-                        <div class="stat-item"><span class="stat-value">${totalDistance}</span><span class="stat-label">Total Distance</span></div>
-                        <div class="stat-item"><span class="stat-value">₹${costPerKm.toFixed(2)}</span><span class="stat-label">Cost / km</span></div>
-                        <div class="stat-item"><span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span><span class="stat-label">Avg. Fuel Price/L</span></div>
-                        <div class="stat-item"><span class="stat-value">${fuelEfficiency.toFixed(1)}</span><span class="stat-label">Avg. Efficiency</span></div>
-                        <div class="stat-item"><span class="stat-value">₹${(totalFuelCost + totalServiceCost).toFixed(0)}</span><span class="stat-label">Total Expenses</span></div>
-                    </div>
-                </div>`;
+            const personId = 'person_' + Date.now();
+            const currentTree = familyTrees[currentTreeId];
+            const gothram = document.getElementById('gothram').value.trim();
+            const isAlive = document.getElementById('is-alive').checked;
+            const isRootAncestor = document.getElementById('is-root-ancestor').checked;
             
-            renderMonthlyDistanceChart();
-            renderFuelPriceChart();
-            renderPurposePieChart();
-        }
-
-        function updateMonthData(month, year) {
-            const monthTrips = trips.filter(trip => new Date(trip.date).getMonth() === month && new Date(trip.date).getFullYear() === year);
-            const monthFuel = fuelLogs.filter(fuel => new Date(fuel.date).getMonth() === month && new Date(fuel.date).getFullYear() === year);
-            const distance = monthTrips.reduce((s, t) => s + t.distance, 0);
-            const fuelCost = monthFuel.reduce((s, f) => s + f.cost, 0);
-            return {
-                trips: monthTrips.length,
-                distance: distance,
-                fuelCost: fuelCost,
-                avgTrip: monthTrips.length > 0 ? distance / monthTrips.length : 0
+            // Create person object
+            const person = {
+                id: personId,
+                name: name,
+                birthYear: document.getElementById('birth-year').value.trim(),
+                deathYear: isAlive ? '' : document.getElementById('death-year').value.trim(),
+                gothram: gothram,
+                sex: document.getElementById('sex').value,
+                birthplace: document.getElementById('birthplace').value.trim(),
+                occupation: document.getElementById('occupation').value.trim(),
+                notes: document.getElementById('notes').value.trim(),
+                isAlive: isAlive,
+                isRootAncestor: isRootAncestor
             };
+
+            // Add person to tree
+            currentTree.people[personId] = person;
+
+            // Handle root ancestor
+            if (isRootAncestor) {
+                // Remove root ancestor flag from other people
+                Object.values(currentTree.people).forEach(p => {
+                    if (p.id !== personId) {
+                        p.isRootAncestor = false;
+                    }
+                });
+                currentTree.rootAncestorId = personId;
+                
+                // Auto-name tree if it's the default name and gothram exists
+                if (currentTree.name === 'My Family Tree' && gothram) {
+                    currentTree.name = `${gothram} Family Tree`;
+                }
+            }
+
+            // Handle relationships
+            const fatherId = document.getElementById('father').value;
+            const motherId = document.getElementById('mother').value;
+
+            if (fatherId) {
+                addRelationship(fatherId, personId, 'parent-child');
+            }
+            if (motherId) {
+                addRelationship(motherId, personId, 'parent-child');
+            }
+
+            // Handle spouses
+            const spouseSelects = document.querySelectorAll('.spouse-select');
+            const unknownSpouseCheckboxes = document.querySelectorAll('.unknown-spouse');
+            
+            spouseSelects.forEach((select, index) => {
+                const spouseId = select.value;
+                const isUnknownSpouse = unknownSpouseCheckboxes[index].checked;
+                
+                if (spouseId) {
+                    addRelationship(personId, spouseId, 'spouse');
+                } else if (isUnknownSpouse) {
+                    // Create unknown spouse
+                    const unknownSpouseId = 'person_' + Date.now() + '_unknown';
+                    const unknownSpouse = {
+                        id: unknownSpouseId,
+                        name: 'Unknown Spouse',
+                        birthYear: '',
+                        deathYear: '',
+                        gothram: gothram, // Use same gothram or could be different
+                        sex: person.sex === 'Male' ? 'Female' : 'Male',
+                        birthplace: '',
+                        occupation: '',
+                        notes: 'Spouse name unknown',
+                        isAlive: false,
+                        isRootAncestor: false
+                    };
+                    currentTree.people[unknownSpouseId] = unknownSpouse;
+                    addRelationship(personId, unknownSpouseId, 'spouse');
+                }
+            });
+
+            saveToLocalStorage();
+            clearPersonForm();
+            showMessage('add-person-message', `${name} added successfully!`, 'success');
+            updatePersonFormDropdowns();
         }
 
-        function updateMonthlyHistory() {
-            const historyContainer = document.getElementById('historyContainer');
-            const filter = document.getElementById('historyYearFilter');
-            const allMonths = new Set();
-            [...trips, ...fuelLogs].forEach(log => {
-                const d = new Date(log.date);
-                allMonths.add(`${d.getFullYear()}-${d.getMonth()}`);
-            });
-            
-            const now = new Date();
-            const groupedByYear = {};
-            
-            Array.from(allMonths).forEach(monthKey => {
-                const [year, month] = monthKey.split('-').map(Number);
-                if (year === now.getFullYear() && month === now.getMonth()) return;
-                if (!groupedByYear[year]) groupedByYear[year] = [];
-                groupedByYear[year].push({ year, month });
+        function addRelationship(person1Id, person2Id, type) {
+            const currentTree = familyTrees[currentTreeId];
+            if (!currentTree.relationships[person1Id]) {
+                currentTree.relationships[person1Id] = [];
+            }
+            if (!currentTree.relationships[person2Id]) {
+                currentTree.relationships[person2Id] = [];
+            }
+
+            // Add relationship both ways
+            currentTree.relationships[person1Id].push({
+                personId: person2Id,
+                type: type
             });
 
-            const sortedYears = Object.keys(groupedByYear).sort((a,b) => b - a);
+            if (type === 'parent-child') {
+                currentTree.relationships[person2Id].push({
+                    personId: person1Id,
+                    type: 'child-parent'
+                });
+            } else if (type === 'spouse') {
+                currentTree.relationships[person2Id].push({
+                    personId: person1Id,
+                    type: 'spouse'
+                });
+            }
+        }
+
+        function addSpouseField() {
+            const container = document.getElementById('spouses-container');
+            const spouseGroup = document.createElement('div');
+            spouseGroup.className = 'spouse-group';
+            spouseGroup.innerHTML = `
+                <div class="form-group">
+                    <label>Spouse</label>
+                    <select class="spouse-select">
+                        <option value="">Select spouse or leave blank</option>
+                    </select>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" class="unknown-spouse">
+                    <label>Unknown spouse (name not known)</label>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(spouseGroup);
+            updateSpouseDropdowns();
+        }
+
+        function clearPersonForm() {
+            document.getElementById('person-name').value = '';
+            document.getElementById('birth-year').value = '';
+            document.getElementById('death-year').value = '';
+            document.getElementById('gothram').value = '';
+            document.getElementById('sex').value = '';
+            document.getElementById('birthplace').value = '';
+            document.getElementById('occupation').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('is-alive').checked = false;
+            document.getElementById('is-root-ancestor').checked = false;
+            document.getElementById('father').value = '';
+            document.getElementById('mother').value = '';
             
-            const currentFilterValue = filter.value;
-            filter.innerHTML = '<option value="all">All Years</option>';
-            sortedYears.forEach(year => {
-                filter.innerHTML += `<option value="${year}">${year}</option>`;
+            // Reset spouses to single field
+            const spousesContainer = document.getElementById('spouses-container');
+            spousesContainer.innerHTML = `
+                <div class="spouse-group">
+                    <div class="form-group">
+                        <label>Spouse</label>
+                        <select class="spouse-select">
+                            <option value="">Select spouse or leave blank</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="unknown-spouse">
+                        <label>Unknown spouse (name not known)</label>
+                    </div>
+                </div>
+            `;
+            updatePersonFormDropdowns();
+        }
+
+        // UI update functions
+        function updateUI() {
+            updatePersonFormDropdowns();
+            updateRelationDropdown();
+            updateTreesList();
+            renderTree();
+        }
+
+        function updatePersonFormDropdowns() {
+            if (!currentTreeId || !familyTrees[currentTreeId]) return;
+            
+            const currentTree = familyTrees[currentTreeId];
+            const people = Object.values(currentTree.people);
+            
+            // Update father dropdown
+            const fatherSelect = document.getElementById('father');
+            fatherSelect.innerHTML = '<option value="">Select father or leave blank if unknown</option>';
+            people.filter(p => p.sex === 'Male').forEach(person => {
+                fatherSelect.innerHTML += `<option value="${person.id}">${person.name}</option>`;
             });
-            filter.value = currentFilterValue && sortedYears.includes(currentFilterValue) ? currentFilterValue : (sortedYears.length > 0 ? sortedYears[0] : 'all');
+            
+            // Update mother dropdown
+            const motherSelect = document.getElementById('mother');
+            motherSelect.innerHTML = '<option value="">Select mother or leave blank if unknown</option>';
+            people.filter(p => p.sex === 'Female').forEach(person => {
+                motherSelect.innerHTML += `<option value="${person.id}">${person.name}</option>`;
+            });
 
-            const displayYears = filter.value === 'all' ? sortedYears : [filter.value];
+            updateSpouseDropdowns();
+        }
 
-            if (displayYears.length === 0 || !groupedByYear[displayYears[0]]) {
-                historyContainer.innerHTML = '<p style="text-align: center; opacity: 0.8;">No historical data for the selected year.</p>';
+        function updateSpouseDropdowns() {
+            if (!currentTreeId || !familyTrees[currentTreeId]) return;
+            
+            const currentTree = familyTrees[currentTreeId];
+            const people = Object.values(currentTree.people);
+            
+            const spouseSelects = document.querySelectorAll('.spouse-select');
+            spouseSelects.forEach(select => {
+                select.innerHTML = '<option value="">Select spouse or leave blank</option>';
+                people.forEach(person => {
+                    select.innerHTML += `<option value="${person.id}">${person.name}</option>`;
+                });
+            });
+        }
+
+        function updateRelationDropdown() {
+            if (!currentTreeId || !familyTrees[currentTreeId]) return;
+            
+            const currentTree = familyTrees[currentTreeId];
+            const people = Object.values(currentTree.people);
+            
+            const relationSelect = document.getElementById('relation-search');
+            relationSelect.innerHTML = '<option value="">Choose a person...</option>';
+            people.forEach(person => {
+                relationSelect.innerHTML += `<option value="${person.id}">${person.name}</option>`;
+            });
+        }
+
+        function updateTreesList() {
+            const container = document.getElementById('trees-list');
+            if (Object.keys(familyTrees).length === 0) {
+                container.innerHTML = '<p>No trees created yet.</p>';
                 return;
             }
 
             let html = '';
-            displayYears.forEach(year => {
-                html += `<div class="history-year-group"><h4>${year}</h4>`;
-                const months = groupedByYear[year].sort((a,b) => b.month - a.month);
-                months.forEach(({ month, year }) => {
-                    const monthData = updateMonthData(month, year);
-                    const monthName = new Date(year, month).toLocaleString('default', { month: 'long' });
-                    html += `
-                        <div class="history-month">
-                            <div class="month-header">${monthName}</div>
-                            <div class="history-summary-grid">
-                                <div class="history-summary-item"><span class="history-summary-value">${monthData.trips}</span><span class="history-summary-label">Trips</span></div>
-                                <div class="history-summary-item"><span class="history-summary-value">${monthData.distance}</span><span class="history-summary-label">KM</span></div>
-                                <div class="history-summary-item"><span class="history-summary-value">₹${monthData.fuelCost.toFixed(0)}</span><span class="history-summary-label">Fuel</span></div>
-                                <div class="history-summary-item"><span class="history-summary-value">${monthData.avgTrip.toFixed(1)}</span><span class="history-summary-label">Avg/Trip</span></div>
-                            </div>
-                        </div>`;
-                });
-                html += `</div>`;
+            Object.values(familyTrees).forEach(tree => {
+                html += `
+                    <div class="tree-item ${tree.id === currentTreeId ? 'active' : ''}">
+                        <div>
+                            <h4>${tree.name}</h4>
+                            <p>${Object.keys(tree.people).length} people</p>
+                        </div>
+                        <div>
+                            ${tree.id !== currentTreeId ? `<button class="btn" onclick="switchTree('${tree.id}')">Switch</button>` : '<span class="btn">Current</span>'}
+                            <button class="btn btn-danger" onclick="deleteTree('${tree.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
             });
-            historyContainer.innerHTML = html;
+            container.innerHTML = html;
         }
 
-        // --- Edit Modal Logic ---
+        // Tree visualization
+        function renderTree() {
+            const container = document.getElementById('tree-canvas');
+            if (!currentTreeId || !familyTrees[currentTreeId]) {
+                container.innerHTML = '<p>No family tree data available. Add some family members first!</p>';
+                return;
+            }
 
-        function openEditModal(type, id) {
-            const modal = document.getElementById('editModal');
-            const modalHeader = document.getElementById('modalHeader');
-            const modalBody = document.getElementById('modalBody');
+            const currentTree = familyTrees[currentTreeId];
+            const people = currentTree.people;
+            const relationships = currentTree.relationships;
 
-            const collections = { trip: trips, fuel: fuelLogs, service: serviceLogs, insurance: insuranceLogs };
-            const forms = { trip: 'tripForm', fuel: 'fuelForm', service: 'serviceForm', insurance: 'insuranceForm' };
-            const titles = { trip: "Edit Trip Log", fuel: "Edit Fuel Log", service: "Edit Service Log", insurance: "Edit Insurance Log" };
+            if (Object.keys(people).length === 0) {
+                container.innerHTML = '<p>No family members in this tree yet. Add some people first!</p>';
+                return;
+            }
 
-            const item = collections[type].find(i => i.id === id);
-            if (!item) { console.error("Item not found for editing"); return; }
-
-            modalHeader.textContent = titles[type];
-            modalBody.innerHTML = document.getElementById(forms[type]).outerHTML;
-            const formInModal = modalBody.querySelector('form');
-            formInModal.id = `editForm-${type}`;
+            // Build tree structure with improved root finding
+            const treeStructure = buildTreeStructure(people, relationships);
             
-            if (type === 'trip') {
-                populateLocationDropdown(formInModal.querySelector('#startingLocation'));
-            }
+            // Clear container
+            container.innerHTML = '';
 
-            const elements = formInModal.elements;
-            if (type === 'trip') {
-                elements.tripDate.value = item.date;
-                elements.startingLocation.value = item.startingLocation;
-                elements.tripPurpose.value = item.purpose;
-                elements.startOdometer.value = item.startOdometer;
-                elements.endOdometer.value = item.endOdometer;
-                elements.remainingRange.value = item.remainingRange;
-                elements.tripNotes.value = item.notes;
-            } else if (type === 'fuel') {
-                elements.fuelDate.value = item.date;
-                elements.fuelOdometer.value = item.odometer;
-                elements.rangeBefore.value = item.rangeBefore;
-                elements.fuelAmount.value = item.amount;
-                elements.fuelCost.value = item.cost;
-                elements.rangeAfter.value = item.rangeAfter;
-                elements.fuelStation.value = item.station;
-            } else if (type === 'service') {
-                elements.serviceDate.value = item.date;
-                elements.serviceOdometer.value = item.odometer;
-                elements.serviceCenter.value = item.center;
-                elements.serviceType.value = item.type;
-                elements.workDescription.value = item.description;
-                elements.partsReplaced.value = item.parts;
-                elements.serviceCost.value = item.cost;
-                elements.invoiceNumber.value = item.invoice;
-            } else if (type === 'insurance') {
-                elements.insuranceProvider.value = item.provider;
-                elements.policyNumber.value = item.policyNumber;
-                elements.policyValidity.value = item.validity;
-                elements.coverageInfo.value = item.coverage;
-            }
+            // Calculate positions and render
+            const positions = calculateTreePositions(treeStructure, people);
+            renderTreeNodes(container, positions, people, treeStructure);
+            renderConnections(container, positions, treeStructure);
+        }
 
-            if (type === 'trip') {
-                const customLocationGroup = formInModal.querySelector('#customLocationGroup');
-                const defaultLocations = ["Koyambedu Home", "Kumbakonam Srivatsam", "Bangalore Amigo"];
-                if (!defaultLocations.includes(item.startingLocation) && !customLocations.includes(item.startingLocation)) {
-                    elements.startingLocation.value = 'Other';
-                    elements.customLocation.value = item.startingLocation;
-                    if(customLocationGroup) customLocationGroup.style.display = 'block';
+        function buildTreeStructure(people, relationships) {
+            const structure = {
+                roots: [],
+                children: {},
+                parents: {},
+                spouses: {},
+                levels: {}
+            };
+
+            // Initialize structure for each person
+            Object.keys(people).forEach(personId => {
+                structure.children[personId] = [];
+                structure.parents[personId] = [];
+                structure.spouses[personId] = [];
+            });
+
+            // Build relationships
+            Object.keys(relationships).forEach(personId => {
+                if (relationships[personId]) {
+                    relationships[personId].forEach(rel => {
+                        if (rel.type === 'parent-child') {
+                            if (!structure.children[personId].includes(rel.personId)) {
+                                structure.children[personId].push(rel.personId);
+                            }
+                            if (!structure.parents[rel.personId].includes(personId)) {
+                                structure.parents[rel.personId].push(personId);
+                            }
+                        } else if (rel.type === 'child-parent') {
+                            if (!structure.parents[personId].includes(rel.personId)) {
+                                structure.parents[personId].push(rel.personId);
+                            }
+                            if (!structure.children[rel.personId].includes(personId)) {
+                                structure.children[rel.personId].push(personId);
+                            }
+                        } else if (rel.type === 'spouse') {
+                            if (!structure.spouses[personId].includes(rel.personId)) {
+                                structure.spouses[personId].push(rel.personId);
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Find roots - prioritize marked root ancestor, then those without parents
+            const currentTree = familyTrees[currentTreeId];
+            if (currentTree.rootAncestorId && people[currentTree.rootAncestorId]) {
+                structure.roots = [currentTree.rootAncestorId];
+            } else {
+                // Find people without parents
+                Object.keys(people).forEach(personId => {
+                    if (structure.parents[personId].length === 0) {
+                        structure.roots.push(personId);
+                    }
+                });
+
+                // If no one without parents (circular relationships), find people with spouses but no parents
+                if (structure.roots.length === 0) {
+                    Object.keys(people).forEach(personId => {
+                        if (structure.spouses[personId].length > 0 && structure.parents[personId].length === 0) {
+                            structure.roots.push(personId);
+                        }
+                    });
+                }
+
+                // Last resort: pick the first person
+                if (structure.roots.length === 0 && Object.keys(people).length > 0) {
+                    structure.roots = [Object.keys(people)[0]];
                 }
             }
-            
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Save Changes';
-            saveButton.className = 'btn';
-            saveButton.onclick = () => saveChanges(type, id);
 
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.className = 'btn btn-secondary';
-            cancelButton.onclick = () => closeModal('editModal');
-
-            const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'modal-buttons';
-            buttonContainer.appendChild(cancelButton);
-            buttonContainer.appendChild(saveButton);
-            formInModal.appendChild(buttonContainer);
-            formInModal.querySelector('button[type="submit"]').remove();
-
-            modal.style.display = 'block';
+            return structure;
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+        function calculateTreePositions(structure, people) {
+            const positions = {};
+            const nodeWidth = 200;
+            const nodeHeight = 120;
+            const levelHeight = 200;
+            const siblingSpacing = 50;
 
-        function saveChanges(type, id) {
-            const form = document.getElementById(`editForm-${type}`);
-            const collections = { trip: trips, fuel: fuelLogs, service: serviceLogs, insurance: insuranceLogs };
-            const item = collections[type].find(i => i.id === id);
-            const elements = form.elements;
+            // Calculate levels
+            const levels = {};
+            const visited = new Set();
 
-            if (type === 'trip') {
-                item.date = elements.tripDate.value;
-                item.purpose = elements.tripPurpose.value;
-                item.startOdometer = parseInt(elements.startOdometer.value);
-                item.endOdometer = parseInt(elements.endOdometer.value);
-                item.distance = item.endOdometer - item.startOdometer;
-                item.remainingRange = elements.remainingRange.value;
-                item.notes = elements.tripNotes.value;
-                const locationSelect = elements.startingLocation.value;
-                const customLocation = elements.customLocation.value;
-                item.startingLocation = locationSelect === 'Other' ? customLocation : locationSelect;
-            } else if (type === 'fuel') {
-                item.date = elements.fuelDate.value;
-                item.odometer = parseInt(elements.fuelOdometer.value);
-                item.rangeBefore = elements.rangeBefore.value;
-                item.amount = parseFloat(elements.fuelAmount.value);
-                item.cost = parseFloat(elements.fuelCost.value);
-                item.rangeAfter = elements.rangeAfter.value;
-                item.station = elements.fuelStation.value;
-            } else if (type === 'service') {
-                item.date = elements.serviceDate.value;
-                item.odometer = parseInt(elements.serviceOdometer.value);
-                item.center = elements.serviceCenter.value;
-                item.type = elements.serviceType.value;
-                item.description = elements.workDescription.value;
-                item.parts = elements.partsReplaced.value;
-                item.cost = parseFloat(elements.serviceCost.value);
-                item.invoice = elements.invoiceNumber.value;
-            } else if (type === 'insurance') {
-                item.provider = elements.insuranceProvider.value;
-                item.policyNumber = elements.policyNumber.value;
-                item.validity = elements.policyValidity.value;
-                item.coverage = elements.coverageInfo.value;
+            function assignLevel(personId, level) {
+                if (visited.has(personId)) return;
+                visited.add(personId);
+                
+                if (!levels[level]) levels[level] = [];
+                levels[level].push(personId);
+
+                // Assign children to next level
+                structure.children[personId].forEach(childId => {
+                    assignLevel(childId, level + 1);
+                });
             }
 
-            saveData();
-            renderAll();
-            closeModal('editModal');
-            alert(`✅ ${type.charAt(0).toUpperCase() + type.slice(1)} log updated successfully!`);
+            // Start from roots
+            structure.roots.forEach(rootId => {
+                assignLevel(rootId, 0);
+            });
+
+            // Position nodes
+            Object.keys(levels).forEach(level => {
+                const peopleInLevel = levels[level];
+                const totalWidth = peopleInLevel.length * nodeWidth + (peopleInLevel.length - 1) * siblingSpacing;
+                const startX = Math.max(100, (1000 - totalWidth) / 2); // Minimum left margin
+
+                peopleInLevel.forEach((personId, index) => {
+                    positions[personId] = {
+                        x: startX + index * (nodeWidth + siblingSpacing),
+                        y: 50 + parseInt(level) * levelHeight,
+                        level: parseInt(level)
+                    };
+
+                    // Position spouses to the right
+                    structure.spouses[personId].forEach((spouseId, spouseIndex) => {
+                        if (!positions[spouseId]) { // Only position if not already positioned
+                            positions[spouseId] = {
+                                x: positions[personId].x + nodeWidth + 20 + (spouseIndex * (nodeWidth + 10)),
+                                y: positions[personId].y,
+                                level: parseInt(level),
+                                isSpouse: true
+                            };
+                        }
+                    });
+                });
+            });
+
+            return positions;
         }
 
-        // --- UTILITY FUNCTIONS ---
-        
-        function toggleFontSize() {
-            const currentSize = appSettings.fontSize || 'medium';
-            const sizes = ['small', 'medium', 'large', 'xlarge'];
-            const nextIndex = (sizes.indexOf(currentSize) + 1) % sizes.length;
-            appSettings.fontSize = sizes[nextIndex];
-            applyFontSize();
-            saveData();
+        function renderTreeNodes(container, positions, people, structure) {
+            Object.keys(positions).forEach(personId => {
+                const person = people[personId];
+                const pos = positions[personId];
+                
+                const node = document.createElement('div');
+                node.className = 'tree-node';
+                if (person.isRootAncestor) {
+                    node.classList.add('root-ancestor');
+                }
+                if (focusedPersonId === personId) {
+                    node.classList.add('focused');
+                }
+                
+                node.style.left = pos.x + 'px';
+                node.style.top = pos.y + 'px';
+                node.onclick = () => showPersonDetails(personId);
+
+                const birthYear = person.birthYear || '?';
+                const deathYear = person.isAlive ? 'Present' : (person.deathYear || '?');
+                
+                node.innerHTML = `
+                    <h4>${person.name}</h4>
+                    <p>${birthYear} - ${deathYear}</p>
+                    ${person.sex ? `<p>${person.sex}</p>` : ''}
+                    ${person.isAlive ? '<p style="color: #27ae60;">●Living</p>' : ''}
+                `;
+
+                container.appendChild(node);
+            });
         }
 
-        function applyFontSize() {
-            const container = document.querySelector('.container');
-            const size = appSettings.fontSize || 'medium';
-            const labels = {'small': 'A', 'medium': 'A+', 'large': 'A++', 'xlarge': 'A-'};
-            container.className = 'container'; // Reset
-            container.classList.add(`font-size-${size}`);
-            document.getElementById('fontToggle').textContent = labels[size];
+        function renderConnections(container, positions, structure) {
+            // Parent-child connections
+            Object.keys(structure.children).forEach(parentId => {
+                if (!positions[parentId]) return;
+                
+                structure.children[parentId].forEach(childId => {
+                    if (!positions[childId]) return;
+                    
+                    const parentPos = positions[parentId];
+                    const childPos = positions[childId];
+                    
+                    // Vertical line from parent down
+                    const verticalLine = document.createElement('div');
+                    verticalLine.className = 'tree-connection parent-child-connection';
+                    verticalLine.style.left = (parentPos.x + 90) + 'px';
+                    verticalLine.style.top = (parentPos.y + 120) + 'px';
+                    verticalLine.style.width = '3px';
+                    verticalLine.style.height = Math.abs(childPos.y - parentPos.y - 120) + 'px';
+                    container.appendChild(verticalLine);
+                    
+                    // Horizontal line to child
+                    const horizontalLine = document.createElement('div');
+                    horizontalLine.className = 'tree-connection parent-child-connection';
+                    const leftX = Math.min(parentPos.x + 90, childPos.x + 90);
+                    const rightX = Math.max(parentPos.x + 90, childPos.x + 90);
+                    horizontalLine.style.left = leftX + 'px';
+                    horizontalLine.style.top = (childPos.y - 10) + 'px';
+                    horizontalLine.style.width = (rightX - leftX) + 'px';
+                    horizontalLine.style.height = '3px';
+                    container.appendChild(horizontalLine);
+                    
+                    // Vertical line to child
+                    const childVerticalLine = document.createElement('div');
+                    childVerticalLine.className = 'tree-connection parent-child-connection';
+                    childVerticalLine.style.left = (childPos.x + 90) + 'px';
+                    childVerticalLine.style.top = (childPos.y - 10) + 'px';
+                    childVerticalLine.style.width = '3px';
+                    childVerticalLine.style.height = '10px';
+                    container.appendChild(childVerticalLine);
+                });
+            });
+
+            // Spouse connections
+            Object.keys(structure.spouses).forEach(personId => {
+                if (!positions[personId]) return;
+                
+                structure.spouses[personId].forEach(spouseId => {
+                    if (!positions[spouseId] || positions[spouseId].isSpouse) return;
+                    
+                    const personPos = positions[personId];
+                    const spousePos = positions[spouseId];
+                    
+                    // Horizontal line between spouses
+                    const spouseLine = document.createElement('div');
+                    spouseLine.className = 'tree-connection spouse-connection';
+                    const leftX = Math.min(personPos.x + 180, spousePos.x);
+                    const rightX = Math.max(personPos.x + 180, spousePos.x);
+                    spouseLine.style.left = leftX + 'px';
+                    spouseLine.style.top = (personPos.y + 60) + 'px';
+                    spouseLine.style.width = (rightX - leftX) + 'px';
+                    spouseLine.style.height = '3px';
+                    container.appendChild(spouseLine);
+                });
+            });
+        }            structure.children[personId].push(rel.personId);
+                            structure.parents[rel.personId].push(personId);
+                        } else if (rel.type === 'child-parent') {
+                            structure.parents[personId].push(rel.personId);
+                            structure.children[rel.personId].push(personId);
+                        } else if (rel.type === 'spouse') {
+                            structure.spouses[personId].push(rel.personId);
+                        }
+                    });
+                }
+            });
+
+            // Find root people (those without parents)
+            Object.keys(people).forEach(personId => {
+                if (structure.parents[personId].length === 0) {
+                    structure.roots.push(personId);
+                }
+            });
+
+            return structure;
         }
 
-        function autoBackup() {
-            const backupData = {
-                version: '1.7',
+        function renderFullTree(structure, people) {
+            let html = '<div class="tree-levels">';
+            
+            if (structure.roots.length === 0) {
+                return '<p>No root members found. This might indicate circular relationships in the data.</p>';
+            }
+
+            // Render each generation level
+            const rendered = new Set();
+            const queue = [...structure.roots];
+            let level = 0;
+
+            while (queue.length > 0 && level < 10) { // Prevent infinite loops
+                const currentLevel = [...queue];
+                queue.length = 0;
+                
+                if (currentLevel.length === 0) break;
+
+                html += `<div class="tree-level">`;
+                html += `<h3 style="width: 100%; text-align: center; color: #2c3e50; margin-bottom: 1rem;">Generation ${level + 1}</h3>`;
+                
+                currentLevel.forEach(personId => {
+                    if (rendered.has(personId)) return;
+                    
+                    html += renderPersonNode(people[personId], structure, people);
+                    rendered.add(personId);
+                    
+                    // Add children to next level
+                    structure.children[personId].forEach(childId => {
+                        if (!rendered.has(childId) && !queue.includes(childId)) {
+                            queue.push(childId);
+                        }
+                    });
+                });
+                
+                html += '</div>';
+                level++;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderFocusedTree(structure, focusedPersonId, people) {
+            let html = '<div class="focused-tree">';
+            
+            const focusedPerson = people[focusedPersonId];
+            html += `<div style="text-align: center; margin-bottom: 2rem;">
+                <h3>Family Tree focused on: ${focusedPerson.name}</h3>
+            </div>`;
+
+            // Get ancestors (parents, grandparents, etc.)
+            const ancestors = getAncestors(focusedPersonId, structure, 3);
+            if (ancestors.length > 0) {
+                html += '<div class="tree-level">';
+                html += '<h4 style="width: 100%; text-align: center; color: #2c3e50;">Ancestors</h4>';
+                ancestors.forEach(personId => {
+                    html += renderPersonNode(people[personId], structure, people);
+                });
+                html += '</div>';
+            }
+
+            // Render focused person with special styling
+            html += '<div class="tree-level">';
+            html += '<h4 style="width: 100%; text-align: center; color: #e74c3c;">Focus Person</h4>';
+            html += renderPersonNode(focusedPerson, structure, people, true);
+            html += '</div>';
+
+            // Get descendants (children, grandchildren, etc.)
+            const descendants = getDescendants(focusedPersonId, structure, 3);
+            if (descendants.length > 0) {
+                html += '<div class="tree-level">';
+                html += '<h4 style="width: 100%; text-align: center; color: #2c3e50;">Descendants</h4>';
+                descendants.forEach(personId => {
+                    html += renderPersonNode(people[personId], structure, people);
+                });
+                html += '</div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderPersonNode(person, structure, people, isFocused = false) {
+            const spouses = structure.spouses[person.id].map(spouseId => people[spouseId]);
+            
+            let html = `<div class="tree-node ${isFocused ? 'focused' : ''}" onclick="showPersonDetails('${person.id}')">`;
+            html += `<h4>${person.name}</h4>`;
+            
+            if (person.birthYear || person.deathYear) {
+                html += `<p>${person.birthYear || '?'} - ${person.deathYear || 'Present'}</p>`;
+            }
+            
+            if (person.sex) {
+                html += `<p>${person.sex}</p>`;
+            }
+            
+            if (spouses.length > 0) {
+                html += `<p><strong>Spouse(s):</strong><br>`;
+                spouses.forEach(spouse => {
+                    html += `${spouse.name}<br>`;
+                });
+                html += `</p>`;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function getAncestors(personId, structure, maxLevels) {
+            const ancestors = [];
+            const visited = new Set();
+            
+            function collectAncestors(pid, level) {
+                if (level >= maxLevels || visited.has(pid)) return;
+                visited.add(pid);
+                
+                structure.parents[pid].forEach(parentId => {
+                    if (!ancestors.includes(parentId)) {
+                        ancestors.push(parentId);
+                    }
+                    collectAncestors(parentId, level + 1);
+                });
+            }
+            
+            collectAncestors(personId, 0);
+            return ancestors;
+        }
+
+        function getDescendants(personId, structure, maxLevels) {
+            const descendants = [];
+            const visited = new Set();
+            
+            function collectDescendants(pid, level) {
+                if (level >= maxLevels || visited.has(pid)) return;
+                visited.add(pid);
+                
+                structure.children[pid].forEach(childId => {
+                    if (!descendants.includes(childId)) {
+                        descendants.push(childId);
+                    }
+                    collectDescendants(childId, level + 1);
+                });
+            }
+            
+            collectDescendants(personId, 0);
+            return descendants;
+        }
+
+        function focusOnPerson() {
+            const searchTerm = document.getElementById('tree-search-input').value.trim().toLowerCase();
+            if (!searchTerm) return;
+
+            const currentTree = familyTrees[currentTreeId];
+            const people = Object.values(currentTree.people);
+            
+            const matchedPerson = people.find(person => 
+                person.name.toLowerCase().includes(searchTerm)
+            );
+
+            if (matchedPerson) {
+                focusedPersonId = matchedPerson.id;
+                renderTree();
+            } else {
+                alert('Person not found. Please check the name and try again.');
+            }
+        }
+
+        function showFullTree() {
+            focusedPersonId = null;
+            renderTree();
+        }
+
+        function showPersonDetails(personId) {
+            const currentTree = familyTrees[currentTreeId];
+            const person = currentTree.people[personId];
+            const structure = buildTreeStructure(currentTree.people, currentTree.relationships);
+            
+            if (!person) return;
+
+            const deathYear = person.isAlive ? 'Living' : (person.deathYear || 'Unknown');
+            
+            let html = `
+                <div class="person-card">
+                    <h4>${person.name}</h4>
+                    <p><strong>Birth Year:</strong> ${person.birthYear || 'Unknown'}</p>
+                    <p><strong>Death Year:</strong> ${deathYear}</p>
+                    <p><strong>Sex:</strong> ${person.sex || 'Unknown'}</p>
+                    <p><strong>Gothram:</strong> ${person.gothram || 'Unknown'}</p>
+                    <p><strong>Birthplace:</strong> ${person.birthplace || 'Unknown'}</p>
+                    <p><strong>Occupation:</strong> ${person.occupation || 'Unknown'}</p>
+                    ${person.notes ? `<p><strong>Notes:</strong> ${person.notes}</p>` : ''}
+                    ${person.isRootAncestor ? '<p><strong>Marked as:</strong> Root Ancestor</p>' : ''}
+                </div>
+            `;
+
+            // Show relationships
+            html += '<h4>Relationships:</h4>';
+            
+            // Parents
+            const parents = structure.parents[personId].map(pid => currentTree.people[pid]);
+            if (parents.length > 0) {
+                html += '<p><strong>Parents:</strong><br>';
+                parents.forEach(parent => {
+                    html += `${parent.name}<br>`;
+                });
+                html += '</p>';
+            }
+
+            // Spouses
+            const spouses = structure.spouses[personId].map(sid => currentTree.people[sid]);
+            if (spouses.length > 0) {
+                html += '<p><strong>Spouse(s):</strong><br>';
+                spouses.forEach(spouse => {
+                    html += `${spouse.name}<br>`;
+                });
+                html += '</p>';
+            }
+
+            // Children
+            const children = structure.children[personId].map(cid => currentTree.people[cid]);
+            if (children.length > 0) {
+                html += '<p><strong>Children:</strong><br>';
+                children.forEach(child => {
+                    html += `${child.name}<br>`;
+                });
+                html += '</p>';
+            }
+
+            document.getElementById('person-details').innerHTML = html;
+            document.getElementById('person-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('person-modal').style.display = 'none';
+        }
+
+        // Relations finder
+        function showRelations() {
+            const personId = document.getElementById('relation-search').value;
+            if (!personId) return;
+
+            const currentTree = familyTrees[currentTreeId];
+            const person = currentTree.people[personId];
+            const structure = buildTreeStructure(currentTree.people, currentTree.relationships);
+
+            let html = `<h3>Family Relations for ${person.name}</h3>`;
+
+            // Immediate Family
+            html += '<div class="relationship-section">';
+            html += '<h3>Immediate Family</h3>';
+
+            // Parents
+            const parents = structure.parents[personId];
+            if (parents.length > 0) {
+                html += '<h4>Parents:</h4>';
+                parents.forEach(parentId => {
+                    const parent = currentTree.people[parentId];
+                    html += `<div class="person-card">
+                        <h4>${parent.name}</h4>
+                        <p>${parent.birthYear || '?'} - ${parent.deathYear || 'Present'}</p>
+                    </div>`;
+                });
+            }
+
+            // Spouses
+            const spouses = structure.spouses[personId];
+            if (spouses.length > 0) {
+                html += '<h4>Spouse(s):</h4>';
+                spouses.forEach(spouseId => {
+                    const spouse = currentTree.people[spouseId];
+                    html += `<div class="person-card">
+                        <h4>${spouse.name}</h4>
+                        <p>${spouse.birthYear || '?'} - ${spouse.deathYear || 'Present'}</p>
+                    </div>`;
+                });
+            }
+
+            // Children
+            const children = structure.children[personId];
+            if (children.length > 0) {
+                html += '<h4>Children:</h4>';
+                children.forEach(childId => {
+                    const child = currentTree.people[childId];
+                    html += `<div class="person-card">
+                        <h4>${child.name}</h4>
+                        <p>${child.birthYear || '?'} - ${child.deathYear || 'Present'}</p>
+                    </div>`;
+                });
+            }
+
+            html += '</div>';
+
+            // Extended Family
+            html += '<div class="relationship-section">';
+            html += '<h3>Extended Family</h3>';
+
+            // Siblings
+            const siblings = getSiblings(personId, structure);
+            if (siblings.length > 0) {
+                html += '<h4>Siblings:</h4>';
+                siblings.forEach(siblingId => {
+                    const sibling = currentTree.people[siblingId];
+                    html += `<div class="person-card">
+                        <h4>${sibling.name}</h4>
+                        <p>${sibling.birthYear || '?'} - ${sibling.deathYear || 'Present'}</p>
+                    </div>`;
+                });
+            }
+
+            // Grandparents
+            const grandparents = getGrandparents(personId, structure);
+            if (grandparents.length > 0) {
+                html += '<h4>Grandparents:</h4>';
+                grandparents.forEach(grandparentId => {
+                    const grandparent = currentTree.people[grandparentId];
+                    html += `<div class="person-card">
+                        <h4>${grandparent.name}</h4>
+                        <p>${grandparent.birthYear || '?'} - ${grandparent.deathYear || 'Present'}</p>
+                    </div>`;
+                });
+            }
+
+            html += '</div>';
+
+            // In-laws (if married)
+            if (spouses.length > 0) {
+                html += '<div class="relationship-section">';
+                html += '<h3>In-Laws</h3>';
+                
+                spouses.forEach(spouseId => {
+                    const spouseParents = structure.parents[spouseId];
+                    if (spouseParents.length > 0) {
+                        html += '<h4>Parents-in-Law:</h4>';
+                        spouseParents.forEach(inLawId => {
+                            const inLaw = currentTree.people[inLawId];
+                            html += `<div class="person-card">
+                                <h4>${inLaw.name}</h4>
+                                <p>${inLaw.birthYear || '?'} - ${inLaw.deathYear || 'Present'}</p>
+                            </div>`;
+                        });
+                    }
+                });
+
+                html += '</div>';
+            }
+
+            document.getElementById('relations-display').innerHTML = html;
+        }
+
+        function getSiblings(personId, structure) {
+            const siblings = [];
+            const parents = structure.parents[personId];
+            
+            parents.forEach(parentId => {
+                structure.children[parentId].forEach(childId => {
+                    if (childId !== personId && !siblings.includes(childId)) {
+                        siblings.push(childId);
+                    }
+                });
+            });
+            
+            return siblings;
+        }
+
+        function getGrandparents(personId, structure) {
+            const grandparents = [];
+            const parents = structure.parents[personId];
+            
+            parents.forEach(parentId => {
+                structure.parents[parentId].forEach(grandparentId => {
+                    if (!grandparents.includes(grandparentId)) {
+                        grandparents.push(grandparentId);
+                    }
+                });
+            });
+            
+            return grandparents;
+        }
+
+        // Tree linking functionality
+        function searchAcrossTrees() {
+            const searchName = document.getElementById('link-person-name').value.trim().toLowerCase();
+            if (!searchName) return;
+
+            const results = [];
+            Object.values(familyTrees).forEach(tree => {
+                Object.values(tree.people).forEach(person => {
+                    if (person.name.toLowerCase().includes(searchName)) {
+                        results.push({
+                            person: person,
+                            treeName: tree.name,
+                            treeId: tree.id
+                        });
+                    }
+                });
+            });
+
+            let html = '';
+            if (results.length === 0) {
+                html = '<p>No matches found across all trees.</p>';
+            } else if (results.length === 1) {
+                html = '<p>Only one person found with that name.</p>';
+            } else {
+                html = '<h4>Multiple people found. Are any of these the same person?</h4>';
+                html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem;">';
+                
+                results.forEach((result, index) => {
+                    html += `
+                        <div class="person-card">
+                            <h4>${result.person.name}</h4>
+                            <p><strong>Tree:</strong> ${result.treeName}</p>
+                            <p><strong>Birth:</strong> ${result.person.birthYear || 'Unknown'}</p>
+                            <p><strong>Death:</strong> ${result.person.deathYear || 'Unknown'}</p>
+                            <p><strong>Sex:</strong> ${result.person.sex || 'Unknown'}</p>
+                            <p><strong>Birthplace:</strong> ${result.person.birthplace || 'Unknown'}</p>
+                            <button class="btn btn-secondary" onclick="selectForMerge('${result.treeId}', '${result.person.id}', ${index})">Select for Merge</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                html += '<div style="margin-top: 1rem;"><button class="btn" onclick="mergeTrees()">Merge Selected Trees</button></div>';
+            }
+
+            document.getElementById('link-results').innerHTML = html;
+        }
+
+        let selectedForMerge = [];
+
+        function selectForMerge(treeId, personId, index) {
+            selectedForMerge.push({ treeId, personId, index });
+            
+            // Update UI to show selection
+            const buttons = document.querySelectorAll('#link-results .btn-secondary');
+            if (buttons[index]) {
+                buttons[index].textContent = 'Selected ✓';
+                buttons[index].disabled = true;
+                buttons[index].classList.add('btn');
+                buttons[index].classList.remove('btn-secondary');
+            }
+        }
+
+        function mergeTrees() {
+            if (selectedForMerge.length < 2) {
+                alert('Please select at least 2 people to merge their trees.');
+                return;
+            }
+
+            if (confirm('This will merge the selected trees. Are you sure?')) {
+                // Implementation for merging trees would go here
+                // For now, just show a message
+                alert('Tree merging functionality will be implemented. For now, you can manually recreate relationships between trees.');
+                selectedForMerge = [];
+                document.getElementById('link-results').innerHTML = '';
+            }
+        }
+
+        // Data persistence
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('familyTrees', JSON.stringify(familyTrees));
+                localStorage.setItem('currentTreeId', currentTreeId);
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const savedTrees = localStorage.getItem('familyTrees');
+                const savedCurrentTreeId = localStorage.getItem('currentTreeId');
+                
+                if (savedTrees) {
+                    familyTrees = JSON.parse(savedTrees);
+                }
+                if (savedCurrentTreeId) {
+                    currentTreeId = savedCurrentTreeId;
+                }
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+                familyTrees = {};
+                currentTreeId = null;
+            }
+        }
+
+        function exportData() {
+            if (!currentTreeId) return;
+            
+            const data = {
+                version: '1.0',
                 exportDate: new Date().toISOString(),
-                trips, fuelLogs, serviceLogs, customLocations, vehicleDetails, insuranceLogs, appSettings
+                tree: familyTrees[currentTreeId]
             };
-            const dataStr = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const now = new Date();
-            const filename = `trip_logger_backup_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}.json`;
+            
+            downloadJSON(data, `${familyTrees[currentTreeId].name.replace(/\s+/g, '_')}_family_tree.json`);
+            showMessage('save-load-message', 'Current tree exported successfully!', 'success');
+        }
+
+        function exportAllData() {
+            const data = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                trees: familyTrees
+            };
+            
+            downloadJSON(data, 'all_family_trees.json');
+            showMessage('save-load-message', 'All trees exported successfully!', 'success');
+        }
+
+        function downloadJSON(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = window.URL.createObjectURL(blob);
+            a.href = url;
             a.download = filename;
+            document.body.appendChild(a);
             a.click();
-            window.URL.revokeObjectURL(a.href);
-            appSettings.lastBackupDate = now.getTime();
-            saveData();
-            updateBackupStatus();
-            alert(`✅ Backup created successfully!`);
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function importData() {
-            const fileInput = document.getElementById('importFile');
+            const fileInput = document.getElementById('import-file');
             const file = fileInput.files[0];
-            if (!file) return;
+            
+            if (!file) {
+                showMessage('save-load-message', 'Please select a file to import.', 'error');
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const backupData = JSON.parse(e.target.result);
-                    if (!backupData || typeof backupData.trips === 'undefined') {
-                        throw new Error('Invalid backup file format');
-                    }
-                    if (!confirm(`This will restore all data and REPLACE current logs. Continue?`)) return;
+                    const data = JSON.parse(e.target.result);
                     
-                    trips = backupData.trips || [];
-                    fuelLogs = backupData.fuelLogs || [];
-                    serviceLogs = backupData.serviceLogs || [];
-                    customLocations = backupData.customLocations || [];
-                    vehicleDetails = backupData.vehicleDetails || {};
-                    insuranceLogs = backupData.insuranceLogs || [];
-                    appSettings = backupData.appSettings || {};
-
-                    saveData();
-                    applyFontSize();
-                    renderAll();
-                    alert(`✅ Data restored successfully!`);
+                    if (data.tree) {
+                        // Single tree import
+                        const treeId = 'imported_' + Date.now();
+                        familyTrees[treeId] = { ...data.tree, id: treeId };
+                        currentTreeId = treeId;
+                        showMessage('save-load-message', 'Tree imported successfully!', 'success');
+                    } else if (data.trees) {
+                        // Multiple trees import
+                        Object.values(data.trees).forEach(tree => {
+                            const treeId = 'imported_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                            familyTrees[treeId] = { ...tree, id: treeId };
+                        });
+                        currentTreeId = Object.keys(familyTrees)[0];
+                        showMessage('save-load-message', 'All trees imported successfully!', 'success');
+                    } else {
+                        showMessage('save-load-message', 'Invalid file format.', 'error');
+                        return;
+                    }
+                    
+                    saveToLocalStorage();
+                    updateUI();
+                    fileInput.value = '';
+                    
                 } catch (error) {
-                    alert('❌ Error reading backup file. Please make sure it is a valid backup.');
-                    console.error('Import error:', error);
+                    showMessage('save-load-message', 'Error reading file. Please check the file format.', 'error');
                 }
             };
+            
             reader.readAsText(file);
-            fileInput.value = '';
-        }
-        
-        function updateBackupStatus() {
-            const lastBackup = appSettings.lastBackupDate;
-            const statusElement = document.getElementById('backupStatus');
-            if (lastBackup) {
-                statusElement.style.display = 'block';
-                document.getElementById('lastBackupDate').textContent = formatDate(new Date(lastBackup));
-            } else {
-                statusElement.style.display = 'none';
-            }
-        }
-        
-        function checkBackupReminder() {
-            const now = new Date().getTime();
-            const lastBackup = appSettings.lastBackupDate || 0;
-            const backupInterval = 7 * 24 * 60 * 60 * 1000;
-            if (trips.length > 5 && (now - lastBackup > backupInterval)) {
-                document.getElementById('backupModal').style.display = 'block';
-                document.getElementById('backupReminder').style.display = 'block';
-            }
-        }
-        
-        function dismissBackupReminder() {
-            document.getElementById('backupReminder').style.display = 'none';
-            appSettings.lastReminderDate = new Date().getTime();
-            saveData();
         }
 
-        function snoozeBackup() {
-             appSettings.lastReminderDate = new Date().getTime();
-             saveData();
-             closeModal('backupModal');
-        }
-        
-        function getPurposeIcon(purpose) {
-            const icons = { 'Shopping': '🛒', 'Family Visit': '👨‍👩‍👧‍👦', 'Religious': '🕉️', 'Banking': '🏦', 'Social': '👥', 'Leisure': '🎯', 'Maintenance': '🔧', 'Medical': '🏥', 'Other': '📝' };
-            return icons[purpose] || '📝';
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            return new Date(date.toLocaleString('en-US', { timeZone: userTimezone })).toLocaleDateString('en-IN', {
-                day: 'numeric', month: 'short', year: 'numeric'
-            });
-        }
-        
-        function autoPopulateOdometerFields() {
-            let lastOdometer = 0;
-            const allLogs = [...trips.map(t=>({date:t.date, odo:t.endOdometer})), ...fuelLogs.map(f=>({date:f.date, odo:f.odometer})), ...serviceLogs.map(s=>({date:s.date, odo:s.odometer}))]
-                .filter(l => l.odo)
-                .sort((a,b) => new Date(b.date) - new Date(a.date) || b.odo - a.odo);
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete ALL family tree data? This cannot be undone.')) {
+                familyTrees = {};
+                currentTreeId = null;
+                focusedPersonId = null;
+                localStorage.removeItem('familyTrees');
+                localStorage.removeItem('currentTreeId');
                 
-            if (allLogs.length > 0) {
-                 lastOdometer = allLogs[0].odo;
+                // Create default tree
+                createNewTree('My Family Tree');
+                updateUI();
+                showMessage('save-load-message', 'All data cleared successfully.', 'success');
             }
+        }
+
+        // Utility functions
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            container.innerHTML = `<div class="${className}">${message}</div>`;
             
-            if (lastOdometer > 0) {
-                 ['startOdometer', 'fuelOdometer', 'serviceOdometer'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) {
-                        el.value = lastOdometer;
-                        el.style.backgroundColor = '#f0fff0';
-                        el.title = `Auto-filled from last known odometer reading (${lastOdometer} km)`;
-                    }
-                });
-            }
+            // Clear message after 5 seconds
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
         }
-        
-        function exportData(type) {
-           let data = '';
-           let filename = '';
-           if (type === 'trips') {
-               data = 'Date,Starting Location,Purpose,Start Odometer,End Odometer,Distance,Estimated Cost,Remaining Range,Notes\n';
-               data += trips.map(trip => {
-                   const cost = calculateTripCost(trip.distance, trip.date);
-                   const fields = [trip.date, trip.startingLocation, trip.purpose, trip.startOdometer, trip.endOdometer, trip.distance, cost.toFixed(2), trip.remainingRange, trip.notes];
-                   return fields.map(field => `"${String(field || '').replace(/"/g, '""')}"`).join(',');
-               }).join('\n');
-               filename = `trip_logs_${new Date().toISOString().split('T')[0]}.csv`;
-           } else if (type === 'fuel') {
-                data = 'Date,Odometer,Amount (L),Cost (INR),Station\n';
-                data += fuelLogs.map(fuel => {
-                    const fields = [fuel.date, fuel.odometer, fuel.amount, fuel.cost, fuel.station];
-                    return fields.map(field => `"${String(field || '').replace(/"/g, '""')}"`).join(',');
-                }).join('\n');
-                filename = `fuel_logs_${new Date().toISOString().split('T')[0]}.csv`;
-           }
 
-           const blob = new Blob([`\uFEFF${data}`], { type: 'text/csv;charset=utf-8;' });
-           const url = window.URL.createObjectURL(blob);
-           const a = document.createElement('a');
-           a.href = url;
-           a.download = filename;
-           a.click();
-           window.URL.revokeObjectURL(url);
-           alert(`✅ ${type} logs exported successfully!`);
-       }
-
-       function populateLocationDropdown(selectElement) {
-            const defaultOptionsHTML = `
-                <option value="">Select starting location...</option>
-                <option value="Koyambedu Home">🏠 Koyambedu Home</option>
-                <option value="Kumbakonam Srivatsam">🏡 Kumbakonam Srivatsam</option>
-                <option value="Bangalore Amigo">🏢 Bangalore Amigo</option>
-                <option value="Other">✏️ Other (specify below)</option>
-            `;
-            selectElement.innerHTML = defaultOptionsHTML;
-            
-            customLocations.forEach(location => {
-                const option = document.createElement('option');
-                option.value = location;
-                option.textContent = `📍 ${location}`;
-                selectElement.insertBefore(option, selectElement.querySelector('option[value="Other"]'));
-            });
-        }
-        
-        function handleLocationChange(selectElement) {
-            const form = selectElement.closest('form');
-            const customGroup = form.querySelector('#customLocationGroup');
-            const customInput = form.querySelector('#customLocation');
-            if (customGroup) {
-                const isOther = selectElement.value === 'Other';
-                customGroup.style.display = isOther ? 'block' : 'none';
-                customInput.required = isOther;
-            }
-        }
-        
-        function handleScroll() {
-            const btn = document.getElementById('backToTopBtn');
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                btn.style.display = 'block';
-            } else {
-                btn.style.display = 'none';
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('person-modal');
+            if (event.target === modal) {
+                closeModal();
             }
         }
 
-        function scrollToTop() {
-            window.scrollTo(0, 0);
-        }
-
-        function openHelpModal() {
-            const modalBody = document.getElementById('helpModalBody');
-            modalBody.innerHTML = `
-                <h3>Estimated Trip Cost</h3>
-                <p>This is calculated dynamically by combining two factors: <strong>Fuel Price</strong> and <strong>Fuel Efficiency</strong>.</p>
-                <p>The app finds the fuel price from the last fuel log entered on or before the trip's date. It then divides the trip distance by your car's overall average efficiency to estimate the fuel used, and multiplies that by the historical fuel price.</p>
-                <hr style="margin: 15px 0;">
-                <h3>Overall Cost / km</h3>
-                <p>This is the true running cost of your vehicle. It's calculated by adding your <strong>Total Fuel Cost</strong> and <strong>Total Service Cost</strong>, then dividing by the <strong>Total Distance</strong> you've driven.</p>
-                <hr style="margin: 15px 0;">
-                <h3>Average Fuel Efficiency (km/L)</h3>
-                <p>The app calculates this by looking at the distance traveled between all your fuel fill-ups and the amount of fuel added at each stop. It provides a reliable average over the lifetime of the logs.</p>
-            `;
-            document.getElementById('helpModal').style.display = 'block';
-        }
-
-        // --- CHARTING FUNCTIONS ---
-        function renderMonthlyDistanceChart() {
-            const container = document.getElementById('monthlyDistanceChart');
-            const data = {};
-            const now = new Date();
-            for(let i=11; i>=0; i--) {
-                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const key = `${d.getFullYear()}-${d.getMonth()}`;
-                data[key] = { label: d.toLocaleString('default', {month:'short'}), value: 0 };
-            }
-
-            trips.forEach(trip => {
-                const d = new Date(trip.date);
-                const key = `${d.getFullYear()}-${d.getMonth()}`;
-                if (data[key]) {
-                    data[key].value += trip.distance;
+        // Handle file input for import
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('import-file');
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const fileName = this.files[0].name;
+                    showMessage('save-load-message', `Selected file: ${fileName}`, 'success');
                 }
             });
-
-            const chartData = Object.values(data);
-            const maxValue = Math.max(...chartData.map(d => d.value));
-            if (maxValue === 0) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Not enough data for chart.</p>'; return; }
-            
-            const bars = chartData.map((d, i) => {
-                const barHeight = d.value / maxValue * 130;
-                return `
-                <g>
-                    <rect y="${150 - barHeight}" x="${i * 25}" width="20" height="${barHeight}" fill="#4CAF50"></rect>
-                    <text y="${145 - barHeight}" x="${i * 25 + 10}" text-anchor="middle" font-size="10" fill="#333">${Math.round(d.value)}</text>
-                    <text y="165" x="${i * 25 + 10}" text-anchor="middle" font-size="10">${d.label}</text>
-                </g>`}).join('');
-
-            container.innerHTML = `<svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMax meet">${bars}</svg>`;
-        }
-        
-        function renderFuelPriceChart() {
-            const container = document.getElementById('fuelPriceChart');
-            if (fuelLogs.length < 2) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Need at least 2 fuel logs.</p>'; return; }
-
-            const allLogsSorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date));
-            const recentLogs = allLogsSorted.slice(-20);
-
-            const prices = recentLogs.map(log => log.amount > 0 ? log.cost / log.amount : 0).filter(p => p > 0);
-            if (prices.length < 2) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Need at least 2 valid fuel logs.</p>'; return; }
-            
-            const minPrice = Math.min(...prices);
-            const maxPrice = Math.max(...prices);
-            const range = maxPrice - minPrice;
-            
-            const chartWidth = 280;
-            const chartHeight = 120;
-            let points = '', dataPoints = '', xLabels = '';
-
-            recentLogs.forEach((log, i) => {
-                const price = log.amount > 0 ? log.cost / log.amount : 0;
-                if (price === 0) return;
-                const x = (i / (recentLogs.length - 1)) * chartWidth + 10;
-                const y = 140 - (range > 0 ? ((price - minPrice) / range * chartHeight) : chartHeight / 2);
-                points += `${x},${y} `;
-                dataPoints += `<g>
-                    <circle cx="${x}" cy="${y}" r="3" fill="#dc3545"></circle>
-                    <text x="${x}" y="${y - 8}" text-anchor="middle" font-size="10" fill="#333">${price.toFixed(2)}</text>
-                </g>`;
-            });
-            
-            const labelIndices = [0, Math.floor((recentLogs.length - 1) / 2), recentLogs.length - 1];
-            const uniqueLabelIndices = [...new Set(labelIndices)];
-
-            xLabels = uniqueLabelIndices.map(i => {
-                const log = recentLogs[i];
-                const x = (i / (recentLogs.length - 1)) * chartWidth + 10;
-                const dateLabel = new Date(log.date).toLocaleDateString('default', {month:'short', day:'2-digit'});
-                return `<text x="${x}" y="165" text-anchor="middle" font-size="10">${dateLabel}</text>`;
-            }).join('');
-
-            container.innerHTML = `<svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMax meet">
-                <line x1="10" y1="140" x2="290" y2="140" stroke="#ccc" stroke-width="1"/>
-                <polyline points="${points.trim()}" fill="none" stroke="#ffc107" stroke-width="2"/>
-                ${dataPoints}
-                ${xLabels}
-            </svg>`;
-        }
-
-        function renderPurposePieChart() {
-            const container = document.getElementById('purposePieChart');
-            if (trips.length === 0) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">No trips logged yet.</p>'; return; }
-
-            const purposeCounts = trips.reduce((acc, trip) => {
-                const purpose = trip.purpose || 'Other';
-                acc[purpose] = (acc[purpose] || 0) + 1;
-                return acc;
-            }, {});
-
-            const total = trips.length;
-            const colors = ['#4CAF50', '#ffc107', '#17a2b8', '#6f42c1', '#e83e8c', '#fd7e14', '#6c757d', '#dc3545'];
-            let cumulativePercent = 0;
-            
-            const getCoords = (percent) => [Math.cos(percent * 2 * Math.PI), Math.sin(percent * 2 * Math.PI)];
-
-            const slices = Object.entries(purposeCounts).map(([purpose, count], i) => {
-                const percent = count / total;
-                const startAngle = cumulativePercent * 2 * Math.PI;
-                const endAngle = (cumulativePercent + percent) * 2 * Math.PI;
-                const midAngle = startAngle + (endAngle - startAngle) / 2;
-                
-                const [startX, startY] = getCoords(cumulativePercent);
-                cumulativePercent += percent;
-                const [endX, endY] = getCoords(cumulativePercent);
-                const largeArcFlag = percent > 0.5 ? 1 : 0;
-                
-                const pathData = `M ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} L 0 0`;
-                const labelX = Math.cos(midAngle) * 0.65;
-                const labelY = Math.sin(midAngle) * 0.65;
-
-                return { path: pathData, color: colors[i % colors.length], purpose, count, percent, labelX, labelY };
-            });
-
-            const legendItems = slices.map(slice => `
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color:${slice.color};"></div>${slice.purpose} (${slice.count})
-                </div>`).join('');
-            
-            const paths = slices.map(slice => `<path d="${slice.path}" fill="${slice.color}"></path>`).join('');
-            const labels = slices.map(slice => {
-                if (slice.percent < 0.05) return ''; // Don't label very small slices
-                return `<text x="${slice.labelX}" y="${slice.labelY}" fill="white" font-size="0.12" text-anchor="middle" alignment-baseline="middle" font-weight="bold" transform="rotate(90, ${slice.labelX}, ${slice.labelY})">${(slice.percent * 100).toFixed(0)}%</text>`
-            }).join('');
-
-            container.innerHTML = `
-                <svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg); border-radius: 50%;">${paths}${labels}</svg>
-                <div class="pie-chart-legend">${legendItems}</div>
-            `;
-        }
-
+        });
     </script>
 </body>
 </html>
