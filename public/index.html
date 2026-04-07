@@ -1,0 +1,2578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Trip Logger</title>
+    <link rel="icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Trip Logger">
+    <style>
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* --- Login Screen --- */
+        .login-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .login-overlay.hidden { display: none; }
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .login-card h1 { font-size: 28px; margin-bottom: 8px; }
+        .login-card p { color: #666; margin-bottom: 30px; font-size: 14px; }
+        .pin-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+        .pin-input:focus { outline: none; border-color: #4CAF50; }
+        .login-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .section-divider {
+            border-top: 1px solid #dee2e6;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #212529;
+            border: none;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            color: white;
+            border: none;
+        }
+
+        .record {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .record-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .record-date {
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .record-details {
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .record-details strong {
+            color: #333;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stats h3 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .info-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-style: italic;
+            cursor: pointer;
+            font-family: serif;
+            margin-left: 8px;
+            line-height: 20px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .font-size-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            min-width: 45px;
+        }
+
+        .monthly-summary {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .monthly-history {
+            background: linear-gradient(135deg, #e83e8c, #d91a72);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .history-year-group h4 {
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        .history-month {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .history-month:last-child {
+            margin-bottom: 0;
+        }
+
+        .month-header {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .history-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 10px;
+        }
+
+        .history-summary-item { text-align: center; }
+        .history-summary-value { display: block; font-size: 14px; font-weight: bold; }
+        .history-summary-label { font-size: 10px; opacity: 0.8; }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+        }
+        .summary-item { text-align: center; }
+        .summary-value { display: block; font-size: 20px; font-weight: bold; }
+        .summary-label { font-size: 12px; opacity: 0.9; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            overflow-y: auto;
+            padding-top: 5vh;
+            padding-bottom: 5vh;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .modal-content h3 { margin-bottom: 15px; color: #333; }
+        .modal-content p { line-height: 1.6; color: #555; }
+        .modal-content strong { color: #222; }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+        }
+
+        .export-section {
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .import-section {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px dashed #4CAF50;
+        }
+        .file-input { display: none; }
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .backup-reminder {
+            background: linear-gradient(135deg, #ff9500, #ff7b00);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        .backup-status {
+            background: #e8f5e8;
+            color: #2d5016;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #backToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            border: none;
+            outline: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            line-height: 50px;
+            text-align: center;
+        }
+
+        .charts-container {
+            margin-top: 20px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .chart-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .chart-box h4 { text-align: center; margin-bottom: 15px; color: #333; }
+        .chart-box svg { width: 100%; height: auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .pie-chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 15px; }
+        .legend-item { display: flex; align-items: center; font-size: 12px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; }
+
+        /* --- Document Upload Section --- */
+        .documents-section {
+            margin-bottom: 20px;
+        }
+        .doc-upload-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .doc-upload-card h4 {
+            margin-bottom: 12px;
+            color: #333;
+        }
+        .doc-thumbnails {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .doc-thumb {
+            width: 140px;
+            height: 100px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+            font-size: 13px;
+            color: #999;
+        }
+        .doc-thumb.has-photo {
+            border: 2px solid #4CAF50;
+        }
+        .doc-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .doc-thumb .delete-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(220,53,69,0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            line-height: 24px;
+            text-align: center;
+        }
+        .doc-upload-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .doc-upload-actions .btn {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+            margin-bottom: 0;
+        }
+
+        /* Photo viewer modal */
+        .photo-viewer-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            align-items: center;
+            justify-content: center;
+        }
+        .photo-viewer-modal.active { display: flex; }
+        .photo-viewer-modal img {
+            max-width: 95%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .photo-viewer-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: white;
+            font-size: 36px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            z-index: 1003;
+        }
+
+        .font-size-small { font-size: 14px; }
+        .font-size-medium { font-size: 16px; }
+        .font-size-large { font-size: 18px; }
+        .font-size-xlarge { font-size: 20px; }
+
+        /* Welcome Modal */
+        .welcome-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2000;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .welcome-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 32px 24px 24px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .welcome-overlay.show .welcome-card {
+            transform: scale(1);
+        }
+        .welcome-card h2 {
+            margin: 0 0 16px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .welcome-card .joke {
+            font-size: 15px;
+            line-height: 1.6;
+            opacity: 0.92;
+            font-style: italic;
+            margin: 0 5px 20px;
+        }
+        .welcome-card .dismiss-btn {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 10px 32px;
+            border-radius: 25px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* Fuel Reminder Modal */
+        .fuel-reminder-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2000;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .fuel-reminder-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .fuel-reminder-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 24px 24px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .fuel-reminder-overlay.show .fuel-reminder-card {
+            transform: scale(1);
+        }
+        .fuel-reminder-card h3 {
+            margin: 0 0 14px;
+            font-size: 20px;
+        }
+        .fuel-reminder-card p {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+            margin: 0 0 20px;
+        }
+        .fuel-reminder-card .highlight {
+            font-weight: 600;
+            color: #333;
+        }
+        .fuel-reminder-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .fuel-reminder-buttons button {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+        }
+        .fuel-reminder-buttons .btn-log {
+            background: #4CAF50;
+            color: white;
+        }
+        .fuel-reminder-buttons .btn-skip {
+            background: #eee;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Modal -->
+    <div id="welcomeOverlay" class="welcome-overlay" onclick="dismissWelcome()">
+        <div class="welcome-card" onclick="event.stopPropagation()">
+            <h2>👋 Welcome Back!</h2>
+            <p class="joke" id="welcomeJoke"></p>
+            <button class="dismiss-btn" onclick="dismissWelcome()">OK</button>
+        </div>
+    </div>
+
+    <!-- Fuel Reminder Modal -->
+    <div id="fuelReminderOverlay" class="fuel-reminder-overlay">
+        <div class="fuel-reminder-card">
+            <h3>⛽ Fuel Reminder</h3>
+            <p id="fuelReminderMsg"></p>
+            <div class="fuel-reminder-buttons">
+                <button class="btn-log" onclick="goToFuelTab()">Log Fuel</button>
+                <button class="btn-skip" onclick="dismissFuelReminder()">Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <h1>🚗 Trip Logger</h1>
+            <p>Enter your PIN to continue</p>
+            <div id="loginError" class="login-error">Incorrect PIN. Please try again.</div>
+            <input type="tel" id="pinInput" class="pin-input" maxlength="10" placeholder="10-digit PIN" inputmode="numeric" autocomplete="off">
+            <button class="btn" onclick="handleLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- Photo Viewer -->
+    <div id="photoViewer" class="photo-viewer-modal" onclick="closePhotoViewer()">
+        <button class="photo-viewer-close" onclick="closePhotoViewer()">&times;</button>
+        <img id="photoViewerImg" src="" alt="Document">
+    </div>
+
+    <div class="container" id="appContainer" style="display:none;">
+        <button class="font-size-toggle" onclick="toggleFontSize()" id="fontToggle">A+</button>
+
+        <div class="header">
+            <h1>🚗 Trip Logger</h1>
+            <p>Track your journeys and expenses</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('trips')">Trip Logs</button>
+            <button class="tab" onclick="showTab('fuel')">Fuel Logs</button>
+            <button class="tab" onclick="showTab('service')">Service</button>
+            <button class="tab" onclick="showTab('stats')">Statistics</button>
+            <button class="tab" onclick="showTab('vehicle')">Vehicle</button>
+        </div>
+
+        <div id="trips" class="tab-content active">
+            <form id="tripForm">
+                 <div class="form-group">
+                    <label for="tripDate">Date</label>
+                    <input type="date" id="tripDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="startingLocation">Starting Location *</label>
+                    <select id="startingLocation" onchange="handleLocationChange(this)" required>
+                        </select>
+                </div>
+                <div class="form-group" id="customLocationGroup" style="display: none;">
+                    <label for="customLocation">Custom Starting Location</label>
+                    <input type="text" id="customLocation" placeholder="Enter custom location...">
+                </div>
+                <div class="form-group">
+                    <label for="tripPurpose">Trip Purpose *</label>
+                    <select id="tripPurpose" required>
+                        <option value="">Select purpose...</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Family Visit">Family Visit</option>
+                        <option value="Religious">Religious</option>
+                        <option value="Banking">Banking</option>
+                        <option value="Social">Social</option>
+                        <option value="Leisure">Leisure</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Medical">Medical</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="startOdometer">Start Odometer (km) *</label>
+                    <input type="number" id="startOdometer" placeholder="e.g., 45000" required>
+                </div>
+                <div class="form-group">
+                    <label for="endOdometer">End Odometer (km) *</label>
+                    <input type="number" id="endOdometer" placeholder="e.g., 45150" required>
+                </div>
+                <div class="form-group">
+                    <label for="remainingRange">Remaining Range (km)</label>
+                    <input type="number" id="remainingRange" placeholder="e.g., 450">
+                </div>
+                <div class="form-group">
+                    <label for="tripNotes">Trip Notes</label>
+                    <textarea id="tripNotes" placeholder="Any additional notes about the trip..."></textarea>
+                </div>
+                <button type="submit" class="btn">Add Trip Log</button>
+            </form>
+
+            <div class="section-divider"></div>
+            <div id="tripsList"></div>
+        </div>
+
+        <div id="fuel" class="tab-content">
+            <form id="fuelForm">
+                <div class="form-group">
+                    <label for="fuelDate">Date</label>
+                    <input type="date" id="fuelDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="fuelOdometer">Odometer Reading (km)</label>
+                    <input type="number" id="fuelOdometer" placeholder="e.g., 45075" required>
+                </div>
+                <div class="form-group">
+                    <label for="rangeBefore">Range Before Fuel (km)</label>
+                    <input type="number" id="rangeBefore" placeholder="e.g., 50">
+                </div>
+                <div class="form-group">
+                    <label for="fuelAmount">Fuel Amount (Litres)</label>
+                    <input type="number" step="0.01" id="fuelAmount" placeholder="e.g., 45.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="fuelCost">Cost (₹)</label>
+                    <input type="number" step="0.01" id="fuelCost" placeholder="e.g., 4095.50" required>
+                </div>
+                <div class="form-group">
+                    <label for="rangeAfter">Range After Fuel (km)</label>
+                    <input type="number" id="rangeAfter" placeholder="e.g., 650">
+                </div>
+                <div class="form-group">
+                    <label for="fuelStation">Fuel Station Info</label>
+                    <input type="text" id="fuelStation" placeholder="e.g., Shell Petrol Pump, Main Street">
+                </div>
+                <button type="submit" class="btn">Add Fuel Log</button>
+            </form>
+
+            <div class="section-divider"></div>
+            <div id="fuelList"></div>
+        </div>
+
+        <div id="service" class="tab-content">
+            <form id="serviceForm">
+                 <div class="form-group">
+                    <label for="serviceDate">Service Date</label>
+                    <input type="date" id="serviceDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceOdometer">Odometer Reading (km)</label>
+                    <input type="number" id="serviceOdometer" placeholder="e.g., 40000" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceCenter">Service Center</label>
+                    <input type="text" id="serviceCenter" placeholder="e.g., Trident Hyundai" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceType">Type of Service</label>
+                    <select id="serviceType">
+                        <option value="Periodic Maintenance">Periodic Maintenance</option>
+                        <option value="Running Repair">Running Repair</option>
+                        <option value="Body Work">Body Work</option>
+                        <option value="Inspection">Inspection</option>
+                        <option value="Wheel Alignment">Wheel Alignment & Balancing</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                 <div class="form-group">
+                    <label for="workDescription">Description of Work Done</label>
+                    <textarea id="workDescription" placeholder="e.g., 40,000 km service, AC gas top-up"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="partsReplaced">Parts Replaced / Used</label>
+                    <textarea id="partsReplaced" placeholder="e.g., Engine oil, oil filter, air filter"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="serviceCost">Total Cost (₹)</label>
+                    <input type="number" step="0.01" id="serviceCost" placeholder="e.g., 5500.00" required>
+                </div>
+                <div class="form-group">
+                    <label for="invoiceNumber">Invoice/Bill Number</label>
+                    <input type="text" id="invoiceNumber" placeholder="Enter invoice number (optional)">
+                </div>
+                <button type="submit" class="btn">Add Service Log</button>
+            </form>
+
+            <div class="section-divider"></div>
+            <h3>🛠️ Service History</h3>
+            <div id="serviceLogList"></div>
+        </div>
+
+        <div id="stats" class="tab-content">
+
+             <div id="backupStatus" class="backup-status" style="display: none;">
+                <strong>✅ Last backup:</strong> <span id="lastBackupDate">Never</span>
+            </div>
+
+            <div id="monthlySummary" class="monthly-summary">
+                <h3>📅 This Month's Summary</h3>
+                <div class="summary-grid" id="currentMonthStats"></div>
+            </div>
+
+            <div id="monthlyHistory" class="monthly-history">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>📈 Monthly History</h3>
+                    <select id="historyYearFilter" onchange="updateMonthlyHistory()" style="padding: 8px; border-radius: 8px; border: 1px solid white; background: rgba(255,255,255,0.2); color: white;"></select>
+                </div>
+                <div id="historyContainer"></div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div id="statsContainer"></div>
+
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h4>Distance Per Month (Last 12 Months)</h4>
+                    <div id="monthlyDistanceChart"></div>
+                </div>
+                 <div class="chart-box">
+                    <h4>Trip Purpose Distribution</h4>
+                    <div id="purposePieChart"></div>
+                </div>
+                <div class="chart-box">
+                    <h4>Fuel Price Trend (₹ per Litre)</h4>
+                    <div id="fuelPriceChart"></div>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3>📤 Backup, Restore & Export</h3>
+                <div class="import-section">
+                    <h4>📥 Restore from Backup</h4>
+                    <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData()">
+                    <label for="importFile" class="file-input-label">Choose Backup File</label>
+                </div>
+                <button class="btn" onclick="autoBackup()" style="margin-top: 20px;">🔄 Create Full Backup (JSON)</button>
+                <button class="btn btn-secondary" onclick="exportData('trips')">Export Trip Logs (CSV)</button>
+                <button class="btn btn-secondary" onclick="exportData('fuel')">Export Fuel Logs (CSV)</button>
+            </div>
+        </div>
+
+        <div id="vehicle" class="tab-content">
+            <div id="vehicleInfo" class="vehicle-info-card"></div>
+
+            <div class="section-divider"></div>
+
+            <!-- Document Uploads -->
+            <h3>📄 Documents</h3>
+            <div class="documents-section">
+                <div class="doc-upload-card">
+                    <h4>🪪 JK's Driver's License</h4>
+                    <div class="doc-thumbnails">
+                        <div class="doc-thumb" id="thumb-license-front" onclick="triggerUpload('license-front')">
+                            <span>Front</span>
+                            <small>Tap to upload</small>
+                        </div>
+                        <div class="doc-thumb" id="thumb-license-back" onclick="triggerUpload('license-back')">
+                            <span>Back</span>
+                            <small>Tap to upload</small>
+                        </div>
+                    </div>
+                    <input type="file" id="input-license-front" accept="image/*" style="display:none" onchange="uploadDocument('license-front', this)">
+                    <input type="file" id="input-license-back" accept="image/*" style="display:none" onchange="uploadDocument('license-back', this)">
+                </div>
+
+                <div class="doc-upload-card">
+                    <h4>🪪 Jaya's Driver's License</h4>
+                    <div class="doc-thumbnails">
+                        <div class="doc-thumb" id="thumb-jaya-license-front" onclick="triggerUpload('jaya-license-front')">
+                            <span>Front</span>
+                            <small>Tap to upload</small>
+                        </div>
+                        <div class="doc-thumb" id="thumb-jaya-license-back" onclick="triggerUpload('jaya-license-back')">
+                            <span>Back</span>
+                            <small>Tap to upload</small>
+                        </div>
+                    </div>
+                    <input type="file" id="input-jaya-license-front" accept="image/*" style="display:none" onchange="uploadDocument('jaya-license-front', this)">
+                    <input type="file" id="input-jaya-license-back" accept="image/*" style="display:none" onchange="uploadDocument('jaya-license-back', this)">
+                </div>
+
+                <div class="doc-upload-card">
+                    <h4>📋 RC Book</h4>
+                    <div class="doc-thumbnails">
+                        <div class="doc-thumb" id="thumb-rc-book-front" onclick="triggerUpload('rc-book-front')">
+                            <span>Front</span>
+                            <small>Tap to upload</small>
+                        </div>
+                        <div class="doc-thumb" id="thumb-rc-book-back" onclick="triggerUpload('rc-book-back')">
+                            <span>Back</span>
+                            <small>Tap to upload</small>
+                        </div>
+                    </div>
+                    <input type="file" id="input-rc-book-front" accept="image/*" style="display:none" onchange="uploadDocument('rc-book-front', this)">
+                    <input type="file" id="input-rc-book-back" accept="image/*" style="display:none" onchange="uploadDocument('rc-book-back', this)">
+                </div>
+
+                <div class="doc-upload-card">
+                    <h4>🛡️ Insurance Document</h4>
+                    <div class="doc-thumbnails">
+                        <div class="doc-thumb" id="thumb-insurance" onclick="triggerUpload('insurance')">
+                            <span>Insurance</span>
+                            <small>Tap to upload</small>
+                        </div>
+                    </div>
+                    <input type="file" id="input-insurance" accept="image/*" style="display:none" onchange="uploadDocument('insurance', this)">
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <form id="vehicleForm">
+                <h3>✏️ Edit Vehicle Details</h3>
+                <div class="form-group">
+                    <label for="vehicleMake">Vehicle Make</label>
+                    <input type="text" id="vehicleMake" placeholder="e.g., Maruti Suzuki">
+                </div>
+                <div class="form-group">
+                    <label for="vehicleModel">Vehicle Model</label>
+                    <input type="text" id="vehicleModel" placeholder="e.g., Swift">
+                </div>
+                <div class="form-group">
+                    <label for="vehicleYear">Model Year</label>
+                    <input type="number" id="vehicleYear" placeholder="e.g., 2023">
+                </div>
+                <div class="form-group">
+                    <label for="licensePlate">License Plate</label>
+                    <input type="text" id="licensePlate" placeholder="e.g., TN 01 AB 1234">
+                </div>
+                <div class="form-group">
+                    <label for="engineNumber">Engine Number</label>
+                    <input type="text" id="engineNumber" placeholder="Enter engine number">
+                </div>
+                <div class="form-group">
+                    <label for="chassisNumber">Chassis Number</label>
+                    <input type="text" id="chassisNumber" placeholder="Enter chassis number">
+                </div>
+                <div class="form-group">
+                    <label for="fuelTankCapacity">Fuel Tank Capacity (Litres)</label>
+                    <input type="number" id="fuelTankCapacity" placeholder="e.g. 37" step="1" min="1">
+                </div>
+                <button type="submit" class="btn">Save Vehicle Info</button>
+            </form>
+
+            <div class="section-divider"></div>
+
+            <h3>🛡️ Insurance History</h3>
+            <form id="insuranceForm">
+                 <div class="form-group">
+                    <label for="insuranceProvider">Provider Name</label>
+                    <input type="text" id="insuranceProvider" placeholder="e.g., Acko General Insurance" required>
+                </div>
+                <div class="form-group">
+                    <label for="policyNumber">Policy Number</label>
+                    <input type="text" id="policyNumber" placeholder="Enter policy number" required>
+                </div>
+                 <div class="form-group">
+                    <label for="policyValidity">Validity (Expiry Date)</label>
+                    <input type="date" id="policyValidity" required>
+                </div>
+                <div class="form-group">
+                    <label for="coverageInfo">Coverage Information</label>
+                    <textarea id="coverageInfo" placeholder="e.g., Comprehensive, Zero Depreciation..."></textarea>
+                </div>
+                <button type="submit" class="btn">Add Insurance Log</button>
+            </form>
+
+            <div id="insuranceLogList" style="margin-top: 20px;"></div>
+        </div>
+
+        <div id="editModal" class="modal"><div class="modal-content"><div id="editModalHeader" class="modal-header"></div><div id="modalBody"></div></div></div>
+        <div id="helpModal" class="modal"><div class="modal-content"><div class="modal-header">Calculation Logic</div><div id="helpModalBody"></div><div class="modal-buttons"><button class="btn" onclick="closeModal('helpModal')">Close</button></div></div></div>
+        <button onclick="scrollToTop()" id="backToTopBtn" title="Go to top">↑</button>
+    </div>
+
+ <script>
+        // Data Arrays
+        let trips = [];
+        let fuelLogs = [];
+        let serviceLogs = [];
+        let appSettings = {};
+        let customLocations = [];
+        let vehicleDetails = {};
+        let insuranceLogs = [];
+
+        // --- Utility: HTML escaping to prevent XSS ---
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        // --- Welcome Jokes (round-robin, no repeats until all shown) ---
+        const JOKES = [
+            "Indian traffic has three signals: red means stop, green means go, yellow means go faster.",
+            "GPS says 15 minutes. Google Maps says 20 minutes. My experience says 45 minutes.",
+            "Two-wheelers in India don't follow lanes. They follow dreams.",
+            "The fastest way to test your brakes is to drive behind an auto-rickshaw.",
+            "India is the only country where you use the horn more than the brake.",
+            "The person who invented the car horn must have visited India first.",
+            "Honking in traffic is like clapping at a red light. It changes nothing, but it feels right.",
+            "In traffic, I have planned my retirement, solved world problems, and memorized the number plate of the car ahead.",
+            "A pothole is just the road's way of keeping you awake.",
+            "The mechanic said 'small problem.' My wallet said 'big problem.'",
+            "In Indian traffic, patience is not a virtue. It is a survival skill.",
+            "My car doesn't need GPS. It has been to the same three places for 10 years.",
+            "A car wash in India is an act of faith. It will rain tomorrow.",
+            "The only time everyone in India follows one lane is in a drive-through.",
+            "Indicator lights are India's best-kept secret. Nobody knows they exist.",
+            "The rearview mirror in India is not for looking behind. It is for checking your hair.",
+            "Parking in India is not a skill. It is an art that takes years to master.",
+            "Every Indian dad knows the AC wastes petrol. Windows down at 40 degrees is the real luxury.",
+            "The best alarm system for a car in India is a stray cow sleeping next to it.",
+            "Indian roads have three seasons: dusty, muddy, and under construction.",
+            "A shortcut in India always adds 20 minutes to the journey.",
+            "In India, the side mirror is optional. The horn is mandatory.",
+            "An empty road in India is not a road. It is a miracle.",
+            "The petrol pump attendant knows my car better than my doctor knows me.",
+            "In India, overtaking from the left is not a violation. It is tradition.",
+            "My car has been to the mechanic so often, it goes there on its own.",
+            "The only straight road in India is the one in the driving test.",
+            "Speed breakers in India were designed by people who have never sat in a car.",
+            "On Indian highways, a truck, a bicycle, and a cow can share the same lane. And they do.",
+            "The car manual says service every 10,000 km. Indian roads say service every 10 days.",
+            "In Indian traffic, the rearview mirror shows your past. The windshield shows you will be late.",
+            "Every scratch on an Indian car is not damage. It is a story.",
+            "The best co-driver in India is the person who spots potholes from the passenger seat.",
+            "Fuel economy depends on two things: the engine, and how many relatives need a ride.",
+            "An Indian road trip is 30 percent driving, 30 percent eating, and 40 percent arguing about directions.",
+            "In India, parallel parking is a spectator sport. Everyone watches. Everyone has advice.",
+            "Indian traffic teaches you one important lesson: there is always room for one more.",
+            "A flat tyre always happens on the day you wore your best clothes.",
+            "In India, a one-way road is just a friendly suggestion.",
+            "The service bill always costs exactly what you were saving for something else.",
+            "Behind every smooth drive is a road you have not discovered yet.",
+            "The moment you wash your car, every bird in the neighbourhood gets the news.",
+            "Behind every great Indian driver is someone in the back seat giving better directions.",
+            "A full tank of petrol and an open road. Two things that never last long enough.",
+            "My car has two moods: starting perfectly, and making me late.",
+            "The only workout I get is turning the steering wheel through Indian traffic.",
+            "In India, you don't find parking. Parking finds you. Eventually.",
+            "The car showroom promised mileage of 22 km per litre. The car has a different opinion.",
+            "You know you are an Indian driver when you can judge any gap in centimetres.",
+            "Night driving in India: 50 percent skill, 50 percent trusting that the other car has headlights.",
+            "The toll booth is the only place in India where everyone forms a proper queue. Almost.",
+            "My car's fuel gauge and my phone battery have one thing in common. Both die at the worst time.",
+            "In India, road construction starts in your lifetime. It finishes in the next.",
+            "A roundabout in India is not a traffic system. It is a trust exercise.",
+            "The only thing that moves faster than a car in India is a rumour.",
+            "Indian dads can reverse a car into any space. They just need 45 minutes and everyone's attention.",
+            "The car seat cover in India has more protection than the car itself.",
+            "In India, every passenger is a driving instructor. Free of charge.",
+            "My car horn works perfectly. My brakes I am not so sure about.",
+            "The longest relationship most Indian men have is with their first car.",
+            "In India, the footpath is just another lane. For everyone.",
+            "A new car in India stays new for exactly one trip through the market.",
+            "Indian GPS should say 'turn right after the third pothole' instead of 'turn right in 200 metres.'",
+            "The only thing louder than a wedding procession in India is the traffic behind it.",
+            "Rain in India does not slow down traffic. It just adds sound effects.",
+            "My car's odometer keeps going up. My patience in traffic keeps going down.",
+            "In India, a green light means go. A red light means two more cars can go.",
+            "Every Indian family has one person who can sleep in any car, in any traffic. They are the lucky one.",
+            "You have not truly driven in India until a cow has given you a disappointed look for honking.",
+            "Indian petrol pumps always round up. Never down. It is the law of the universe.",
+            "The car freshener lasts one week. The smell of the samosa you ate in the car lasts forever.",
+            "A good parking spot in India is like a solar eclipse. Rare, brief, and everyone looks at it.",
+            "In India, the first thing you learn about driving is that nobody follows what you just learned.",
+            "Highway dhabas have two menus: what is written on the board, and what is actually available.",
+            "My car can seat five. On an Indian road trip, it seats eight. Plus luggage.",
+            "The fastest car in India is the one whose driver just spotted a parking space.",
+            "Every car in India has a mystery rattle. Finding it is a lifelong quest.",
+            "Indian trucks say 'Horn OK Please' because they genuinely mean it.",
+            "The only place in India where right of way exists is in the driving manual.",
+            "In India, you do not overtake a bus. You pray and go around it.",
+            "A family trip in India: Dad drives, Mom navigates, kids complain about the AC, and Grandma holds the snacks.",
+            "My car's mileage is best when I am explaining it to someone. On the road, the car disagrees.",
+            "In India, a small dent is not an accident report. It is a parking story.",
+            "The best way to know the road condition in India is to watch the car ahead bounce.",
+            "My mechanic and my barber have one thing in common. I visit them more than I want to.",
+            "In India, the school zone speed limit is followed only when the school is actually visible.",
+            "The car AC works hardest in April. Just like every Indian.",
+            "My car insurance covers everything except what actually happens.",
+            "An Indian driver can calculate the exact gap needed to merge. In millimetres. At 60 km per hour.",
+            "The car wash boy knows every scratch on your car. Even the ones you have forgotten.",
+            "In India, the best time to drive is 5 AM. By 6 AM, everyone else had the same idea.",
+            "Every Indian car owner has said 'just one more year' for at least three years.",
+            "The only thing more unreliable than traffic predictions is the weather forecast.",
+            "In India, when someone says 'I know a shortcut,' prepare for an adventure.",
+            "My car is so familiar with the route to office, I think it can drive there without me.",
+            "Sundays are for two things in India: temple visits and arguing about where to park near the temple.",
+            "The boot of an Indian car is 50 percent emergency tools, 50 percent things from three trips ago.",
+            "In India, the check engine light is not a warning. It is a suggestion you politely ignore.",
+            "The first scratch on a new car hurts. After that, they are just reunions.",
+            "In India, the car dealer is the first friend you make. The mechanic is the one who stays."
+        ];
+
+        let welcomeTimer = null;
+
+        function getNextJoke() {
+            if (!appSettings.jokeCounts) appSettings.jokeCounts = {};
+            const counts = appSettings.jokeCounts;
+            // Find the minimum display count
+            let minCount = Infinity;
+            for (let i = 0; i < JOKES.length; i++) {
+                const c = counts[i] || 0;
+                if (c < minCount) minCount = c;
+            }
+            // Collect all jokes at the minimum count
+            const candidates = [];
+            for (let i = 0; i < JOKES.length; i++) {
+                if ((counts[i] || 0) === minCount) candidates.push(i);
+            }
+            // Pick a random one from the candidates
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            counts[pick] = (counts[pick] || 0) + 1;
+            return JOKES[pick];
+        }
+
+        function showWelcomeBanner() {
+            const joke = getNextJoke();
+            document.getElementById('welcomeJoke').textContent = joke;
+            const overlay = document.getElementById('welcomeOverlay');
+            requestAnimationFrame(() => overlay.classList.add('show'));
+            welcomeTimer = setTimeout(dismissWelcome, 30000);
+            saveData();
+        }
+
+        function dismissWelcome() {
+            if (welcomeTimer) { clearTimeout(welcomeTimer); welcomeTimer = null; }
+            document.getElementById('welcomeOverlay').classList.remove('show');
+        }
+
+        // --- Auth / Login ---
+
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/auth-check');
+                return res.ok;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('pinInput').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('pinInput').focus();
+        }
+
+        function showApp() {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('appContainer').style.display = 'block';
+        }
+
+        async function handleLogin() {
+            const pin = document.getElementById('pinInput').value;
+            if (pin.length !== 10) {
+                document.getElementById('loginError').textContent = 'PIN must be 10 digits.';
+                document.getElementById('loginError').style.display = 'block';
+                return;
+            }
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin })
+                });
+                if (res.ok) {
+                    await initApp();
+                } else {
+                    document.getElementById('loginError').textContent = 'Incorrect PIN. Please try again.';
+                    document.getElementById('loginError').style.display = 'block';
+                    document.getElementById('pinInput').value = '';
+                    document.getElementById('pinInput').focus();
+                }
+            } catch (e) {
+                document.getElementById('loginError').textContent = 'Connection error. Please try again.';
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        // Allow Enter key to submit PIN
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('pinInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+            startApp();
+        });
+
+        async function startApp() {
+            const authenticated = await checkAuth();
+            if (authenticated) {
+                await initApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        async function initApp() {
+            showApp();
+            await loadData();
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tripDate').value = today;
+            document.getElementById('fuelDate').value = today;
+            document.getElementById('serviceDate').value = today;
+            document.getElementById('policyValidity').value = today;
+
+            applyFontSize();
+            renderAll();
+            setupEventListeners();
+            autoPopulateOdometerFields();
+            loadDocumentThumbnails();
+            showWelcomeBanner();
+        }
+
+        /**
+         * Loads all data from the server into the script's variables.
+         */
+        async function loadData() {
+            try {
+                const res = await fetch('/api/data');
+                if (res.status === 401) { showLogin(); return; }
+                if (!res.ok) throw new Error('Failed to load data');
+                const data = await res.json();
+                trips = data.trips || [];
+                fuelLogs = data.fuelLogs || [];
+                serviceLogs = data.serviceLogs || [];
+                appSettings = data.appSettings || {};
+                customLocations = data.customLocations || [];
+                vehicleDetails = data.vehicleDetails || {};
+                insuranceLogs = data.insuranceLogs || [];
+            } catch (e) {
+                console.error('Could not load data:', e);
+            }
+        }
+
+        /**
+         * Saves all data from the script's variables to the server.
+         */
+        async function saveData() {
+            try {
+                // Sort trips by date, then by ending odometer for same-day trips
+                trips.sort((a,b) => new Date(b.date) - new Date(a.date) || b.endOdometer - a.endOdometer);
+
+                fuelLogs.sort((a,b) => new Date(b.date) - new Date(a.date));
+                serviceLogs.sort((a,b) => new Date(b.date) - new Date(a.date));
+                insuranceLogs.sort((a,b) => new Date(b.validity) - new Date(a.validity));
+
+                const res = await fetch('/api/data', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        trips, fuelLogs, serviceLogs, appSettings,
+                        customLocations, vehicleDetails, insuranceLogs
+                    })
+                });
+                if (res.status === 401) { showLogin(); return; }
+                if (!res.ok) throw new Error('Save failed');
+            } catch (e) {
+                console.error('Could not save data:', e);
+                alert('⚠️ Failed to save. Please check your connection.');
+            }
+        }
+
+        /**
+         * Central function to render all dynamic content on the page.
+         */
+        function renderAll() {
+            displayTrips();
+            displayFuelLogs();
+            displayServiceLogs();
+            displayVehicleInfo();
+            displayInsuranceLogs();
+            updateStats();
+            populateLocationDropdown(document.getElementById('startingLocation'));
+            updateBackupStatus();
+        }
+
+        /**
+         * Sets up all the event listeners for the application.
+         */
+        function setupEventListeners() {
+            document.getElementById('tripForm').addEventListener('submit', handleAddTrip);
+            document.getElementById('fuelForm').addEventListener('submit', handleAddFuel);
+            document.getElementById('serviceForm').addEventListener('submit', handleAddService);
+            document.getElementById('vehicleForm').addEventListener('submit', handleSaveVehicle);
+            document.getElementById('insuranceForm').addEventListener('submit', handleAddInsurance);
+            window.addEventListener('scroll', handleScroll);
+
+            window.addEventListener('click', function(event) {
+                const modals = ['editModal', 'helpModal'];
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (event.target === modal) {
+                        closeModal(modalId);
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    const modals = ['editModal', 'helpModal'];
+                    modals.forEach(modalId => {
+                        const modal = document.getElementById(modalId);
+                        if (modal.style.display === 'block') {
+                            closeModal(modalId);
+                        }
+                    });
+                    // Also close photo viewer
+                    closePhotoViewer();
+                }
+            });
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'stats') {
+                updateStats();
+            }
+            if (tabName === 'vehicle') {
+                loadDocumentThumbnails();
+            }
+        }
+
+        // --- Fuel Reminder ---
+
+        function checkForMissedRefuel(newRange) {
+            if (newRange == null || trips.length === 0) return;
+            // Find the most recent trip that has a remainingRange
+            const sorted = [...trips].sort((a, b) => b.endOdometer - a.endOdometer);
+            const prev = sorted.find(t => t.remainingRange != null && t.remainingRange !== '' && t.remainingRange > 0);
+            if (!prev) return;
+            const prevRange = parseInt(prev.remainingRange);
+            if (isNaN(prevRange) || prevRange <= 0) return;
+            if (newRange > prevRange) {
+                const msg = `Your last trip ended with <span class="highlight">${prevRange} km</span> range, but this trip shows <span class="highlight">${newRange} km</span>. Looks like you refueled in between!`;
+                document.getElementById('fuelReminderMsg').innerHTML = msg;
+                requestAnimationFrame(() => document.getElementById('fuelReminderOverlay').classList.add('show'));
+            }
+        }
+
+        function dismissFuelReminder() {
+            document.getElementById('fuelReminderOverlay').classList.remove('show');
+        }
+
+        function goToFuelTab() {
+            dismissFuelReminder();
+            showTab('fuel');
+            document.getElementById('fuelDate').focus();
+        }
+
+        // --- Data Handling (Add, Edit, Delete) ---
+
+        async function handleAddTrip(e) {
+            e.preventDefault();
+            const form = e.target;
+            const startOdometer = parseInt(form.querySelector('#startOdometer').value);
+            const endOdometer = parseInt(form.querySelector('#endOdometer').value);
+
+            if (endOdometer <= startOdometer) {
+                alert('End odometer must be greater than start odometer.');
+                return;
+            }
+
+            const locationSelect = form.querySelector('#startingLocation').value;
+            const customLocation = form.querySelector('#customLocation').value;
+            const rangeVal = form.querySelector('#remainingRange').value;
+            const trip = {
+                id: Date.now(),
+                date: form.querySelector('#tripDate').value,
+                startingLocation: locationSelect === 'Other' ? customLocation : locationSelect,
+                purpose: form.querySelector('#tripPurpose').value,
+                startOdometer: startOdometer,
+                endOdometer: endOdometer,
+                distance: endOdometer - startOdometer,
+                remainingRange: rangeVal ? parseInt(rangeVal) : null,
+                notes: form.querySelector('#tripNotes').value
+            };
+
+            if (locationSelect === 'Other' && customLocation) {
+                saveCustomLocation(customLocation);
+            }
+
+            // Check for missed refuel BEFORE adding this trip
+            const newRange = trip.remainingRange;
+            checkForMissedRefuel(newRange);
+
+            trips.push(trip);
+            await saveData();
+            displayTrips();
+            form.reset();
+            document.getElementById('tripDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('customLocationGroup').style.display = 'none';
+            populateLocationDropdown(document.getElementById('startingLocation'));
+            autoPopulateOdometerFields();
+            alert('✅ Trip log added successfully!');
+        }
+
+        async function handleAddFuel(e) {
+            e.preventDefault();
+            const form = e.target;
+            const fuel = {
+                id: Date.now(),
+                date: form.querySelector('#fuelDate').value,
+                odometer: parseInt(form.querySelector('#fuelOdometer').value),
+                rangeBefore: form.querySelector('#rangeBefore').value ? parseInt(form.querySelector('#rangeBefore').value) : null,
+                amount: parseFloat(form.querySelector('#fuelAmount').value),
+                cost: parseFloat(form.querySelector('#fuelCost').value),
+                rangeAfter: form.querySelector('#rangeAfter').value ? parseInt(form.querySelector('#rangeAfter').value) : null,
+                station: form.querySelector('#fuelStation').value
+            };
+            fuelLogs.push(fuel);
+            await saveData();
+            renderAll();
+            form.reset();
+            document.getElementById('fuelDate').value = new Date().toISOString().split('T')[0];
+            autoPopulateOdometerFields();
+            alert('✅ Fuel log added successfully!');
+        }
+
+        async function handleAddService(e) {
+            e.preventDefault();
+            const form = e.target;
+            const service = {
+                id: Date.now(),
+                date: form.querySelector('#serviceDate').value,
+                odometer: parseInt(form.querySelector('#serviceOdometer').value),
+                center: form.querySelector('#serviceCenter').value,
+                type: form.querySelector('#serviceType').value,
+                description: form.querySelector('#workDescription').value,
+                parts: form.querySelector('#partsReplaced').value,
+                cost: parseFloat(form.querySelector('#serviceCost').value),
+                invoice: form.querySelector('#invoiceNumber').value
+            };
+            serviceLogs.push(service);
+            await saveData();
+            displayServiceLogs();
+            form.reset();
+            document.getElementById('serviceDate').value = new Date().toISOString().split('T')[0];
+            autoPopulateOdometerFields();
+            alert('✅ Service log added successfully!');
+        }
+
+        async function handleSaveVehicle(e) {
+            e.preventDefault();
+            const form = e.target;
+            vehicleDetails.make = form.querySelector('#vehicleMake').value;
+            vehicleDetails.model = form.querySelector('#vehicleModel').value;
+            vehicleDetails.year = form.querySelector('#vehicleYear').value;
+            vehicleDetails.licensePlate = form.querySelector('#licensePlate').value;
+            vehicleDetails.engineNumber = form.querySelector('#engineNumber').value;
+            vehicleDetails.chassisNumber = form.querySelector('#chassisNumber').value;
+            vehicleDetails.fuelTankCapacity = parseInt(form.querySelector('#fuelTankCapacity').value) || null;
+            await saveData();
+            displayVehicleInfo();
+            alert('✅ Vehicle information saved!');
+        }
+
+        async function handleAddInsurance(e) {
+            e.preventDefault();
+            const form = e.target;
+            const insurance = {
+                id: Date.now(),
+                provider: form.querySelector('#insuranceProvider').value,
+                policyNumber: form.querySelector('#policyNumber').value,
+                validity: form.querySelector('#policyValidity').value,
+                coverage: form.querySelector('#coverageInfo').value
+            };
+            insuranceLogs.push(insurance);
+            await saveData();
+            displayInsuranceLogs();
+            form.reset();
+            document.getElementById('policyValidity').value = new Date().toISOString().split('T')[0];
+            alert('✅ Insurance log added!');
+        }
+
+        async function handleDelete(type, id) {
+            if (!confirm(`Are you sure you want to delete this ${type} log?`)) return;
+
+            let arr;
+            switch(type) {
+                case 'trip': arr = trips; break;
+                case 'fuel': arr = fuelLogs; break;
+                case 'service': arr = serviceLogs; break;
+                case 'insurance': arr = insuranceLogs; break;
+            }
+
+            const index = arr.findIndex(item => item.id === id);
+            if (index > -1) {
+                arr.splice(index, 1);
+            }
+
+            await saveData();
+            renderAll();
+        }
+
+        // --- Display Functions ---
+
+        function displayTrips() {
+            const container = document.getElementById('tripsList');
+            if (trips.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No trip logs yet</h3></div>`;
+                return;
+            }
+            container.innerHTML = trips.map(trip => {
+                const purposeIcon = getPurposeIcon(trip.purpose);
+                const cost = calculateTripCost(trip.distance, trip.date);
+                const costDisplay = cost > 0 ? `<strong>Est. Cost:</strong> ₹${cost.toFixed(2)}<br>` : '';
+                const rangeDisplay = trip.remainingRange != null ? trip.remainingRange : 'N/A';
+                return `
+                    <div class="record">
+                        <div class="record-header">
+                            <span class="record-date">${formatDate(trip.date)}</span>
+                            <div class="record-actions">
+                                <button class="btn-warning" onclick="openEditModal('trip', ${trip.id})">Edit</button>
+                                <button class="btn-danger" onclick="handleDelete('trip', ${trip.id})">Delete</button>
+                            </div>
+                        </div>
+                        <div class="record-details">
+                            ${trip.startingLocation ? `<strong>From:</strong> ${escapeHtml(trip.startingLocation)}<br>` : ''}
+                            ${trip.purpose ? `<strong>Purpose:</strong> ${purposeIcon} ${escapeHtml(trip.purpose)}<br>` : ''}
+                            <strong>Distance:</strong> ${trip.distance} km (${trip.startOdometer} → ${trip.endOdometer})<br>
+                            ${costDisplay}
+                            <strong>Range:</strong> ${rangeDisplay} km<br>
+                            ${trip.notes ? `<strong>Notes:</strong> ${escapeHtml(trip.notes)}` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function displayFuelLogs() {
+            const container = document.getElementById('fuelList');
+            if (fuelLogs.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No fuel logs yet</h3></div>`;
+                return;
+            }
+            container.innerHTML = fuelLogs.map(fuel => {
+                const pricePerLitre = fuel.amount > 0 ? (fuel.cost / fuel.amount).toFixed(2) : '0.00';
+                const rangeBefore = fuel.rangeBefore != null ? fuel.rangeBefore : 'N/A';
+                const rangeAfter = fuel.rangeAfter != null ? fuel.rangeAfter : 'N/A';
+                return `
+                    <div class="record">
+                        <div class="record-header">
+                            <span class="record-date">${formatDate(fuel.date)}</span>
+                             <div class="record-actions">
+                                <button class="btn-warning" onclick="openEditModal('fuel', ${fuel.id})">Edit</button>
+                                <button class="btn-danger" onclick="handleDelete('fuel', ${fuel.id})">Delete</button>
+                            </div>
+                        </div>
+                        <div class="record-details">
+                            <strong>Odometer:</strong> ${fuel.odometer} km<br>
+                            <strong>Fuel:</strong> ${fuel.amount} L @ ₹${pricePerLitre}/L<br>
+                            <strong>Total Cost:</strong> ₹${fuel.cost.toFixed(2)}<br>
+                            <strong>Range:</strong> ${rangeBefore} km → ${rangeAfter} km<br>
+                            ${fuel.station ? `<strong>Station:</strong> ${escapeHtml(fuel.station)}` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function saveCustomLocation(locationName) {
+            if (locationName && !customLocations.includes(locationName)) {
+                customLocations.push(locationName);
+                // saveData() is called by the parent handler
+            }
+        }
+
+        function displayServiceLogs() {
+            const container = document.getElementById('serviceLogList');
+            if (serviceLogs.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No service logs yet</h3></div>`;
+                return;
+            }
+            container.innerHTML = serviceLogs.map(log => `
+                <div class="record">
+                    <div class="record-header">
+                        <span class="record-date">${formatDate(log.date)}</span>
+                        <div class="record-actions">
+                            <button class="btn-warning" onclick="openEditModal('service', ${log.id})">Edit</button>
+                            <button class="btn-danger" onclick="handleDelete('service', ${log.id})">Delete</button>
+                        </div>
+                    </div>
+                    <div class="record-details">
+                        <strong>Center:</strong> ${escapeHtml(log.center)}<br>
+                        <strong>Odometer:</strong> ${log.odometer} km<br>
+                        <strong>Cost:</strong> ₹${log.cost.toFixed(2)}<br>
+                        <strong>Type:</strong> ${escapeHtml(log.type)}<br>
+                        ${log.description ? `<strong>Work:</strong> ${escapeHtml(log.description)}<br>` : ''}
+                        ${log.parts ? `<strong>Parts:</strong> ${escapeHtml(log.parts)}<br>` : ''}
+                        ${log.invoice ? `<strong>Invoice:</strong> ${escapeHtml(log.invoice)}` : ''}
+                    </div>
+                </div>`).join('');
+        }
+
+        function displayInsuranceLogs() {
+            const container = document.getElementById('insuranceLogList');
+            if (insuranceLogs.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No insurance logs</h3></div>`;
+                return;
+            }
+            container.innerHTML = insuranceLogs.map(log => `
+                <div class="record">
+                    <div class="record-header">
+                        <span class="record-date">Expires: ${formatDate(log.validity)}</span>
+                        <div class="record-actions">
+                            <button class="btn-warning" onclick="openEditModal('insurance', ${log.id})">Edit</button>
+                            <button class="btn-danger" onclick="handleDelete('insurance', ${log.id})">Delete</button>
+                        </div>
+                    </div>
+                    <div class="record-details">
+                        <strong>Provider:</strong> ${escapeHtml(log.provider)}<br>
+                        <strong>Policy No:</strong> ${escapeHtml(log.policyNumber)}<br>
+                        ${log.coverage ? `<strong>Coverage:</strong> ${escapeHtml(log.coverage)}` : ''}
+                    </div>
+                </div>`).join('');
+        }
+
+        function displayVehicleInfo() {
+            const { make, model, year, licensePlate, engineNumber, chassisNumber, fuelTankCapacity } = vehicleDetails;
+            const container = document.getElementById('vehicleInfo');
+            const hasDetails = make || model || year || licensePlate || engineNumber || chassisNumber;
+            if (!hasDetails) {
+                container.innerHTML = `<div class="empty-state"><h3>No Vehicle Information</h3><p>Add vehicle details below.</p></div>`;
+            } else {
+                 container.innerHTML = `<h3>My Vehicle</h3>
+                    <div class="vehicle-info-grid">
+                        <div class="vehicle-info-item"><strong>Make:</strong> ${escapeHtml(make) || 'N/A'}</div>
+                        <div class="vehicle-info-item"><strong>Model:</strong> ${escapeHtml(model) || 'N/A'}</div>
+                        <div class="vehicle-info-item"><strong>Year:</strong> ${escapeHtml(year) || 'N/A'}</div>
+                        <div class="vehicle-info-item"><strong>License Plate:</strong> ${escapeHtml(licensePlate) || 'N/A'}</div>
+                        <div class="vehicle-info-item"><strong>Engine No.:</strong> ${escapeHtml(engineNumber) || 'N/A'}</div>
+                        <div class="vehicle-info-item"><strong>Chassis No.:</strong> ${escapeHtml(chassisNumber) || 'N/A'}</div>
+                        ${fuelTankCapacity ? `<div class="vehicle-info-item"><strong>Tank Capacity:</strong> ${fuelTankCapacity}L</div>` : ''}
+                    </div>`;
+            }
+            document.getElementById('vehicleMake').value = make || '';
+            document.getElementById('vehicleModel').value = model || '';
+            document.getElementById('vehicleYear').value = year || '';
+            document.getElementById('licensePlate').value = licensePlate || '';
+            document.getElementById('engineNumber').value = engineNumber || '';
+            document.getElementById('chassisNumber').value = chassisNumber || '';
+            document.getElementById('fuelTankCapacity').value = fuelTankCapacity || '';
+        }
+
+        // --- Document Upload Functions ---
+
+        function triggerUpload(docType) {
+            document.getElementById(`input-${docType}`).click();
+        }
+
+        async function uploadDocument(docType, input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('photo', file);
+
+            try {
+                const res = await fetch(`/api/photo/${docType}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (res.status === 401) { showLogin(); return; }
+                if (!res.ok) throw new Error('Upload failed');
+                alert('✅ Document uploaded!');
+                loadDocumentThumbnails();
+            } catch (e) {
+                alert('Failed to upload document. Please try again.');
+                console.error(e);
+            }
+            input.value = '';
+        }
+
+        async function loadDocumentThumbnails() {
+            try {
+                const res = await fetch('/api/photos');
+                if (!res.ok) return;
+                const uploaded = await res.json();
+
+                const docTypes = [
+                    { type: 'license-front', label: 'Front' },
+                    { type: 'license-back', label: 'Back' },
+                    { type: 'jaya-license-front', label: 'Front' },
+                    { type: 'jaya-license-back', label: 'Back' },
+                    { type: 'rc-book-front', label: 'Front' },
+                    { type: 'rc-book-back', label: 'Back' },
+                    { type: 'insurance', label: 'Insurance' }
+                ];
+
+                for (const doc of docTypes) {
+                    const thumb = document.getElementById(`thumb-${doc.type}`);
+                    if (!thumb) continue;
+
+                    if (uploaded[doc.type]) {
+                        // Photo exists — show thumbnail
+                        const imgUrl = `/api/photo/${doc.type}?t=${Date.now()}`;
+                        thumb.classList.add('has-photo');
+                        thumb.onclick = () => viewDocument(doc.type);
+                        thumb.innerHTML = `
+                            <img src="${imgUrl}" alt="${doc.label}">
+                            <button class="delete-btn" onclick="event.stopPropagation(); deleteDocument('${doc.type}')">&times;</button>
+                        `;
+                    } else {
+                        // No photo — show upload placeholder
+                        thumb.classList.remove('has-photo');
+                        thumb.onclick = () => triggerUpload(doc.type);
+                        thumb.innerHTML = `<span>${doc.label}</span><small>Tap to upload</small>`;
+                    }
+                }
+            } catch (e) {
+                console.error('Could not load document thumbnails:', e);
+            }
+        }
+
+        function viewDocument(docType) {
+            const viewer = document.getElementById('photoViewer');
+            const img = document.getElementById('photoViewerImg');
+            img.src = `/api/photo/${docType}?t=${Date.now()}`;
+            viewer.classList.add('active');
+        }
+
+        function closePhotoViewer() {
+            const viewer = document.getElementById('photoViewer');
+            viewer.classList.remove('active');
+            document.getElementById('photoViewerImg').src = '';
+        }
+
+        async function deleteDocument(docType) {
+            if (!confirm('Delete this document photo?')) return;
+            try {
+                const res = await fetch(`/api/photo/${docType}`, { method: 'DELETE' });
+                if (res.status === 401) { showLogin(); return; }
+                if (!res.ok) throw new Error('Delete failed');
+                loadDocumentThumbnails();
+            } catch (e) {
+                alert('Failed to delete document.');
+                console.error(e);
+            }
+        }
+
+        // --- Statistics & Calculations ---
+
+        function calculateTripCost(distance, tripDate) {
+            if (fuelLogs.length === 0) return 0;
+            const relevantFuelLogs = fuelLogs.filter(log => new Date(log.date) <= new Date(tripDate));
+            if (relevantFuelLogs.length === 0) return 0;
+            const lastFuelLogForTrip = relevantFuelLogs[0];
+            const fuelPricePerLiter = lastFuelLogForTrip.amount > 0 ? lastFuelLogForTrip.cost / lastFuelLogForTrip.amount : 0;
+            if (fuelPricePerLiter === 0) return 0;
+            const fuelEfficiency = getAverageFuelEfficiency();
+            const fuelNeeded = distance / fuelEfficiency;
+            return fuelNeeded * fuelPricePerLiter;
+        }
+
+        function getAverageFuelEfficiency() {
+            const DEFAULT_EFFICIENCY = 15;
+            if (fuelLogs.length < 2) return DEFAULT_EFFICIENCY;
+            const tankCapacity = vehicleDetails.fuelTankCapacity || 37;
+            const minFillForFull = tankCapacity * 0.4;
+            const sorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date));
+            // Find first full fill-up as starting anchor
+            let anchor = -1;
+            for (let i = 0; i < sorted.length; i++) {
+                if (sorted[i].amount >= minFillForFull) { anchor = i; break; }
+            }
+            if (anchor === -1) return DEFAULT_EFFICIENCY;
+            let totalDistance = 0, totalFuel = 0, accFuel = 0;
+            for (let i = anchor + 1; i < sorted.length; i++) {
+                accFuel += sorted[i].amount;
+                if (sorted[i].amount >= minFillForFull) {
+                    const dist = sorted[i].odometer - sorted[anchor].odometer;
+                    if (dist > 0) {
+                        totalDistance += dist;
+                        totalFuel += accFuel;
+                    }
+                    anchor = i;
+                    accFuel = 0;
+                }
+            }
+            return totalFuel > 0 ? totalDistance / totalFuel : DEFAULT_EFFICIENCY;
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const currentMonthData = updateMonthData(now.getMonth(), now.getFullYear());
+            document.getElementById('currentMonthStats').innerHTML = `
+                <div class="summary-item"><span class="summary-value">${currentMonthData.trips}</span><span class="summary-label">Trips</span></div>
+                <div class="summary-item"><span class="summary-value">${currentMonthData.distance}</span><span class="summary-label">Total KM</span></div>
+                <div class="summary-item"><span class="summary-value">₹${currentMonthData.fuelCost.toFixed(0)}</span><span class="summary-label">Fuel Cost</span></div>
+                <div class="summary-item"><span class="summary-value">${currentMonthData.avgTrip.toFixed(1)}</span><span class="summary-label">Avg KM/Trip</span></div>`;
+
+            updateMonthlyHistory();
+
+            const statsContainer = document.getElementById('statsContainer');
+            if (trips.length === 0 && fuelLogs.length === 0) {
+                statsContainer.innerHTML = `<div class="empty-state"><h3>No data for statistics</h3></div>`;
+                return;
+            }
+            const totalDistance = trips.reduce((sum, trip) => sum + trip.distance, 0);
+            const totalFuelCost = fuelLogs.reduce((sum, fuel) => sum + fuel.cost, 0);
+            const totalServiceCost = serviceLogs.reduce((sum, log) => sum + log.cost, 0);
+            const totalFuelAmount = fuelLogs.reduce((sum, fuel) => sum + fuel.amount, 0);
+            const avgFuelPrice = totalFuelAmount > 0 ? (totalFuelCost / totalFuelAmount) : 0;
+            const fuelEfficiency = getAverageFuelEfficiency();
+            const costPerKm = totalDistance > 0 ? (totalFuelCost + totalServiceCost) / totalDistance : 0;
+
+            statsContainer.innerHTML = `
+                <div class="stats">
+                    <h3>Overall Statistics <span class="info-icon" onclick="openHelpModal()">i</span></h3>
+                    <div class="stat-grid">
+                        <div class="stat-item"><span class="stat-value">${trips.length}</span><span class="stat-label">Total Trips</span></div>
+                        <div class="stat-item"><span class="stat-value">${totalDistance}</span><span class="stat-label">Total Distance</span></div>
+                        <div class="stat-item"><span class="stat-value">₹${costPerKm.toFixed(2)}</span><span class="stat-label">Cost / km</span></div>
+                        <div class="stat-item"><span class="stat-value">₹${avgFuelPrice.toFixed(2)}</span><span class="stat-label">Avg. Fuel Price/L</span></div>
+                        <div class="stat-item"><span class="stat-value">${fuelEfficiency.toFixed(1)}</span><span class="stat-label">Avg. Efficiency</span></div>
+                        <div class="stat-item"><span class="stat-value">₹${(totalFuelCost + totalServiceCost).toFixed(0)}</span><span class="stat-label">Total Expenses</span></div>
+                    </div>
+                </div>`;
+
+            renderMonthlyDistanceChart();
+            renderFuelPriceChart();
+            renderPurposePieChart();
+        }
+
+        function updateMonthData(month, year) {
+            const monthTrips = trips.filter(trip => new Date(trip.date).getMonth() === month && new Date(trip.date).getFullYear() === year);
+            const monthFuel = fuelLogs.filter(fuel => new Date(fuel.date).getMonth() === month && new Date(fuel.date).getFullYear() === year);
+            const distance = monthTrips.reduce((s, t) => s + t.distance, 0);
+            const fuelCost = monthFuel.reduce((s, f) => s + f.cost, 0);
+            return {
+                trips: monthTrips.length,
+                distance: distance,
+                fuelCost: fuelCost,
+                avgTrip: monthTrips.length > 0 ? distance / monthTrips.length : 0
+            };
+        }
+
+        function updateMonthlyHistory() {
+            const historyContainer = document.getElementById('historyContainer');
+            const filter = document.getElementById('historyYearFilter');
+            const allMonths = new Set();
+            [...trips, ...fuelLogs].forEach(log => {
+                const d = new Date(log.date);
+                allMonths.add(`${d.getFullYear()}-${d.getMonth()}`);
+            });
+
+            const now = new Date();
+            const groupedByYear = {};
+
+            Array.from(allMonths).forEach(monthKey => {
+                const [year, month] = monthKey.split('-').map(Number);
+                if (year === now.getFullYear() && month === now.getMonth()) return;
+                if (!groupedByYear[year]) groupedByYear[year] = [];
+                groupedByYear[year].push({ year, month });
+            });
+
+            const sortedYears = Object.keys(groupedByYear).sort((a,b) => b - a);
+
+            const currentFilterValue = filter.value;
+            filter.innerHTML = '<option value="all">All Years</option>';
+            sortedYears.forEach(year => {
+                filter.innerHTML += `<option value="${year}">${year}</option>`;
+            });
+            filter.value = currentFilterValue && sortedYears.includes(currentFilterValue) ? currentFilterValue : (sortedYears.length > 0 ? sortedYears[0] : 'all');
+
+            const displayYears = filter.value === 'all' ? sortedYears : [filter.value];
+
+            if (displayYears.length === 0 || !groupedByYear[displayYears[0]]) {
+                historyContainer.innerHTML = '<p style="text-align: center; opacity: 0.8;">No historical data for the selected year.</p>';
+                return;
+            }
+
+            let html = '';
+            displayYears.forEach(year => {
+                html += `<div class="history-year-group"><h4>${year}</h4>`;
+                const months = groupedByYear[year].sort((a,b) => b.month - a.month);
+                months.forEach(({ month, year }) => {
+                    const monthData = updateMonthData(month, year);
+                    const monthName = new Date(year, month).toLocaleString('default', { month: 'long' });
+                    html += `
+                        <div class="history-month">
+                            <div class="month-header">${monthName}</div>
+                            <div class="history-summary-grid">
+                                <div class="history-summary-item"><span class="history-summary-value">${monthData.trips}</span><span class="history-summary-label">Trips</span></div>
+                                <div class="history-summary-item"><span class="history-summary-value">${monthData.distance}</span><span class="history-summary-label">KM</span></div>
+                                <div class="history-summary-item"><span class="history-summary-value">₹${monthData.fuelCost.toFixed(0)}</span><span class="history-summary-label">Fuel</span></div>
+                                <div class="history-summary-item"><span class="history-summary-value">${monthData.avgTrip.toFixed(1)}</span><span class="history-summary-label">Avg/Trip</span></div>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+            });
+            historyContainer.innerHTML = html;
+        }
+
+        // --- Edit Modal Logic ---
+
+        function openEditModal(type, id) {
+            const modal = document.getElementById('editModal');
+            const modalHeader = document.getElementById('editModalHeader');
+            const modalBody = document.getElementById('modalBody');
+
+            const collections = { trip: trips, fuel: fuelLogs, service: serviceLogs, insurance: insuranceLogs };
+            const forms = { trip: 'tripForm', fuel: 'fuelForm', service: 'serviceForm', insurance: 'insuranceForm' };
+            const titles = { trip: "Edit Trip Log", fuel: "Edit Fuel Log", service: "Edit Service Log", insurance: "Edit Insurance Log" };
+
+            const item = collections[type].find(i => i.id === id);
+            if (!item) { console.error("Item not found for editing"); return; }
+
+            modalHeader.textContent = titles[type];
+            modalBody.innerHTML = document.getElementById(forms[type]).outerHTML;
+            const formInModal = modalBody.querySelector('form');
+            formInModal.id = `editForm-${type}`;
+
+            if (type === 'trip') {
+                populateLocationDropdown(formInModal.querySelector('#startingLocation'));
+            }
+
+            const elements = formInModal.elements;
+            if (type === 'trip') {
+                elements.tripDate.value = item.date;
+                elements.startingLocation.value = item.startingLocation;
+                elements.tripPurpose.value = item.purpose;
+                elements.startOdometer.value = item.startOdometer;
+                elements.endOdometer.value = item.endOdometer;
+                elements.remainingRange.value = item.remainingRange != null ? item.remainingRange : '';
+                elements.tripNotes.value = item.notes;
+            } else if (type === 'fuel') {
+                elements.fuelDate.value = item.date;
+                elements.fuelOdometer.value = item.odometer;
+                elements.rangeBefore.value = item.rangeBefore != null ? item.rangeBefore : '';
+                elements.fuelAmount.value = item.amount;
+                elements.fuelCost.value = item.cost;
+                elements.rangeAfter.value = item.rangeAfter != null ? item.rangeAfter : '';
+                elements.fuelStation.value = item.station;
+            } else if (type === 'service') {
+                elements.serviceDate.value = item.date;
+                elements.serviceOdometer.value = item.odometer;
+                elements.serviceCenter.value = item.center;
+                elements.serviceType.value = item.type;
+                elements.workDescription.value = item.description;
+                elements.partsReplaced.value = item.parts;
+                elements.serviceCost.value = item.cost;
+                elements.invoiceNumber.value = item.invoice;
+            } else if (type === 'insurance') {
+                elements.insuranceProvider.value = item.provider;
+                elements.policyNumber.value = item.policyNumber;
+                elements.policyValidity.value = item.validity;
+                elements.coverageInfo.value = item.coverage;
+            }
+
+            if (type === 'trip') {
+                const customLocationGroup = formInModal.querySelector('#customLocationGroup');
+                const defaultLocations = ["Home", "Office"];
+                if (!defaultLocations.includes(item.startingLocation) && !customLocations.includes(item.startingLocation)) {
+                    elements.startingLocation.value = 'Other';
+                    elements.customLocation.value = item.startingLocation;
+                    if(customLocationGroup) customLocationGroup.style.display = 'block';
+                }
+            }
+
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save Changes';
+            saveButton.className = 'btn';
+            saveButton.onclick = () => saveChanges(type, id);
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.className = 'btn btn-secondary';
+            cancelButton.onclick = () => closeModal('editModal');
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'modal-buttons';
+            buttonContainer.appendChild(cancelButton);
+            buttonContainer.appendChild(saveButton);
+            formInModal.appendChild(buttonContainer);
+            formInModal.querySelector('button[type="submit"]').remove();
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        async function saveChanges(type, id) {
+            const form = document.getElementById(`editForm-${type}`);
+            const collections = { trip: trips, fuel: fuelLogs, service: serviceLogs, insurance: insuranceLogs };
+            const item = collections[type].find(i => i.id === id);
+            const elements = form.elements;
+
+            if (type === 'trip') {
+                item.date = elements.tripDate.value;
+                item.purpose = elements.tripPurpose.value;
+                item.startOdometer = parseInt(elements.startOdometer.value);
+                item.endOdometer = parseInt(elements.endOdometer.value);
+                item.distance = item.endOdometer - item.startOdometer;
+                const rangeVal = elements.remainingRange.value;
+                item.remainingRange = rangeVal ? parseInt(rangeVal) : null;
+                item.notes = elements.tripNotes.value;
+                const locationSelect = elements.startingLocation.value;
+                const customLocation = elements.customLocation.value;
+                item.startingLocation = locationSelect === 'Other' ? customLocation : locationSelect;
+            } else if (type === 'fuel') {
+                item.date = elements.fuelDate.value;
+                item.odometer = parseInt(elements.fuelOdometer.value);
+                const rbVal = elements.rangeBefore.value;
+                item.rangeBefore = rbVal ? parseInt(rbVal) : null;
+                item.amount = parseFloat(elements.fuelAmount.value);
+                item.cost = parseFloat(elements.fuelCost.value);
+                const raVal = elements.rangeAfter.value;
+                item.rangeAfter = raVal ? parseInt(raVal) : null;
+                item.station = elements.fuelStation.value;
+            } else if (type === 'service') {
+                item.date = elements.serviceDate.value;
+                item.odometer = parseInt(elements.serviceOdometer.value);
+                item.center = elements.serviceCenter.value;
+                item.type = elements.serviceType.value;
+                item.description = elements.workDescription.value;
+                item.parts = elements.partsReplaced.value;
+                item.cost = parseFloat(elements.serviceCost.value);
+                item.invoice = elements.invoiceNumber.value;
+            } else if (type === 'insurance') {
+                item.provider = elements.insuranceProvider.value;
+                item.policyNumber = elements.policyNumber.value;
+                item.validity = elements.policyValidity.value;
+                item.coverage = elements.coverageInfo.value;
+            }
+
+            await saveData();
+            renderAll();
+            closeModal('editModal');
+            alert(`✅ ${type.charAt(0).toUpperCase() + type.slice(1)} log updated!`);
+        }
+
+        // --- UTILITY FUNCTIONS ---
+
+        async function toggleFontSize() {
+            const currentSize = appSettings.fontSize || 'medium';
+            const sizes = ['small', 'medium', 'large', 'xlarge'];
+            const nextIndex = (sizes.indexOf(currentSize) + 1) % sizes.length;
+            appSettings.fontSize = sizes[nextIndex];
+            applyFontSize();
+            await saveData();
+        }
+
+        function applyFontSize() {
+            const container = document.querySelector('.container');
+            const size = appSettings.fontSize || 'medium';
+            const labels = {'small': 'A', 'medium': 'A+', 'large': 'A++', 'xlarge': 'A+++'};
+            container.className = 'container';
+            container.classList.add(`font-size-${size}`);
+            document.getElementById('fontToggle').textContent = labels[size];
+        }
+
+        async function autoBackup() {
+            const backupData = {
+                version: '2.0',
+                exportDate: new Date().toISOString(),
+                trips, fuelLogs, serviceLogs, customLocations, vehicleDetails, insuranceLogs, appSettings
+            };
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const now = new Date();
+            const filename = `trip_logger_backup_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}.json`;
+            const a = document.createElement('a');
+            a.href = window.URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(a.href);
+            appSettings.lastBackupDate = now.getTime();
+            await saveData();
+            updateBackupStatus();
+            alert('✅ Backup created successfully!');
+        }
+
+        async function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    if (!backupData || typeof backupData.trips === 'undefined') {
+                        throw new Error('Invalid backup file format');
+                    }
+                    if (!confirm('This will restore all data and REPLACE current logs. Continue?')) return;
+
+                    trips = backupData.trips || [];
+                    fuelLogs = backupData.fuelLogs || [];
+                    serviceLogs = backupData.serviceLogs || [];
+                    customLocations = backupData.customLocations || [];
+                    vehicleDetails = backupData.vehicleDetails || {};
+                    insuranceLogs = backupData.insuranceLogs || [];
+                    appSettings = backupData.appSettings || {};
+
+                    await saveData();
+                    applyFontSize();
+                    renderAll();
+                    alert('✅ Data restored successfully!');
+                } catch (error) {
+                    alert('Error reading backup file. Please make sure it is a valid backup.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+            fileInput.value = '';
+        }
+
+        function updateBackupStatus() {
+            const lastBackup = appSettings.lastBackupDate;
+            const statusElement = document.getElementById('backupStatus');
+            if (lastBackup) {
+                statusElement.style.display = 'block';
+                document.getElementById('lastBackupDate').textContent = formatDate(new Date(lastBackup));
+            } else {
+                statusElement.style.display = 'none';
+            }
+        }
+
+
+        function getPurposeIcon(purpose) {
+            const icons = { 'Shopping': '🛒', 'Family Visit': '👨‍👩‍👧‍👦', 'Religious': '🕉️', 'Banking': '🏦', 'Social': '👥', 'Leisure': '🎯', 'Maintenance': '🔧', 'Medical': '🏥', 'Other': '📝' };
+            return icons[purpose] || '📝';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            // Handle YYYY-MM-DD strings without timezone issues
+            const str = String(dateString).split('T')[0];
+            const parts = str.split('-');
+            if (parts.length === 3) {
+                const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                return date.toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+            }
+            // Fallback for timestamps
+            return new Date(dateString).toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'short', year: 'numeric'
+            });
+        }
+
+        function autoPopulateOdometerFields() {
+            let lastOdometer = 0;
+            const allLogs = [...trips.map(t=>({date:t.date, odo:t.endOdometer})), ...fuelLogs.map(f=>({date:f.date, odo:f.odometer})), ...serviceLogs.map(s=>({date:s.date, odo:s.odometer}))]
+                .filter(l => l.odo)
+                .sort((a,b) => new Date(b.date) - new Date(a.date) || b.odo - a.odo);
+
+            if (allLogs.length > 0) {
+                 lastOdometer = allLogs[0].odo;
+            }
+
+            if (lastOdometer > 0) {
+                 ['startOdometer', 'fuelOdometer', 'serviceOdometer'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.value = lastOdometer;
+                        el.style.backgroundColor = '#f0fff0';
+                        el.title = `Auto-filled from last known odometer reading (${lastOdometer} km)`;
+                    }
+                });
+            }
+        }
+
+        function exportData(type) {
+           let data = '';
+           let filename = '';
+           if (type === 'trips') {
+               data = 'Date,Starting Location,Purpose,Start Odometer,End Odometer,Distance,Estimated Cost,Remaining Range,Notes\n';
+               data += trips.map(trip => {
+                   const cost = calculateTripCost(trip.distance, trip.date);
+                   const fields = [trip.date, trip.startingLocation, trip.purpose, trip.startOdometer, trip.endOdometer, trip.distance, cost.toFixed(2), trip.remainingRange, trip.notes];
+                   return fields.map(field => `"${String(field || '').replace(/"/g, '""')}"`).join(',');
+               }).join('\n');
+               filename = `trip_logs_${new Date().toISOString().split('T')[0]}.csv`;
+           } else if (type === 'fuel') {
+                data = 'Date,Odometer,Amount (L),Cost (INR),Station\n';
+                data += fuelLogs.map(fuel => {
+                    const fields = [fuel.date, fuel.odometer, fuel.amount, fuel.cost, fuel.station];
+                    return fields.map(field => `"${String(field || '').replace(/"/g, '""')}"`).join(',');
+                }).join('\n');
+                filename = `fuel_logs_${new Date().toISOString().split('T')[0]}.csv`;
+           }
+
+           const blob = new Blob([`\uFEFF${data}`], { type: 'text/csv;charset=utf-8;' });
+           const url = window.URL.createObjectURL(blob);
+           const a = document.createElement('a');
+           a.href = url;
+           a.download = filename;
+           a.click();
+           window.URL.revokeObjectURL(url);
+           alert(`✅ ${type} logs exported!`);
+       }
+
+       function populateLocationDropdown(selectElement) {
+            const defaultOptionsHTML = `
+                <option value="">Select starting location...</option>
+                <option value="Home">🏠 Home</option>
+                <option value="Office">🏢 Office</option>
+                <option value="Other">✏️ Other (specify below)</option>
+            `;
+            selectElement.innerHTML = defaultOptionsHTML;
+
+            customLocations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = `📍 ${location}`;
+                selectElement.insertBefore(option, selectElement.querySelector('option[value="Other"]'));
+            });
+        }
+
+        function handleLocationChange(selectElement) {
+            const form = selectElement.closest('form');
+            const customGroup = form.querySelector('#customLocationGroup');
+            const customInput = form.querySelector('#customLocation');
+            if (customGroup) {
+                const isOther = selectElement.value === 'Other';
+                customGroup.style.display = isOther ? 'block' : 'none';
+                customInput.required = isOther;
+            }
+        }
+
+        function handleScroll() {
+            const btn = document.getElementById('backToTopBtn');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo(0, 0);
+        }
+
+        function openHelpModal() {
+            const modalBody = document.getElementById('helpModalBody');
+            modalBody.innerHTML = `
+                <h3>Estimated Trip Cost</h3>
+                <p>This is calculated dynamically by combining two factors: <strong>Fuel Price</strong> and <strong>Fuel Efficiency</strong>.</p>
+                <p>The app finds the fuel price from the last fuel log entered on or before the trip's date. It then divides the trip distance by your car's overall average efficiency to estimate the fuel used, and multiplies that by the historical fuel price.</p>
+                <hr style="margin: 15px 0;">
+                <h3>Overall Cost / km</h3>
+                <p>This is the true running cost of your vehicle. It's calculated by adding your <strong>Total Fuel Cost</strong> and <strong>Total Service Cost</strong>, then dividing by the <strong>Total Distance</strong> you've driven.</p>
+                <hr style="margin: 15px 0;">
+                <h3>Average Fuel Efficiency (km/L)</h3>
+                <p>The app calculates this by looking at the distance traveled between all your fuel fill-ups and the amount of fuel added at each stop. It provides a reliable average over the lifetime of the logs.</p>
+            `;
+            document.getElementById('helpModal').style.display = 'block';
+        }
+
+        // --- CHARTING FUNCTIONS ---
+        function renderMonthlyDistanceChart() {
+            const container = document.getElementById('monthlyDistanceChart');
+            const data = {};
+            const now = new Date();
+            for(let i=11; i>=0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const key = `${d.getFullYear()}-${d.getMonth()}`;
+                data[key] = { label: d.toLocaleString('default', {month:'short'}), value: 0 };
+            }
+
+            trips.forEach(trip => {
+                const d = new Date(trip.date);
+                const key = `${d.getFullYear()}-${d.getMonth()}`;
+                if (data[key]) {
+                    data[key].value += trip.distance;
+                }
+            });
+
+            const chartData = Object.values(data);
+            const maxValue = Math.max(...chartData.map(d => d.value));
+            if (maxValue === 0) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Not enough data for chart.</p>'; return; }
+
+            const bars = chartData.map((d, i) => {
+                const barHeight = d.value / maxValue * 130;
+                return `
+                <g>
+                    <rect y="${150 - barHeight}" x="${i * 25}" width="20" height="${barHeight}" fill="#4CAF50"></rect>
+                    <text y="${145 - barHeight}" x="${i * 25 + 10}" text-anchor="middle" font-size="10" fill="#333">${Math.round(d.value)}</text>
+                    <text y="165" x="${i * 25 + 10}" text-anchor="middle" font-size="10">${d.label}</text>
+                </g>`}).join('');
+
+            container.innerHTML = `<svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMax meet">${bars}</svg>`;
+        }
+
+        function renderFuelPriceChart() {
+            const container = document.getElementById('fuelPriceChart');
+            if (fuelLogs.length < 2) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Need at least 2 fuel logs.</p>'; return; }
+
+            const allLogsSorted = [...fuelLogs].sort((a,b) => new Date(a.date) - new Date(b.date));
+            const recentLogs = allLogsSorted.slice(-20);
+
+            const validLogs = recentLogs.filter(log => log.amount > 0 && (log.cost / log.amount) > 0);
+            if (validLogs.length < 2) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">Need at least 2 valid fuel logs.</p>'; return; }
+
+            const prices = validLogs.map(log => log.cost / log.amount);
+            const rawMin = Math.min(...prices);
+            const rawMax = Math.max(...prices);
+
+            // Y-axis: round down/up to nearest integer, add padding
+            const yMin = Math.floor(rawMin) - 1;
+            const yMax = Math.ceil(rawMax) + 1;
+            const yRange = yMax - yMin;
+
+            // Layout: Y-axis labels on left, chart area, x-labels at bottom
+            const leftMargin = 40, rightMargin = 10, topMargin = 15, chartHeight = 115;
+            const chartBottom = topMargin + chartHeight;
+            const svgWidth = 320, svgHeight = chartBottom + 25;
+            const chartWidth = svgWidth - leftMargin - rightMargin;
+
+            const toX = (i) => leftMargin + (i / (validLogs.length - 1)) * chartWidth;
+            const toY = (price) => chartBottom - ((price - yMin) / yRange * chartHeight);
+
+            // Y-axis ticks and grid lines
+            let yAxis = '';
+            for (let tick = Math.ceil(yMin); tick <= Math.floor(yMax); tick++) {
+                const y = toY(tick);
+                yAxis += `<line x1="${leftMargin}" y1="${y}" x2="${svgWidth - rightMargin}" y2="${y}" stroke="#eee" stroke-width="0.5"/>`;
+                yAxis += `<text x="${leftMargin - 5}" y="${y + 3.5}" text-anchor="end" font-size="9" fill="#888">₹${tick}</text>`;
+            }
+
+            // Find key point indices: min, max, latest
+            let minIdx = 0, maxIdx = 0;
+            prices.forEach((p, i) => {
+                if (p < prices[minIdx]) minIdx = i;
+                if (p > prices[maxIdx]) maxIdx = i;
+            });
+            const lastIdx = prices.length - 1;
+            const labelSet = new Set([minIdx, maxIdx, lastIdx]);
+
+            // Plot points and line
+            let polyline = '', dots = '';
+            validLogs.forEach((log, i) => {
+                const price = prices[i];
+                const x = toX(i);
+                const y = toY(price);
+                polyline += `${x},${y} `;
+                const hasLabel = labelSet.has(i);
+                const labelAbove = price !== prices[minIdx]; // min label goes below, others above
+                const labelY = (hasLabel && !labelAbove) ? y + 14 : y - 8;
+                dots += `<circle cx="${x}" cy="${y}" r="${hasLabel ? 3.5 : 2.5}" fill="${hasLabel ? '#dc3545' : '#ffc107'}"/>`;
+                if (hasLabel) {
+                    dots += `<text x="${x}" y="${labelY}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#333">₹${price.toFixed(2)}</text>`;
+                }
+            });
+
+            // X-axis date labels: first, middle, last
+            const xLabelIndices = [...new Set([0, Math.floor((validLogs.length - 1) / 2), validLogs.length - 1])];
+            const xLabels = xLabelIndices.map(i => {
+                const x = toX(i);
+                const d = new Date(validLogs[i].date);
+                const label = d.toLocaleDateString('default', { month: 'short', day: '2-digit' });
+                return `<text x="${x}" y="${svgHeight - 2}" text-anchor="middle" font-size="9" fill="#888">${label}</text>`;
+            }).join('');
+
+            container.innerHTML = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="xMidYMid meet">
+                ${yAxis}
+                <line x1="${leftMargin}" y1="${chartBottom}" x2="${svgWidth - rightMargin}" y2="${chartBottom}" stroke="#ccc" stroke-width="1"/>
+                <polyline points="${polyline.trim()}" fill="none" stroke="#ffc107" stroke-width="2"/>
+                ${dots}
+                ${xLabels}
+            </svg>`;
+        }
+
+        function renderPurposePieChart() {
+            const container = document.getElementById('purposePieChart');
+            if (trips.length === 0) { container.innerHTML = '<p class="empty-state" style="padding: 20px 0;">No trips logged yet.</p>'; return; }
+
+            const purposeCounts = trips.reduce((acc, trip) => {
+                const purpose = trip.purpose || 'Other';
+                acc[purpose] = (acc[purpose] || 0) + 1;
+                return acc;
+            }, {});
+
+            const total = trips.length;
+            const colors = ['#4CAF50', '#ffc107', '#17a2b8', '#6f42c1', '#e83e8c', '#fd7e14', '#6c757d', '#dc3545'];
+            let cumulativePercent = 0;
+
+            const getCoords = (percent) => [Math.cos(percent * 2 * Math.PI), Math.sin(percent * 2 * Math.PI)];
+
+            const slices = Object.entries(purposeCounts).map(([purpose, count], i) => {
+                const percent = count / total;
+                const startAngle = cumulativePercent * 2 * Math.PI;
+                const endAngle = (cumulativePercent + percent) * 2 * Math.PI;
+                const midAngle = startAngle + (endAngle - startAngle) / 2;
+
+                const [startX, startY] = getCoords(cumulativePercent);
+                cumulativePercent += percent;
+                const [endX, endY] = getCoords(cumulativePercent);
+                const largeArcFlag = percent > 0.5 ? 1 : 0;
+
+                const pathData = `M ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} L 0 0`;
+                const labelX = Math.cos(midAngle) * 0.65;
+                const labelY = Math.sin(midAngle) * 0.65;
+
+                return { path: pathData, color: colors[i % colors.length], purpose, count, percent, labelX, labelY };
+            });
+
+            const legendItems = slices.map(slice => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color:${slice.color};"></div>${escapeHtml(slice.purpose)} (${slice.count})
+                </div>`).join('');
+
+            const paths = slices.map(slice => `<path d="${slice.path}" fill="${slice.color}"></path>`).join('');
+            const labels = slices.map(slice => {
+                if (slice.percent < 0.05) return '';
+                return `<text x="${slice.labelX}" y="${slice.labelY}" fill="white" font-size="0.12" text-anchor="middle" alignment-baseline="middle" font-weight="bold" transform="rotate(90, ${slice.labelX}, ${slice.labelY})">${(slice.percent * 100).toFixed(0)}%</text>`
+            }).join('');
+
+            container.innerHTML = `
+                <svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg); border-radius: 50%;">${paths}${labels}</svg>
+                <div class="pie-chart-legend">${legendItems}</div>
+            `;
+        }
+
+    </script>
+</body>
+</html>
